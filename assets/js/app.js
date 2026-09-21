@@ -42,8 +42,15 @@
 
     $('#login-hint').textContent = 'تُحفظ بيانات المسابقة في هذا الجهاز ولا تُرسل إلى أي مكان.';
 
-    $('#login-form').addEventListener('submit', function (e) {
-      e.preventDefault();
+    /* الدخول يعمل بالضغط وبمفتاح Enter معًا، حتى داخل الصفحات المضمّنة
+       التي يُمنع فيها إرسال النماذج */
+    var busy = false;
+    function attempt(e) {
+      if (e) e.preventDefault();
+      if (busy) return;
+      busy = true;
+      setTimeout(function () { busy = false; }, 150);
+
       Sound.unlock();
       var u = $('#in-user').value.trim().toLowerCase();
       var p = $('#in-pin').value.trim();
@@ -61,6 +68,12 @@
         $('#in-pin').value = '';
         $('#in-pin').focus();
       }
+    }
+
+    $('#login-form').addEventListener('submit', attempt);
+    $('#login-go').addEventListener('click', attempt);
+    $$('#login-form input').forEach(function (inp) {
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') attempt(e); });
     });
   }
 

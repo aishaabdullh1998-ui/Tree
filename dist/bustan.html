@@ -1,0 +1,2487 @@
+<meta charset="utf-8">
+<title>بستان المجموعات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=Tajawal:wght@500;700;800&display=swap">
+<style>
+/* اتجاه الصفحة من اليمين لليسار حتى بلا وسم html */
+:root { direction: rtl; }
+html, body { height: 100%; }
+#login { min-height: 100%; }
+
+/* ==========================================================================
+   بستان المجموعات - التنسيق
+   ========================================================================== */
+:root {
+  --cream:      #FAF4D8;
+  --cream-2:    #FFFBEC;
+  --cream-3:    #F2E8C6;
+  --ink:        #3B4A2A;
+  --ink-soft:   #74855D;
+  --leaf:       #4F7C33;
+  --leaf-dark:  #3B6026;
+  --leaf-light: #6E9A46;
+  --bark:       #C6AA82;
+  --bark-dark:  #A98A61;
+  --gold:       #E7B23C;
+  --gold-deep:  #C9902A;
+  --red:        #D9482F;
+  --shadow-sm:  0 4px 0 rgba(122,138,92,.16);
+  --shadow-md:  0 10px 26px rgba(120,132,88,.18);
+  --r-lg: 30px;
+  --r-md: 20px;
+  --r-sm: 14px;
+  --font: 'Baloo Bhaijaan 2', 'Tajawal', 'Noto Kufi Arabic', 'Segoe UI', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background-color: var(--cream);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(110,154,70,.07) 0 26%, transparent 26%),
+    radial-gradient(circle at 88% 72%, rgba(231,178,60,.08) 0 24%, transparent 24%),
+    radial-gradient(circle at 60% 6%, rgba(217,72,47,.05) 0 18%, transparent 18%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100%;
+}
+
+/* حُبيبات الطباعة الخفيفة فوق الخلفية */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+body.no-texture::before { display: none; }
+
+.hidden { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ------------------------------- أوراق زخرفية --------------------------- */
+.decor {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+}
+.decor svg { position: absolute; opacity: .13; }
+
+/* --------------------------------- الأزرار ------------------------------ */
+.btn {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--cream-2);
+  border: 2.5px solid var(--bark);
+  border-bottom-width: 5px;
+  border-radius: var(--r-md);
+  padding: .6em 1.1em;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
+  display: inline-flex; align-items: center; gap: .5em;
+  line-height: 1.2;
+}
+.btn:hover { background: #FFF; transform: translateY(-2px); }
+.btn:active { transform: translateY(2px); border-bottom-width: 2.5px; }
+.btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.btn--primary {
+  background: var(--leaf); color: #FFF9E4; border-color: var(--leaf-dark);
+}
+.btn--primary:hover { background: var(--leaf-light); }
+.btn--gold { background: var(--gold); color: #4A3510; border-color: var(--gold-deep); }
+.btn--gold:hover { background: #F2C55A; }
+.btn--danger { background: #FBE6E0; border-color: #D9A08F; color: #93331F; }
+.btn--danger:hover { background: #FFEFEA; }
+.btn--sm { font-size: .84rem; padding: .45em .85em; border-radius: var(--r-sm); }
+
+/* ============================ شاشة تسجيل الدخول ========================== */
+.screen { position: relative; z-index: 1; }
+
+#login {
+  min-height: 100dvh;
+  display: grid; place-items: center;
+  padding: 24px 16px;
+}
+.login-card {
+  width: min(420px, 100%);
+  background: var(--cream-2);
+  border: 3px solid var(--bark);
+  border-radius: 34px;
+  box-shadow: var(--shadow-md);
+  padding: 30px 26px 26px;
+  text-align: center;
+  animation: rise .5s cubic-bezier(.22,1,.3,1) both;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(18px) scale(.97); } }
+
+.login-card .mark { width: 128px; height: 152px; margin: -6px auto 4px; }
+.login-card .mark svg { width: 100%; height: 100%; display: block; }
+.login-card h1 { font-size: 1.6rem; margin: 2px 0 2px; letter-spacing: .5px; }
+.login-card .sub { margin: 0 0 20px; color: var(--ink-soft); font-size: .94rem; }
+
+.field { text-align: right; margin-bottom: 14px; }
+.field label { display: block; font-size: .9rem; margin-bottom: 6px; font-weight: 700; color: var(--ink-soft); }
+.field input {
+  width: 100%;
+  font-family: inherit; font-size: 1.05rem; font-weight: 700;
+  color: var(--ink);
+  background: #FFF;
+  border: 2.5px solid var(--cream-3);
+  border-radius: var(--r-md);
+  padding: .68em .9em;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.field input:focus { outline: none; border-color: var(--leaf-light); box-shadow: 0 0 0 4px rgba(110,154,70,.18); }
+.field input[inputmode="numeric"] { letter-spacing: .5em; text-align: center; }
+
+.login-msg { min-height: 22px; font-size: .9rem; color: var(--red); font-weight: 700; margin: 2px 0 10px; }
+.shake { animation: shake .4s; }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-9px); } 40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); } 80% { transform: translateX(4px); }
+}
+.login-hint { margin-top: 14px; font-size: .82rem; color: var(--ink-soft); }
+
+/* ================================ اللوحة ================================ */
+#board { padding: 12px clamp(10px, 2.4vw, 30px) 10px; max-width: 1240px; margin: 0 auto; }
+
+.topbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  background: var(--cream-2);
+  border: 3px solid var(--bark);
+  border-radius: var(--r-lg);
+  padding: 9px 16px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 12px;
+}
+.topbar h1 { font-size: clamp(1.1rem, 2.4vw, 1.55rem); margin: 0; flex: 1 1 200px; display: flex; align-items: center; gap: .5em; }
+.topbar h1 svg { flex: none; }
+.topbar .tools { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.banner {
+  display: flex; align-items: center; justify-content: center; gap: .6em;
+  flex-wrap: wrap;
+  background: linear-gradient(180deg, #FFF3CE, #FBE6AE);
+  border: 3px solid var(--gold);
+  border-radius: var(--r-lg);
+  padding: 8px 18px;
+  margin-bottom: 12px;
+  font-size: clamp(.95rem, 2vw, 1.18rem);
+  font-weight: 700;
+  color: #6A4A12;
+  box-shadow: var(--shadow-sm);
+  animation: rise .4s cubic-bezier(.22,1,.3,1) both;
+}
+.banner .crown { font-size: 1.4em; animation: bob 2.4s ease-in-out infinite; }
+@keyframes bob { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-5px) rotate(4deg); } }
+@keyframes crownBob {
+  0%,100% { transform: translateX(-50%) translateY(0) rotate(-5deg); }
+  50% { transform: translateX(-50%) translateY(-5px) rotate(5deg); }
+}
+
+/* ------------------------------ شبكة البطاقات --------------------------- */
+/* ثلاث أشجار في الأعلى وثلاث في الأسفل */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.5vw, 20px);
+  align-items: start;
+}
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--cream-2);
+  border: 3px solid var(--bark);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 10px 12px 12px;
+  display: flex; flex-direction: column;
+  position: relative;
+  transition: transform .22s cubic-bezier(.22,1,.3,1), box-shadow .22s ease, border-color .22s ease;
+}
+.card:nth-child(odd) { transform: rotate(-.35deg); }
+.card:nth-child(even) { transform: rotate(.35deg); }
+.card:hover { box-shadow: var(--shadow-md); }
+.card.leader { border-color: var(--gold); background: #FFFDF2; box-shadow: 0 0 0 4px rgba(231,178,60,.22), var(--shadow-md); }
+.card.leader::after {
+  content: '👑';
+  position: absolute; top: -17px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.6rem;
+  animation: crownBob 2.6s ease-in-out infinite;
+  filter: drop-shadow(0 3px 3px rgba(150,120,40,.3));
+}
+
+.card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.gname {
+  font-size: 1.04rem; margin: 0; flex: 1;
+  background: none; border: 0; border-radius: 10px;
+  font-family: inherit; font-weight: 700; color: var(--ink);
+  padding: 4px 6px; text-align: start; cursor: text;
+  min-width: 0;
+}
+.gname:hover { background: var(--cream-3); }
+.gname:focus { outline: none; background: #FFF; box-shadow: 0 0 0 3px rgba(110,154,70,.28); }
+.tree-tag {
+  font-size: .74rem; font-weight: 700; color: #57502F;
+  background: var(--cream-3); border-radius: 999px; padding: .28em .7em; white-space: nowrap;
+}
+
+/* منطقة الشجرة - زر كبير */
+.tree-btn {
+  appearance: none; border: 0; background: transparent;
+  padding: 0; margin: 4px 0 2px; cursor: pointer;
+  border-radius: var(--r-md);
+  position: relative; display: block; width: 100%;
+  transition: transform .14s cubic-bezier(.3,1.5,.5,1);
+}
+.tree-btn:hover { transform: translateY(-3px); }
+.tree-btn:active { transform: translateY(2px) scale(.985); }
+.tree-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+
+.tree-stage {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: clamp(140px, 24vh, 250px);
+  background: radial-gradient(ellipse 70% 58% at 50% 92%, rgba(202,219,168,.42), transparent 70%);
+  border-radius: var(--r-md);
+  overflow: visible;
+}
+.tree-stage svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.tap-hint, .tree-stage { pointer-events: none; }
+.tree-scale { transition: transform .55s cubic-bezier(.3,1.35,.45,1); transform-origin: 100px 228px; }
+
+/* مراحل النمو */
+.tree-body .lf { transition: transform .55s cubic-bezier(.34,1.5,.5,1), opacity .4s ease; }
+.tree-body[data-stage="0"] .s1,
+.tree-body[data-stage="0"] .s2,
+.tree-body[data-stage="0"] .s3,
+.tree-body[data-stage="1"] .s2,
+.tree-body[data-stage="1"] .s3,
+.tree-body[data-stage="2"] .s3 { opacity: 0; transform: scale(.15) rotate(-6deg); }
+.tree-body .bunch { transition: opacity .4s ease; }
+.tree-body[data-fruit="0"] .bunch { opacity: 0; }
+
+/* سقوط الثمرة الجديدة */
+.fruit.pop { animation: fruitDrop .52s cubic-bezier(.24,1.5,.42,1) both; transform-box: fill-box; transform-origin: center; }
+@keyframes fruitDrop {
+  0%   { opacity: 0; transform: translateY(-22px) scale(.2); }
+  55%  { opacity: 1; transform: translateY(3px) scale(1.24); }
+  75%  { transform: translateY(-1px) scale(.94); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.fruit.vanish { animation: fruitOut .3s ease-in forwards; transform-box: fill-box; transform-origin: center; }
+@keyframes fruitOut { to { opacity: 0; transform: translateY(14px) scale(.2); } }
+
+.tap-hint {
+  display: block; text-align: center; font-size: .78rem; color: var(--ink-soft);
+  margin-top: 2px; font-weight: 700;
+}
+
+/* علامة +1 المتطايرة */
+.plusone {
+  position: absolute; left: 50%; top: 40%;
+  transform: translateX(-50%);
+  font-size: 1.5rem; font-weight: 800; color: var(--leaf);
+  pointer-events: none;
+  animation: floatUp .9s cubic-bezier(.2,.9,.3,1) forwards;
+  text-shadow: 0 2px 0 #FFF8E0;
+}
+@keyframes floatUp {
+  0% { opacity: 0; transform: translateX(-50%) translateY(6px) scale(.6); }
+  25% { opacity: 1; transform: translateX(-50%) translateY(-6px) scale(1.15); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-46px) scale(1); }
+}
+
+/* أسفل البطاقة */
+.card-foot { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.score {
+  flex: 1;
+  display: flex; align-items: center; gap: .45em;
+  background: var(--cream-3);
+  border-radius: 999px;
+  padding: .3em .85em;
+  font-size: 1.15rem; font-weight: 800;
+  border: 2.5px solid rgba(169,138,97,.35);
+}
+.card.leader .score { background: #FDF0C8; border-color: var(--gold); }
+.score svg { width: 24px; height: 24px; flex: none; }
+.score .num { min-width: 1.6ch; text-align: center; font-variant-numeric: tabular-nums; }
+.score .num.bump { animation: numBump .42s cubic-bezier(.3,1.6,.4,1); }
+@keyframes numBump { 0% { transform: scale(1); } 45% { transform: scale(1.45); color: var(--leaf); } 100% { transform: scale(1); } }
+.score .unit { font-size: .74rem; font-weight: 700; color: var(--ink-soft); }
+
+/* ================================ النوافذ =============================== */
+.overlay {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(74,84,52,.45);
+  backdrop-filter: blur(3px);
+  display: grid; place-items: center;
+  padding: 18px;
+  animation: fade .2s ease both;
+}
+@keyframes fade { from { opacity: 0; } }
+.sheet {
+  width: min(560px, 100%);
+  max-height: 88dvh; overflow: auto;
+  background: var(--cream-2);
+  border: 3px solid var(--bark);
+  border-radius: 32px;
+  box-shadow: 0 24px 60px rgba(60,70,40,.3);
+  padding: 22px 22px 20px;
+  animation: rise .32s cubic-bezier(.22,1,.3,1) both;
+}
+.sheet h2 { margin: 0 0 4px; font-size: 1.3rem; display: flex; align-items: center; gap: .4em; }
+.sheet .note { margin: 0 0 16px; color: var(--ink-soft); font-size: .9rem; }
+.sheet-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+
+.row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+.row > label { flex: 0 0 110px; font-size: .88rem; font-weight: 700; color: var(--ink-soft); }
+.row input[type="text"], .row select {
+  flex: 1; min-width: 0;
+  font-family: inherit; font-size: .98rem; font-weight: 700; color: var(--ink);
+  background: #FFF; border: 2.5px solid var(--cream-3); border-radius: var(--r-sm);
+  padding: .55em .8em;
+}
+.row input:focus, .row select:focus { outline: none; border-color: var(--leaf-light); }
+.group-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+@media (max-width: 460px) { .group-row { grid-template-columns: 1fr; } }
+
+.switch { display: flex; align-items: center; gap: .6em; font-weight: 700; font-size: .95rem; cursor: pointer; margin-bottom: 10px; }
+.switch input { width: 20px; height: 20px; accent-color: var(--leaf); cursor: pointer; }
+
+fieldset.block {
+  border: 2.5px dashed var(--cream-3); border-radius: var(--r-md);
+  padding: 14px; margin: 0 0 16px;
+}
+fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-soft); padding: 0 .5em; }
+
+/* سجل النتائج */
+.hist-item {
+  border: 2.5px solid var(--cream-3); border-radius: var(--r-md);
+  padding: 12px 14px; margin-bottom: 10px; background: #FFF;
+}
+.hist-item h3 { margin: 0 0 2px; font-size: 1rem; }
+.hist-item .meta { font-size: .8rem; color: var(--ink-soft); margin-bottom: 8px; }
+.hist-list { list-style: none; padding: 0; margin: 0 0 10px; font-size: .9rem; }
+.hist-list li { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed var(--cream-3); }
+.hist-list li:last-child { border-bottom: 0; }
+.hist-list li.win { font-weight: 800; color: var(--gold-deep); }
+.empty { text-align: center; color: var(--ink-soft); padding: 26px 0; }
+
+/* ============================= شاشة الاحتفال ============================ */
+#celebrate .sheet { text-align: center; width: min(520px, 100%); }
+.win-tree { width: 190px; height: 216px; margin: 6px auto 0; }
+.win-tree svg { width: 100%; height: 100%; display: block; }
+.win-name { font-size: 1.8rem; margin: 6px 0 0; color: var(--gold-deep); }
+.win-count { font-size: 1.05rem; color: var(--ink-soft); margin: 4px 0 0; font-weight: 700; }
+.win-tie { font-size: .95rem; color: var(--ink-soft); margin-top: 8px; }
+
+.rain { position: fixed; inset: 0; pointer-events: none; z-index: 80; overflow: hidden; }
+.rain span { position: absolute; top: -40px; animation: fall linear forwards; }
+@keyframes fall {
+  0% { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(105vh) rotate(540deg); opacity: .9; }
+}
+
+/* ============================== تذييل الصفحة ============================ */
+.foot-note { text-align: center; color: var(--ink-soft); font-size: .78rem; margin-top: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+@media (max-width: 520px) {
+  .topbar { border-radius: var(--r-md); padding: 10px 12px; }
+  .topbar .tools { width: 100%; }
+  .topbar .tools .btn { flex: 1 1 auto; justify-content: center; }
+  .card:nth-child(odd), .card:nth-child(even) { transform: none; }
+}
+
+/* ============================== مؤقّت النشاط ============================= */
+.status-row {
+  display: flex; align-items: stretch; gap: 10px;
+  margin-bottom: 12px;
+}
+.status-row .banner { flex: 1 1 auto; margin-bottom: 0; }
+
+.timer {
+  flex: 0 0 auto;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--cream-2);
+  border: 3px solid var(--bark);
+  border-radius: var(--r-lg);
+  padding: 2px 12px 2px 8px;
+  box-shadow: var(--shadow-sm);
+}
+.timer-face { display: flex; align-items: center; gap: 8px; }
+.timer-ring-wrap { display: block; flex: none; }
+.timer-ring { display: block; width: 46px; height: 46px; }
+.timer-ring .tr-track { fill: none; stroke: var(--cream-3); stroke-width: 6; }
+.timer-ring .tr-arc {
+  fill: none; stroke: var(--leaf); stroke-width: 6; stroke-linecap: round;
+  transition: stroke-dashoffset .18s linear, stroke .3s ease;
+}
+.timer-ring .tr-head { transition: opacity .3s ease; }
+
+.timer-time {
+  font-size: 1.35rem; font-weight: 800; letter-spacing: .5px;
+  font-variant-numeric: tabular-nums;
+  direction: ltr; unicode-bidi: isolate;
+  color: var(--ink);
+  min-width: 4.4ch; text-align: center;
+}
+
+.timer-ctrl { display: flex; gap: 5px; }
+.tbtn {
+  font-family: inherit; font-size: 1rem; line-height: 1;
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  color: var(--ink);
+  background: var(--cream-3);
+  border: 2px solid rgba(169,138,97,.45);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform .12s ease, background .18s ease;
+}
+.tbtn:hover { background: #FFF; transform: translateY(-2px); }
+.tbtn:active { transform: translateY(1px); }
+.tbtn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.timer.running .t-toggle { background: var(--leaf); color: #FFF9E4; border-color: var(--leaf-dark); }
+
+/* تدرّج التحذير: أخضر ثم ذهبي ثم أحمر */
+.timer-ring .tr-tick { stroke: rgba(169,138,97,.45); stroke-linecap: round; }
+.timer.warn .tr-arc, .timer-overlay.warn .tr-arc { stroke: var(--gold); }
+.timer.warn .timer-time, .timer-overlay.warn .timer-time { color: var(--gold-deep); }
+.timer.danger .tr-arc, .timer-overlay.danger .tr-arc { stroke: var(--red); }
+.timer.danger .timer-time, .timer-overlay.danger .timer-time { color: var(--red); }
+.timer.danger.running .timer-time { animation: pulseNum 1s ease-in-out infinite; }
+@keyframes pulseNum { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+.timer.finished { border-color: var(--gold); background: #FFFDF2; animation: ring 1.1s ease-in-out 3; }
+.timer.finished .tr-arc, .timer-overlay.finished .tr-arc { stroke: var(--red); }
+.timer.finished .timer-time, .timer-overlay.finished .timer-time { color: var(--red); }
+@keyframes ring {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-2.5deg); } 40% { transform: rotate(2.5deg); }
+  60% { transform: rotate(-1.5deg); } 80% { transform: rotate(1.5deg); }
+}
+
+/* المؤقّت الكبير */
+.timer-big { width: min(460px, 100%); text-align: center; }
+.timer-face.big { flex-direction: column; gap: 0; position: relative; margin: 6px 0 14px; }
+.timer-face.big .timer-ring { width: min(260px, 62vw); height: min(260px, 62vw); margin: 0 auto; }
+.timer-face.big .timer-ring .tr-track { stroke-width: 9; }
+.timer-face.big .timer-ring .tr-arc { stroke-width: 9; }
+.timer-face.big .timer-time {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-size: clamp(2.4rem, 12vw, 3.4rem);
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.chip {
+  font-family: inherit; font-size: .9rem; font-weight: 700;
+  color: var(--ink);
+  background: var(--cream-3);
+  border: 2.5px solid rgba(169,138,97,.4);
+  border-radius: 999px;
+  padding: .4em .95em;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, transform .12s ease;
+}
+.chip:hover { background: #FFF; transform: translateY(-2px); }
+.chip.on { background: var(--leaf); color: #FFF9E4; border-color: var(--leaf-dark); }
+.chip:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.chip.custom { display: inline-flex; align-items: center; gap: .35em; cursor: text; }
+.chip.custom input {
+  width: 3.4ch; font-family: inherit; font-size: .92rem; font-weight: 800;
+  color: var(--ink); background: #FFF;
+  border: 0; border-radius: 8px; padding: .1em .25em; text-align: center;
+  -moz-appearance: textfield;
+}
+.chip.custom input::-webkit-outer-spin-button,
+.chip.custom input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.chip.custom input:focus { outline: 2px solid var(--leaf-light); }
+
+/* رسالة انتهاء الوقت */
+.time-toast {
+  position: fixed; z-index: 90;
+  inset-inline: 0; bottom: 26px;
+  width: max-content; max-width: 90vw; margin-inline: auto;
+  background: var(--gold); color: #4A3510;
+  border: 3px solid var(--gold-deep);
+  border-radius: 999px;
+  padding: .6em 1.5em;
+  font-size: 1.15rem; font-weight: 800;
+  box-shadow: 0 12px 30px rgba(120,90,20,.28);
+  animation: toastIn .4s cubic-bezier(.2,1.4,.4,1) both;
+}
+.time-toast.out { animation: toastOut .55s ease forwards; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(24px) scale(.9); } }
+@keyframes toastOut { to { opacity: 0; transform: translateY(18px) scale(.95); } }
+
+@media (max-width: 760px) {
+  .status-row { flex-direction: column; }
+  .timer { justify-content: center; border-radius: var(--r-md); padding: 6px 12px; }
+}
+
+/* ===================== معاينة الحفظ داخل الإطارات المضمّنة ================ */
+.peek .sheet { text-align: center; }
+.peek-img {
+  display: block; width: 100%; max-width: 100%; height: auto;
+  border: 3px solid var(--bark); border-radius: var(--r-md);
+  margin: 4px 0 6px;
+}
+.peek-text {
+  width: 100%; font-family: inherit; font-size: .84rem; line-height: 1.6;
+  color: var(--ink); background: #FFF; direction: ltr; text-align: left;
+  border: 2.5px solid var(--cream-3); border-radius: var(--r-sm);
+  padding: .7em .8em; margin-bottom: 10px; resize: vertical;
+}
+
+</style>
+
+<!-- تعريفات الرسم المشتركة -->
+<svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"></svg>
+
+<!-- ============================== شاشة الدخول ============================ -->
+<section id="login" class="screen" aria-labelledby="login-title">
+  <form class="login-card" id="login-form" autocomplete="off">
+    <div class="mark" id="login-mark" aria-hidden="true"></div>
+    <h1 id="login-title">بستان المجموعات</h1>
+    <p class="sub">لوحة تحفيز الطلاب بأشجار عُمان المثمرة</p>
+
+    <div class="field">
+      <label for="in-user">اسم المستخدم</label>
+      <input id="in-user" name="user" type="text" autocomplete="username" spellcheck="false" required>
+    </div>
+    <div class="field">
+      <label for="in-pin">رمز الدخول</label>
+      <input id="in-pin" name="pin" type="password" inputmode="numeric" autocomplete="current-password" required>
+    </div>
+
+    <p class="login-msg" id="login-msg" role="alert" aria-live="polite"></p>
+    <button class="btn btn--primary" id="login-go" type="submit" style="width:100%;justify-content:center">دخول 🌿</button>
+    <p class="login-hint" id="login-hint"></p>
+  </form>
+</section>
+
+<!-- ================================ اللوحة =============================== -->
+<section id="board" class="screen hidden" aria-labelledby="board-title">
+  <div class="topbar">
+    <h1 id="board-title"><span aria-hidden="true">🌿</span> <span id="board-heading">بستان المجموعات</span></h1>
+    <div class="tools">
+      <button class="btn btn--gold btn--sm" id="btn-celebrate" type="button">🏆 إعلان الفائزة</button>
+      <button class="btn btn--sm" id="btn-history" type="button">📜 السجل</button>
+      <button class="btn btn--sm" id="btn-settings" type="button">⚙️ الإعدادات</button>
+      <button class="btn btn--danger btn--sm" id="btn-reset" type="button">🔄 إعادة المسابقة</button>
+      <button class="btn btn--sm" id="btn-logout" type="button">🚪 خروج</button>
+    </div>
+  </div>
+
+  <div class="status-row">
+    <div class="banner" id="banner" aria-live="polite"></div>
+    <div class="timer" id="timer" aria-label="مؤقّت النشاط"></div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <p class="foot-note">اضغطي على الشجرة لإضافة ثمرة · أو استعملي مفاتيح الأرقام من ١ إلى ٦</p>
+</section>
+
+<div id="modal-root"></div>
+
+<script>
+document.documentElement.setAttribute('dir', 'rtl');
+document.documentElement.setAttribute('lang', 'ar');
+</script>
+<script>
+/* ==========================================================================
+   بستان المجموعات - محرك رسم الأشجار العمانية
+   يرسم كل شجرة بأسلوب الطباعة اليدوية (Linocut) بالألوان الكريمية الهادئة
+   ========================================================================== */
+(function (global) {
+  'use strict';
+
+  /* ----------------------------- لوحة الألوان ----------------------------- */
+  var C = {
+    cream:      '#FAF4D8',
+    creamDeep:  '#F1E6BE',
+    leaf:       '#4F7C33',
+    leafDark:   '#3B6026',
+    leafLight:  '#6E9A46',
+    leafPale:   '#89AE5B',
+    bark:       '#C6AA82',
+    barkDark:   '#A98A61',
+    barkLight:  '#DCC69F',
+    yellow:     '#EFCE4B',
+    yellowDeep: '#DFB52E',
+    red:        '#D9482F',
+    redDeep:    '#B63A22',
+    orange:     '#EE9A3C',
+    lime:       '#A9BE47',
+    limeDeep:   '#8CA337',
+    coco:       '#B08A5E',
+    cocoDark:   '#8E6B45',
+    shadow:     'rgba(93,110,60,.13)'
+  };
+
+  /* ------------------------------ أدوات رياضية ---------------------------- */
+  function f(n) { return Math.round(n * 100) / 100; }
+  function rad(d) { return d * Math.PI / 180; }
+
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function bez(p0, p1, p2, t) {
+    var u = 1 - t;
+    return {
+      x: u * u * p0.x + 2 * u * t * p1.x + t * t * p2.x,
+      y: u * u * p0.y + 2 * u * t * p1.y + t * t * p2.y
+    };
+  }
+  function bezT(p0, p1, p2, t) {
+    var u = 1 - t;
+    return { x: 2 * u * (p1.x - p0.x) + 2 * t * (p2.x - p1.x),
+             y: 2 * u * (p1.y - p0.y) + 2 * t * (p2.y - p1.y) };
+  }
+
+  /* ورقة رفيعة مدببة (سعفة صغيرة) من نقطة إلى نقطة */
+  function sliver(ax, ay, bx, by, w, bend) {
+    var dx = bx - ax, dy = by - ay, L = Math.hypot(dx, dy) || 1;
+    var ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+    bend = bend || 0;
+    var mx = (ax + bx) / 2 + nx * bend, my = (ay + by) / 2 + ny * bend;
+    return 'M' + f(ax + nx * w / 2) + ' ' + f(ay + ny * w / 2) +
+           ' Q' + f(mx + nx * w * 0.6) + ' ' + f(my + ny * w * 0.6) + ' ' + f(bx) + ' ' + f(by) +
+           ' Q' + f(mx - nx * w * 0.45) + ' ' + f(my - ny * w * 0.45) + ' ' + f(ax - nx * w / 2) + ' ' + f(ay - ny * w / 2) + ' Z';
+  }
+
+  var uid = 0;
+  function nextId(p) { uid += 1; return p + uid; }
+
+  /* --------------------------- سعفة نخيل مريّشة --------------------------- */
+  function palmFrond(x, y, angDeg, len, opt) {
+    opt = opt || {};
+    var stage = opt.stage || 0;
+    var color = opt.color || C.leaf;
+    var rib = opt.rib || C.leafDark;
+    var droop = opt.droop == null ? 0.40 : opt.droop;
+    var arch = opt.arch == null ? 0.22 : opt.arch;
+    var a = rad(angDeg);
+    var p0 = { x: x, y: y };
+    var p2 = { x: x + Math.cos(a) * len, y: y + Math.sin(a) * len + len * droop };
+    var p1 = { x: x + Math.cos(a) * len * 0.52, y: y + Math.sin(a) * len * 0.52 - len * arch };
+
+    var parts = [];
+    /* العرق الأوسط */
+    parts.push('<path d="M' + f(p0.x) + ' ' + f(p0.y) + ' Q' + f(p1.x) + ' ' + f(p1.y) + ' ' + f(p2.x) + ' ' + f(p2.y) +
+      '" fill="none" stroke="' + rib + '" stroke-width="' + f(len * 0.042) + '" stroke-linecap="round"/>');
+
+    /* الوريقات على الجانبين */
+    var steps = opt.steps || 13;
+    for (var i = 1; i <= steps; i++) {
+      var t = 0.10 + (i / steps) * 0.86;
+      var b = bez(p0, p1, p2, t);
+      var d = bezT(p0, p1, p2, t);
+      var L = Math.hypot(d.x, d.y) || 1;
+      var tx = d.x / L, ty = d.y / L, nx = -ty, ny = tx;
+      var env = Math.pow(Math.sin(Math.PI * Math.pow(t, 0.8)), 0.62);
+      var ll = len * 0.34 * env;
+      var th = rad(52);
+      for (var s = -1; s <= 1; s += 2) {
+        var dxr = tx * Math.cos(th) + nx * Math.sin(th) * s;
+        var dyr = ty * Math.cos(th) + ny * Math.sin(th) * s;
+        parts.push('<path d="' + sliver(b.x, b.y, b.x + dxr * ll, b.y + dyr * ll, len * 0.055, s * len * 0.028) +
+          '" fill="' + color + '"/>');
+      }
+    }
+    /* وريقة الطرف */
+    parts.push('<path d="' + sliver(p2.x, p2.y, p2.x + Math.cos(a) * len * 0.14, p2.y + Math.sin(a) * len * 0.14 + len * 0.10, len * 0.05, 0) + '" fill="' + color + '"/>');
+
+    return '<g class="lf s' + stage + '" style="transform-origin:' + f(x) + 'px ' + f(y) + 'px">' + parts.join('') + '</g>';
+  }
+
+  /* ------------------------ ورقة موز عريضة بعروق ------------------------- */
+  function broadLeaf(x, y, angDeg, len, wid, opt) {
+    opt = opt || {};
+    var stage = opt.stage || 0;
+    var color = opt.color || C.leaf;
+    var vein = opt.vein || C.cream;
+    var droop = opt.droop == null ? 0.30 : opt.droop;
+    var arch = opt.arch == null ? 0.16 : opt.arch;
+    var a = rad(angDeg);
+    var p0 = { x: x, y: y };
+    var p2 = { x: x + Math.cos(a) * len, y: y + Math.sin(a) * len + len * droop };
+    var p1 = { x: x + Math.cos(a) * len * 0.5, y: y + Math.sin(a) * len * 0.5 - len * arch };
+
+    var N = 26, left = [], right = [];
+    for (var i = 0; i <= N; i++) {
+      var t = i / N;
+      var b = bez(p0, p1, p2, t);
+      var d = bezT(p0, p1, p2, t);
+      var L = Math.hypot(d.x, d.y) || 1;
+      var nx = -d.y / L, ny = d.x / L;
+      var w = wid * Math.pow(Math.sin(Math.PI * Math.pow(t, 0.72)), 0.75);
+      left.push([b.x + nx * w, b.y + ny * w]);
+      right.push([b.x - nx * w, b.y - ny * w]);
+    }
+    var dPath = 'M' + f(left[0][0]) + ' ' + f(left[0][1]);
+    for (var j = 1; j <= N; j++) dPath += ' L' + f(left[j][0]) + ' ' + f(left[j][1]);
+    for (var k = N; k >= 0; k--) dPath += ' L' + f(right[k][0]) + ' ' + f(right[k][1]);
+    dPath += ' Z';
+
+    var cid = nextId('clip');
+    var veins = [];
+    var vc = opt.veins || 10;
+    for (var v = 1; v < vc; v++) {
+      var tv = v / vc;
+      var bb = bez(p0, p1, p2, tv);
+      var dd = bezT(p0, p1, p2, tv);
+      var LL = Math.hypot(dd.x, dd.y) || 1;
+      var ux = dd.x / LL, uy = dd.y / LL, nnx = -uy, nny = ux;
+      var th2 = rad(58);
+      for (var s2 = -1; s2 <= 1; s2 += 2) {
+        var vx = ux * Math.cos(th2) + nnx * Math.sin(th2) * s2;
+        var vy = uy * Math.cos(th2) + nny * Math.sin(th2) * s2;
+        veins.push('<line x1="' + f(bb.x) + '" y1="' + f(bb.y) + '" x2="' + f(bb.x + vx * wid * 2.4) +
+          '" y2="' + f(bb.y + vy * wid * 2.4) + '" stroke="' + vein + '" stroke-width="1.7" stroke-linecap="round" opacity=".85"/>');
+      }
+    }
+
+    return '<g class="lf s' + stage + '" style="transform-origin:' + f(x) + 'px ' + f(y) + 'px">' +
+      '<clipPath id="' + cid + '"><path d="' + dPath + '"/></clipPath>' +
+      '<path d="' + dPath + '" fill="' + color + '"/>' +
+      '<g clip-path="url(#' + cid + ')">' + veins.join('') +
+      '<path d="M' + f(p0.x) + ' ' + f(p0.y) + ' Q' + f(p1.x) + ' ' + f(p1.y) + ' ' + f(p2.x) + ' ' + f(p2.y) +
+      '" fill="none" stroke="' + vein + '" stroke-width="2.4" stroke-linecap="round" opacity=".9"/></g></g>';
+  }
+
+  /* --------------------- تاج ورقي مفصّص (هالة الشجرة) --------------------- */
+  function leafyBlob(cx, cy, rx, ry, lobes, seed, fill, stage) {
+    var rnd = mulberry32(seed);
+    var pts = [];
+    for (var i = 0; i < lobes; i++) {
+      var ang = (i / lobes) * Math.PI * 2 - Math.PI / 2;
+      var r = 0.86 + rnd() * 0.22;
+      pts.push([cx + Math.cos(ang) * rx * r, cy + Math.sin(ang) * ry * r]);
+    }
+    var d = 'M' + f(pts[0][0]) + ' ' + f(pts[0][1]);
+    for (var j = 1; j <= lobes; j++) {
+      var p = pts[j % lobes], q = pts[j - 1];
+      var chord = Math.hypot(p[0] - q[0], p[1] - q[1]);
+      var rr = f(chord * 0.66);
+      d += ' A' + rr + ' ' + rr + ' 0 0 1 ' + f(p[0]) + ' ' + f(p[1]);
+    }
+    d += ' Z';
+    return '<g class="lf s' + (stage || 0) + '" style="transform-origin:' + f(cx) + 'px ' + f(cy + ry * 0.7) + 'px">' +
+      '<path d="' + d + '" fill="' + fill + '"/></g>';
+  }
+
+  /* ------------------------------- جذع الشجرة ----------------------------- */
+  function trunkPath(xb, yb, xt, yt, wb, wt, bend) {
+    bend = bend || 0;
+    var mx = (xb + xt) / 2 + bend, my = (yb + yt) / 2;
+    return 'M' + f(xb - wb / 2) + ' ' + f(yb) +
+      ' Q' + f(mx - wb * 0.34) + ' ' + f(my) + ' ' + f(xt - wt / 2) + ' ' + f(yt) +
+      ' L' + f(xt + wt / 2) + ' ' + f(yt) +
+      ' Q' + f(mx + wb * 0.34) + ' ' + f(my) + ' ' + f(xb + wb / 2) + ' ' + f(yb) + ' Z';
+  }
+
+  function ground() {
+    return '<ellipse cx="100" cy="230" rx="52" ry="7.5" fill="' + C.shadow + '"/>';
+  }
+
+  /* ============================ بناء كل شجرة ============================= */
+
+  /* ------------------------- مُولّد الأغصان المتفرّعة ---------------------- */
+  /* ينشئ هيكل أغصان حقيقي ويُعيد أطراف الأغصان لتتعلّق عليها الثمار */
+  function branchSystem(x0, y0, ang0, len0, w0, depth, seed, color) {
+    var rnd = mulberry32(seed), paths = [], tips = [];
+    function grow(x, y, ang, len, w, d) {
+      var a = rad(ang);
+      var x2 = x + Math.cos(a) * len, y2 = y + Math.sin(a) * len;
+      var bend = (rnd() * 2 - 1) * len * 0.20;
+      var mx = (x + x2) / 2 - Math.sin(a) * bend, my = (y + y2) / 2 + Math.cos(a) * bend;
+      paths.push('<path d="M' + f(x) + ' ' + f(y) + ' Q' + f(mx) + ' ' + f(my) + ' ' + f(x2) + ' ' + f(y2) +
+        '" fill="none" stroke="' + color + '" stroke-width="' + f(Math.max(1.4, w)) + '" stroke-linecap="round"/>');
+      if (d <= 0) { tips.push({ x: x2, y: y2 }); return; }
+      if (d <= 1) tips.push({ x: x + (x2 - x) * 0.62, y: y + (y2 - y) * 0.62 });
+      if (d === 1 && rnd() < 0.34) { tips.push({ x: x2, y: y2 }); return; }
+      var spread = 25 + rnd() * 21;
+      grow(x2, y2, ang - spread, len * (0.56 + rnd() * 0.22), w * 0.66, d - 1);
+      grow(x2, y2, ang + spread, len * (0.56 + rnd() * 0.22), w * 0.66, d - 1);
+      if (d >= 2 && rnd() > 0.40) grow(x2, y2, ang + (rnd() * 18 - 9), len * 0.56, w * 0.56, d - 1);
+    }
+    grow(x0, y0, ang0, len0, w0, depth);
+    return { markup: '<g class="limbs">' + paths.join('') + '</g>', tips: tips };
+  }
+
+  /* مواضع أطراف الأغصان تُخزّن هنا أثناء البناء */
+  var ANCHORS = {};
+
+  /* ============================ بناء كل شجرة ============================= */
+
+  /* 1) النخلة - الرطب: عذوق متدلّية من قلب النخلة */
+  function dateBunch(x, y) {
+    var o = [], tips = [], s, k, m;
+    for (s = -1; s <= 1; s += 2) {
+      for (k = 0; k < 3; k++) {
+        var p0 = { x: x + s * 2, y: y },
+            p1 = { x: x + s * (10 + k * 5), y: y + 10 + k * 2 },
+            p2 = { x: x + s * (15 + k * 7), y: y + 27 + k * 6 };
+        o.push('<path d="M' + f(p0.x) + ' ' + f(p0.y) + ' Q' + f(p1.x) + ' ' + f(p1.y) + ' ' + f(p2.x) + ' ' + f(p2.y) +
+          '" fill="none" stroke="' + C.barkDark + '" stroke-width="' + f(3 - k * 0.5) + '" stroke-linecap="round"/>');
+        for (m = 1; m <= 5; m++) {
+          var b = bez(p0, p1, p2, 0.30 + m * 0.145);
+          tips.push({ x: b.x + s * 3.5, y: b.y + 1.5 });
+          tips.push({ x: b.x - s * 2.5, y: b.y + 3.5 });
+        }
+      }
+    }
+    return { markup: '<g class="bunch">' + o.join('') + '</g>', tips: tips };
+  }
+
+  function buildPalm() {
+    var o = [], i;
+    o.push(ground());
+    o.push('<path d="' + trunkPath(100, 230, 101, 118, 23, 14, 3) + '" fill="' + C.bark + '"/>');
+    for (i = 0; i < 9; i++) {
+      var yy = 214 - i * 11;
+      o.push('<path d="M' + f(90 + i * 0.5) + ' ' + f(yy) + ' Q100 ' + f(yy - 5) + ' ' + f(110 - i * 0.5) + ' ' + f(yy) +
+        '" fill="none" stroke="' + C.barkDark + '" stroke-width="1.6" opacity=".5" stroke-linecap="round"/>');
+    }
+    var top = { x: 101, y: 118 };
+    o.push(palmFrond(top.x, top.y, -90, 74, { stage: 0, arch: 0.30, droop: 0.06 }));
+    o.push(palmFrond(top.x, top.y, -146, 76, { stage: 0, color: C.leafDark }));
+    o.push(palmFrond(top.x, top.y, -34, 76, { stage: 0, color: C.leafDark }));
+    o.push(palmFrond(top.x, top.y, -118, 82, { stage: 1 }));
+    o.push(palmFrond(top.x, top.y, -62, 82, { stage: 1 }));
+    o.push(palmFrond(top.x, top.y, 177, 72, { stage: 2, color: C.leafLight, droop: 0.52 }));
+    o.push(palmFrond(top.x, top.y, 3, 72, { stage: 2, color: C.leafLight, droop: 0.52 }));
+    o.push(palmFrond(top.x, top.y, -162, 66, { stage: 3, color: C.leafPale, droop: 0.58 }));
+    o.push(palmFrond(top.x, top.y, -18, 66, { stage: 3, color: C.leafPale, droop: 0.58 }));
+    var bunch = dateBunch(101, 122);
+    o.push(bunch.markup);
+    ANCHORS.nakhla = bunch.tips;
+    return o.join('');
+  }
+
+  /* 2) شجرة الموز: عذق بأكفّ متراصّة وزهرة حمراء */
+  function buildBanana() {
+    var o = [], i;
+    o.push(ground());
+    o.push('<path d="' + trunkPath(133, 230, 135, 170, 15, 10, 2) + '" fill="' + C.barkLight + '"/>');
+    o.push('<path d="' + trunkPath(98, 230, 99, 114, 27, 17, 0) + '" fill="' + C.bark + '"/>');
+    for (i = -2; i <= 2; i++) {
+      o.push('<line x1="' + f(99 + i * 4.8) + '" y1="228" x2="' + f(99 + i * 2.8) + '" y2="118" stroke="' + C.barkDark +
+        '" stroke-width="1.3" opacity=".42" stroke-linecap="round"/>');
+    }
+    var t = { x: 99, y: 114 };
+    o.push(broadLeaf(t.x, t.y, -96, 80, 21, { stage: 0, color: C.leaf, arch: 0.24, droop: 0.14 }));
+    o.push(broadLeaf(t.x, t.y, -150, 76, 20, { stage: 0, color: C.leafDark, droop: 0.34, arch: 0.22 }));
+    o.push(broadLeaf(t.x, t.y, -34, 76, 20, { stage: 0, color: C.leafDark, droop: 0.34, arch: 0.22 }));
+    o.push(broadLeaf(t.x, t.y, -176, 66, 18, { stage: 1, color: C.leaf, droop: 0.46, arch: 0.16 }));
+    o.push(broadLeaf(t.x, t.y, -6, 66, 18, { stage: 1, color: C.leaf, droop: 0.46, arch: 0.16 }));
+    o.push(broadLeaf(t.x, t.y, -122, 70, 18, { stage: 2, color: C.leafLight, droop: 0.30, arch: 0.26 }));
+    o.push(broadLeaf(135, 170, -62, 52, 16, { stage: 2, color: C.leafLight, droop: 0.24, veins: 8 }));
+    o.push(broadLeaf(135, 170, -16, 46, 14, { stage: 3, color: C.leafPale, droop: 0.28, veins: 8 }));
+
+    var p0 = { x: 95, y: 121 }, p1 = { x: 80, y: 132 }, p2 = { x: 77, y: 158 };
+    var bo = ['<path d="M' + f(p0.x) + ' ' + f(p0.y) + ' Q' + f(p1.x) + ' ' + f(p1.y) + ' ' + f(p2.x) + ' ' + f(p2.y) +
+      '" fill="none" stroke="' + C.barkDark + '" stroke-width="3.8" stroke-linecap="round"/>'];
+    var tips = [];
+    for (i = 0; i < 5; i++) {
+      var tt = 0.24 + i * 0.17;
+      var b = bez(p0, p1, p2, tt);
+      bo.push('<line x1="' + f(b.x - 7) + '" y1="' + f(b.y - 1) + '" x2="' + f(b.x + 7) + '" y2="' + f(b.y - 1) +
+        '" stroke="' + C.barkDark + '" stroke-width="1.8" stroke-linecap="round" opacity=".75"/>');
+      tips.push({ x: b.x - 6.5, y: b.y + 2 }, { x: b.x + 6.5, y: b.y + 2 }, { x: b.x, y: b.y + 3.5 });
+    }
+    bo.push('<path d="M' + f(p2.x) + ' ' + f(p2.y) + ' q-1 6 -1 9" fill="none" stroke="' + C.barkDark + '" stroke-width="2.6" stroke-linecap="round"/>');
+    bo.push('<path d="M76 176 q-8 -6 -6 -14 q6 -6 12 0 q2 8 -6 14 Z" fill="' + C.red + '"/>');
+    bo.push('<path d="M76 176 q-8 -6 -6 -14 q4 6 6 14 Z" fill="' + C.redDeep + '" opacity=".45"/>');
+    o.push('<g class="bunch">' + bo.join('') + '</g>');
+    ANCHORS.mawz = tips;
+    return o.join('');
+  }
+
+  /* 3) شجرة الرمان */
+  function buildPomegranate() {
+    var o = [];
+    var b = branchSystem(100, 176, -90, 36, 8.5, 3, 404, C.barkDark);
+    o.push(ground());
+    o.push('<path d="' + trunkPath(100, 230, 100, 174, 19, 12, -3) + '" fill="' + C.bark + '"/>');
+    o.push(leafyBlob(100, 124, 58, 46, 13, 21, C.leafDark, 0));
+    o.push(leafyBlob(70, 136, 30, 25, 10, 55, C.leaf, 1));
+    o.push(leafyBlob(130, 136, 30, 25, 10, 91, C.leaf, 1));
+    o.push(leafyBlob(100, 100, 38, 28, 11, 133, C.leaf, 2));
+    o.push(leafyBlob(100, 84, 26, 19, 9, 177, C.leafLight, 3));
+    o.push(b.markup);
+    ANCHORS.ruman = b.tips;
+    return o.join('');
+  }
+
+  /* 4) شجرة المانجو (الأمبا) */
+  function buildMango() {
+    var o = [];
+    var b = branchSystem(100, 168, -90, 40, 9.5, 3, 811, C.barkDark);
+    o.push(ground());
+    o.push('<path d="' + trunkPath(100, 230, 100, 166, 22, 13, 3) + '" fill="' + C.barkDark + '"/>');
+    o.push(leafyBlob(100, 116, 64, 48, 15, 7, C.leafDark, 0));
+    o.push(leafyBlob(66, 128, 31, 26, 10, 43, C.leaf, 1));
+    o.push(leafyBlob(134, 128, 31, 26, 10, 71, C.leaf, 1));
+    o.push(leafyBlob(100, 92, 42, 31, 13, 109, C.leaf, 2));
+    o.push(leafyBlob(100, 72, 29, 21, 10, 151, C.leafLight, 3));
+    o.push(b.markup);
+    ANCHORS.manju = b.tips;
+    return o.join('');
+  }
+
+  /* 5) شجرة الليمون العماني (اللومي) */
+  function buildLoomi() {
+    var o = [];
+    var b = branchSystem(100, 190, -90, 33, 7.5, 3, 1215, C.barkDark);
+    o.push(ground());
+    o.push('<path d="' + trunkPath(100, 230, 100, 188, 17, 11, 2) + '" fill="' + C.bark + '"/>');
+    o.push(leafyBlob(100, 142, 56, 44, 13, 29, C.leaf, 0));
+    o.push(leafyBlob(72, 150, 29, 24, 10, 63, C.leafLight, 1));
+    o.push(leafyBlob(128, 150, 29, 24, 10, 97, C.leafLight, 1));
+    o.push(leafyBlob(100, 118, 38, 28, 12, 139, C.leafPale, 2));
+    o.push(leafyBlob(100, 100, 25, 18, 9, 181, C.leafLight, 3));
+    o.push(b.markup);
+    ANCHORS.loomi = b.tips;
+    return o.join('');
+  }
+
+  /* 6) شجرة جوز الهند (النارجيل): عناقيد على أعناق قصيرة تحت التاج */
+  function buildCoconut() {
+    var o = [], i;
+    o.push(ground());
+    o.push('<path d="' + trunkPath(96, 230, 107, 104, 19, 12, 12) + '" fill="' + C.barkLight + '"/>');
+    for (i = 0; i < 11; i++) {
+      var tt = i / 11;
+      var yy = 218 - i * 10.6;
+      var xx = 96 + tt * 11 + Math.sin(tt * Math.PI) * 5;
+      o.push('<line x1="' + f(xx - 7.5) + '" y1="' + f(yy) + '" x2="' + f(xx + 7.5) + '" y2="' + f(yy - 1.6) +
+        '" stroke="' + C.barkDark + '" stroke-width="1.5" opacity=".42" stroke-linecap="round"/>');
+    }
+    var t = { x: 107, y: 104 };
+    o.push(palmFrond(t.x, t.y, -90, 78, { stage: 0, arch: 0.36, droop: 0.06, color: C.leafDark }));
+    o.push(palmFrond(t.x, t.y, -142, 80, { stage: 0, color: C.leaf, droop: 0.30, arch: 0.26 }));
+    o.push(palmFrond(t.x, t.y, -38, 80, { stage: 0, color: C.leaf, droop: 0.30, arch: 0.26 }));
+    o.push(palmFrond(t.x, t.y, -116, 84, { stage: 1, color: C.leafDark, droop: 0.36, arch: 0.22 }));
+    o.push(palmFrond(t.x, t.y, -64, 84, { stage: 1, color: C.leafDark, droop: 0.36, arch: 0.22 }));
+    o.push(palmFrond(t.x, t.y, 174, 72, { stage: 2, color: C.leafLight, droop: 0.44 }));
+    o.push(palmFrond(t.x, t.y, 6, 72, { stage: 2, color: C.leafLight, droop: 0.44 }));
+    o.push(palmFrond(t.x, t.y, -160, 64, { stage: 3, color: C.leafPale, droop: 0.52 }));
+    o.push(palmFrond(t.x, t.y, -20, 64, { stage: 3, color: C.leafPale, droop: 0.52 }));
+
+    var co = [], tips = [], j;
+    var tiers = [
+      { y: 118, xs: [95, 107, 119] },
+      { y: 128, xs: [88, 100, 113, 125] },
+      { y: 138, xs: [95, 107, 119] }
+    ];
+    for (i = 0; i < tiers.length; i++) {
+      for (j = 0; j < tiers[i].xs.length; j++) {
+        var ex = tiers[i].xs[j], ey = tiers[i].y;
+        if (i < 2) {
+          co.push('<path d="M' + f(t.x) + ' ' + f(t.y + 4) + ' Q' + f((t.x + ex) / 2) + ' ' + f(ey - 9) + ' ' + f(ex) + ' ' + f(ey - 4) +
+            '" fill="none" stroke="' + C.barkDark + '" stroke-width="' + (i === 0 ? 2.8 : 2.2) + '" stroke-linecap="round"/>');
+        }
+        tips.push({ x: ex, y: ey });
+      }
+    }
+    o.push('<g class="bunch">' + co.join('') + '</g>');
+    ANCHORS.narjeel = tips;
+    return o.join('');
+  }
+
+  /* ============================== رسم الثمار ============================== */
+  var FRUIT = {
+    date: function () {
+      return '<path d="M0 -6 v-3.5" stroke="' + C.barkDark + '" stroke-width="1.3" stroke-linecap="round" fill="none"/>' +
+             '<ellipse cx="0" cy="0" rx="3.5" ry="5" fill="' + C.yellow + '"/>' +
+             '<ellipse cx="-1" cy="-1.2" rx="1.5" ry="2" fill="#F7E38C" opacity=".8"/>';
+    },
+    banana: function () {
+      return '<path d="M-5 -3 Q0 6 6 1 Q1 2 -3 -4 Z" fill="' + C.yellow + '"/>' +
+             '<path d="M-5 -3 Q0 6 6 1" fill="none" stroke="' + C.yellowDeep + '" stroke-width="1.1" stroke-linecap="round"/>' +
+             '<circle cx="-4.6" cy="-3.4" r="1" fill="' + C.barkDark + '"/>';
+    },
+    pomegranate: function () {
+      return '<path d="M0 -6 v-4" stroke="' + C.barkDark + '" stroke-width="1.4" stroke-linecap="round" fill="none"/>' +
+             '<circle cx="0" cy="0" r="5.2" fill="' + C.red + '"/>' +
+             '<circle cx="-1.6" cy="-1.8" r="1.8" fill="#E9765C" opacity=".75"/>' +
+             '<path d="M-2 -5 L0 -8 L2 -5 L0 -4 Z" fill="' + C.redDeep + '"/>';
+    },
+    mango: function () {
+      return '<path d="M1 -7 q1.5 -3 3.5 -4" fill="none" stroke="' + C.barkDark + '" stroke-width="1.4" stroke-linecap="round"/>' +
+             '<path d="M0 -5.4 Q6 -3 5 2.4 Q3.4 6 0 5.6 Q-5 4.6 -5.2 -0.6 Q-5 -4.4 0 -5.4 Z" fill="' + C.orange + '"/>' +
+             '<path d="M0 -5.4 Q6 -3 5 2.4 Q2 -1 0 -5.4 Z" fill="' + C.red + '" opacity=".7"/>';
+    },
+    lime: function () {
+      return '<path d="M0 -5.5 v-4" stroke="' + C.barkDark + '" stroke-width="1.3" stroke-linecap="round" fill="none"/>' +
+             '<circle cx="0" cy="0" r="4.8" fill="' + C.lime + '"/>' +
+             '<circle cx="-1.5" cy="-1.6" r="1.7" fill="#C6D877" opacity=".8"/>' +
+             '<path d="M0 -4.6 q2.6 -3 5 -2 q-1.4 3 -4.4 2.6 Z" fill="' + C.leafDark + '"/>';
+    },
+    coconut: function () {
+      return '<circle cx="0" cy="0" r="4.9" fill="' + C.coco + '"/>' +
+             '<path d="M-4.9 0 a4.9 4.9 0 0 1 9.8 0 Z" fill="' + C.cocoDark + '" opacity=".35"/>' +
+             '<circle cx="-1.8" cy="1.4" r=".9" fill="' + C.cocoDark + '"/>' +
+             '<circle cx="1.6" cy="1.4" r=".9" fill="' + C.cocoDark + '"/>' +
+             '<circle cx="-.1" cy="-1.2" r=".9" fill="' + C.cocoDark + '"/>';
+    }
+  };
+
+  /* ========================== تعريف الأشجار الستّ ========================= */
+  var LIST = [
+    { id: 'nakhla',  name: 'النخلة',          fruit: 'رطبة',   few: 'رطبات',       many: 'رطبة',      emoji: '🌴',
+      tone: C.yellow,     build: buildPalm,         shape: 'date',
+      zones: [ { x: 80, y: 150, rx: 13, ry: 19, w: 1 }, { x: 122, y: 150, rx: 13, ry: 19, w: 1 } ] },
+
+    { id: 'mawz',    name: 'شجرة الموز',      fruit: 'موزة',   few: 'موزات',       many: 'موزة',      emoji: '🍌',
+      tone: C.yellowDeep, build: buildBanana,       shape: 'banana',
+      zones: [ { x: 80, y: 146, rx: 9, ry: 16, w: 1.6, rot: 10 }, { x: 124, y: 158, rx: 8, ry: 12, w: .5, rot: 10 } ] },
+
+    { id: 'ruman',   name: 'شجرة الرمان',     fruit: 'رمانة',  few: 'رمانات',      many: 'رمانة',     emoji: '🍎',
+      tone: C.red,        build: buildPomegranate,  shape: 'pomegranate',
+      zones: [ { x: 100, y: 126, rx: 46, ry: 32, w: 1 } ] },
+
+    { id: 'manju',   name: 'شجرة المانجو',    fruit: 'مانجوة', few: 'حبات مانجو',  many: 'حبة مانجو', emoji: '🥭',
+      tone: C.orange,     build: buildMango,        shape: 'mango',
+      zones: [ { x: 100, y: 116, rx: 50, ry: 36, w: 1 } ] },
+
+    { id: 'loomi',   name: 'الليمون العماني', fruit: 'لومية',  few: 'لوميات',      many: 'لومية',     emoji: '🍋',
+      tone: C.lime,       build: buildLoomi,        shape: 'lime',
+      zones: [ { x: 100, y: 142, rx: 44, ry: 32, w: 1 } ] },
+
+    { id: 'narjeel', name: 'جوز الهند',       fruit: 'جوزة',   few: 'جوزات',       many: 'جوزة',      emoji: '🥥',
+      tone: C.coco,       build: buildCoconut,      shape: 'coconut',
+      zones: [ { x: 107, y: 122, rx: 20, ry: 11, w: 1 }, { x: 107, y: 134, rx: 22, ry: 8, w: .6 } ] }
+  ];
+
+  /* ترتيب الأطراف بحيث تتوزّع الثمار على الشجرة كلها لا في زاوية واحدة */
+  function spreadOrder(pts) {
+    var rest = pts.slice(), out = [], i, j, bi, bd, d, dd;
+    if (!rest.length) return out;
+    bi = 0;
+    for (i = 1; i < rest.length; i++) if (rest[i].y < rest[bi].y) bi = i;
+    out.push(rest.splice(bi, 1)[0]);
+    while (rest.length) {
+      bi = 0; bd = -1;
+      for (i = 0; i < rest.length; i++) {
+        d = 1e9;
+        for (j = 0; j < out.length; j++) {
+          dd = (rest[i].x - out[j].x) * (rest[i].x - out[j].x) + (rest[i].y - out[j].y) * (rest[i].y - out[j].y);
+          if (dd < d) d = dd;
+        }
+        if (d > bd) { bd = d; bi = i; }
+      }
+      out.push(rest.splice(bi, 1)[0]);
+    }
+    return out;
+  }
+
+  /* مواضع الثمار: أطراف الأغصان أولًا ثم توزيع متباعد داخل التاج */
+  function buildPositions(anchors, zones, n, seed) {
+    var rnd = mulberry32(seed), out = [], i, k, m, ring;
+    var ordered = spreadOrder(anchors || []);
+    for (i = 0; i < ordered.length && out.length < n; i++) {
+      out.push({ x: ordered[i].x + (rnd() * 2 - 1) * 1.4, y: ordered[i].y + 2.5 + rnd() * 1.5, rot: (rnd() * 2 - 1) * 14 });
+    }
+    ring = 1;
+    while (out.length < n && ordered.length && ring <= 10) {
+      for (i = 0; i < ordered.length && out.length < n; i++) {
+        var a = rnd() * Math.PI * 2, rr = 6 + ring * 3.6;
+        out.push({ x: ordered[i].x + Math.cos(a) * rr, y: ordered[i].y + Math.sin(a) * rr * 0.7 + 2, rot: (rnd() * 2 - 1) * 20 });
+      }
+      ring++;
+    }
+    if (out.length < n && zones && zones.length) {
+      var totalW = 0;
+      for (k = 0; k < zones.length; k++) totalW += (zones[k].w == null ? 1 : zones[k].w);
+      while (out.length < n) {
+        var best = null, bestD = -1;
+        for (k = 0; k < 14; k++) {
+          var r = rnd() * totalW, z = zones[0];
+          for (m = 0; m < zones.length; m++) { r -= (zones[m].w == null ? 1 : zones[m].w); if (r <= 0) { z = zones[m]; break; } }
+          var ang = rnd() * Math.PI * 2, rad2 = Math.sqrt(rnd());
+          var p = { x: z.x + Math.cos(ang) * z.rx * rad2, y: z.y + Math.sin(ang) * z.ry * rad2, rot: (rnd() * 2 - 1) * (z.rot == null ? 22 : z.rot) };
+          var dmin = 1e9;
+          for (var q = 0; q < out.length; q++) {
+            var d2 = (out[q].x - p.x) * (out[q].x - p.x) + (out[q].y - p.y) * (out[q].y - p.y);
+            if (d2 < dmin) dmin = d2;
+          }
+          if (dmin > bestD) { bestD = dmin; best = p; }
+        }
+        out.push(best);
+      }
+    }
+    return out;
+  }
+
+  var VIEWBOX = '6 20 188 218';
+  var MAX_VISIBLE = 150;
+  var byId = {};
+  LIST.forEach(function (t, idx) {
+    t.body = t.build();
+    t.anchors = ANCHORS[t.id] || [];
+    t.positions = buildPositions(t.anchors, t.zones, MAX_VISIBLE, 1000 + idx * 137);
+    byId[t.id] = t;
+  });
+
+  /* مراحل النمو حسب عدد الثمار */
+  var THRESHOLDS = [0, 3, 8, 16];
+  function stageOf(count) {
+    var s = 0;
+    for (var i = 0; i < THRESHOLDS.length; i++) if (count > THRESHOLDS[i]) s = i;
+    return Math.min(s, 3);
+  }
+  function scaleOf(count) {
+    return 0.80 + Math.min(count, 30) / 30 * 0.22;
+  }
+
+  function fruitMarkup(treeId, index, size) {
+    var t = byId[treeId];
+    var p = t.positions[index % MAX_VISIBLE];
+    var ring = Math.floor(index / MAX_VISIBLE);
+    var s = size == null ? 1 : size;
+    var ox = ring ? (ring % 2 ? 3.5 : -3.5) : 0;
+    return '<g class="fruit" data-i="' + index + '" transform="translate(' + f(p.x + ox) + ',' + f(p.y) +
+      ') rotate(' + f(p.rot) + ') scale(' + f(s) + ')">' + FRUIT[t.shape]() + '</g>';
+  }
+
+  /* صيغة العدّ العربية: ٣-١٠ جمع، وما فوقها مفرد */
+  function unitFor(treeId, n) {
+    var t = byId[treeId];
+    return (n >= 3 && n <= 10) ? t.few : t.many;
+  }
+  function dualOf(word) {
+    return (word.slice(-1) === 'ة' ? word.slice(0, -1) : word) + 'تان';
+  }
+  function countLabel(treeId, n) {
+    var t = byId[treeId];
+    if (n === 0) return 'لا توجد ثمار بعد';
+    if (n === 1) return t.fruit + ' واحدة';
+    if (n === 2) return dualOf(t.fruit);
+    return n + ' ' + unitFor(treeId, n);
+  }
+
+  function fruitSize(count) {
+    if (count <= 45) return 1;
+    if (count <= 80) return 0.86;
+    if (count <= 120) return 0.76;
+    return 0.66;
+  }
+
+  function treeSvg(treeId, count, opts) {
+    opts = opts || {};
+    var t = byId[treeId];
+    var n = Math.max(0, count | 0);
+    var size = fruitSize(n);
+    var fruits = [];
+    for (var i = 0; i < n; i++) fruits.push(fruitMarkup(treeId, i, size));
+    var grain = opts.texture === false ? '' : ' filter="url(#printGrain)"';
+    return '<g class="tree-body" data-stage="' + stageOf(n) + '" data-fruit="' + (n ? 1 : 0) + '"' + grain + '>' +
+      t.body + '<g class="fruit-layer">' + fruits.join('') + '</g></g>';
+  }
+
+  function standalone(treeId, count, opts) {
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + VIEWBOX + '" width="188" height="218">' +
+      defs() + '<style>' + STAGE_CSS + '</style>' +
+      '<g transform="translate(100,228) scale(' + f(scaleOf(count)) + ') translate(-100,-228)">' +
+      treeSvg(treeId, count, opts) + '</g></svg>';
+  }
+
+  /* قواعد مراحل النمو - تُستخدم أيضًا عند تصدير الصورة */
+  var STAGE_CSS =
+    '.tree-body .lf{transition:transform .55s cubic-bezier(.34,1.5,.5,1),opacity .4s ease}' +
+    '.tree-body[data-stage="0"] .s1,.tree-body[data-stage="0"] .s2,.tree-body[data-stage="0"] .s3,' +
+    '.tree-body[data-stage="1"] .s2,.tree-body[data-stage="1"] .s3,' +
+    '.tree-body[data-stage="2"] .s3{opacity:0;transform:scale(.15) rotate(-6deg)}' +
+    '.tree-body .bunch{transition:opacity .4s ease}' +
+    '.tree-body[data-fruit="0"] .bunch{opacity:0}';
+
+  function defs() {
+    return '<defs><filter id="printGrain" x="-12%" y="-12%" width="124%" height="124%">' +
+      '<feTurbulence type="fractalNoise" baseFrequency="1.05" numOctaves="2" seed="9" result="noise"/>' +
+      '<feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.98  0 0 0 0 0.95  0 0 0 0 0.84  0 0 0 0.42 0" result="grain"/>' +
+      '<feComposite in="grain" in2="SourceGraphic" operator="in" result="gin"/>' +
+      '<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gin"/></feMerge></filter></defs>';
+  }
+
+  global.Trees = {
+    LIST: LIST, byId: byId, COLORS: C, VIEWBOX: VIEWBOX,
+    treeSvg: treeSvg, standalone: standalone, defs: defs, STAGE_CSS: STAGE_CSS,
+    fruitMarkup: fruitMarkup, fruitSize: fruitSize,
+    stageOf: stageOf, scaleOf: scaleOf,
+    unitFor: unitFor, countLabel: countLabel, dualOf: dualOf,
+    fruitShape: function (id) { return FRUIT[byId[id].shape](); }
+  };
+})(window);
+
+</script>
+<script>
+/* أصوات لطيفة مُولّدة داخل المتصفح - بلا أي ملفات خارجية */
+(function (global) {
+  'use strict';
+  var ctx = null, enabled = true;
+
+  function ac() {
+    if (!ctx) {
+      var AC = global.AudioContext || global.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+    }
+    if (ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
+    return ctx;
+  }
+
+  function tone(freq, start, dur, type, vol) {
+    var c = ac(); if (!c) return;
+    var o = c.createOscillator(), g = c.createGain();
+    o.type = type || 'sine';
+    o.frequency.setValueAtTime(freq, c.currentTime + start);
+    g.gain.setValueAtTime(0.0001, c.currentTime + start);
+    g.gain.exponentialRampToValueAtTime(vol == null ? 0.16 : vol, c.currentTime + start + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + start + dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(c.currentTime + start);
+    o.stop(c.currentTime + start + dur + 0.03);
+  }
+
+  function glide(f1, f2, start, dur, type, vol) {
+    var c = ac(); if (!c) return;
+    var o = c.createOscillator(), g = c.createGain();
+    o.type = type || 'triangle';
+    o.frequency.setValueAtTime(f1, c.currentTime + start);
+    o.frequency.exponentialRampToValueAtTime(f2, c.currentTime + start + dur);
+    g.gain.setValueAtTime(0.0001, c.currentTime + start);
+    g.gain.exponentialRampToValueAtTime(vol == null ? 0.18 : vol, c.currentTime + start + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + start + dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(c.currentTime + start);
+    o.stop(c.currentTime + start + dur + 0.03);
+  }
+
+  var Sound = {
+    setEnabled: function (v) { enabled = !!v; },
+    isEnabled: function () { return enabled; },
+    unlock: function () { ac(); },
+    /* نقرة لطيفة عند إضافة ثمرة */
+    pop: function (step) {
+      if (!enabled) return;
+      var base = 620 + ((step || 0) % 7) * 46;
+      glide(base, base * 1.7, 0, 0.16, 'triangle', 0.15);
+      tone(base * 2.4, 0.05, 0.10, 'sine', 0.06);
+    },
+    /* صوت هابط عند التراجع */
+    undo: function () {
+      if (!enabled) return;
+      glide(520, 250, 0, 0.20, 'sine', 0.12);
+    },
+    /* نغمة عند تسجيل الدخول */
+    open: function () {
+      if (!enabled) return;
+      [523.25, 659.25, 783.99].forEach(function (f, i) { tone(f, i * 0.07, 0.22, 'sine', 0.11); });
+    },
+    error: function () {
+      if (!enabled) return;
+      glide(300, 170, 0, 0.22, 'sawtooth', 0.09);
+    },
+    /* احتفال الفائز */
+    fanfare: function () {
+      if (!enabled) return;
+      var notes = [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.5];
+      notes.forEach(function (f, i) {
+        tone(f, i * 0.115, 0.30, 'triangle', 0.13);
+        tone(f / 2, i * 0.115, 0.30, 'sine', 0.07);
+      });
+      tone(1567.98, 0.86, 0.9, 'sine', 0.10);
+    },
+    /* نبضة هادئة في الثواني الأخيرة */
+    tickSoft: function () {
+      if (!enabled) return;
+      tone(760, 0, 0.09, 'sine', 0.07);
+    },
+    /* نغمة دافئة عند انتهاء الوقت */
+    timeUp: function () {
+      if (!enabled) return;
+      var notes = [659.25, 587.33, 493.88, 392.00];
+      notes.forEach(function (f, i) {
+        tone(f, i * 0.20, 0.42, 'sine', 0.13);
+        tone(f * 2, i * 0.20, 0.30, 'triangle', 0.05);
+      });
+      tone(392.00, 0.86, 1.1, 'sine', 0.10);
+    },
+    sparkle: function () {
+      if (!enabled) return;
+      for (var i = 0; i < 5; i++) tone(900 + Math.random() * 900, i * 0.045, 0.14, 'sine', 0.05);
+    }
+  };
+  global.Sound = Sound;
+})(window);
+
+</script>
+<script>
+/* تخزين البيانات محليًا في المتصفح - تبقى محفوظة بعد إغلاق الصفحة */
+(function (global) {
+  'use strict';
+  var KEY = 'bustan.groups.v1';
+
+  var ORD = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة'];
+
+  function defaults() {
+    return {
+      v: 1,
+      title: 'بستان المجموعات',
+      auth: { user: 'aisha', pin: '2030' },
+      loggedIn: false,
+      sound: true,
+      texture: true,
+      timer: { duration: 120, remaining: 120 },
+      groups: global.Trees.LIST.map(function (t, i) {
+        return { id: 'g' + (i + 1), name: 'المجموعة ' + (ORD[i] || (i + 1)), treeId: t.id, count: 0 };
+      }),
+      history: []
+    };
+  }
+
+  function load() {
+    var d = defaults();
+    try {
+      var raw = global.localStorage.getItem(KEY);
+      if (!raw) return d;
+      var s = JSON.parse(raw);
+      if (!s || typeof s !== 'object') return d;
+      /* دمج آمن مع القيم الافتراضية */
+      d.title = typeof s.title === 'string' ? s.title : d.title;
+      if (s.auth && s.auth.user && s.auth.pin) d.auth = { user: String(s.auth.user), pin: String(s.auth.pin) };
+      d.loggedIn = !!s.loggedIn;
+      d.sound = s.sound !== false;
+      d.texture = s.texture !== false;
+      if (Array.isArray(s.groups) && s.groups.length) {
+        d.groups = s.groups.map(function (g, i) {
+          return {
+            id: g.id || 'g' + (i + 1),
+            name: typeof g.name === 'string' && g.name.trim() ? g.name : 'المجموعة ' + (ORD[i] || (i + 1)),
+            treeId: global.Trees.byId[g.treeId] ? g.treeId : global.Trees.LIST[i % 6].id,
+            count: Math.max(0, parseInt(g.count, 10) || 0)
+          };
+        });
+      }
+      if (s.timer && typeof s.timer === 'object') {
+        var dur = Math.max(5, Math.min(3600, parseInt(s.timer.duration, 10) || 120));
+        var rem = parseFloat(s.timer.remaining);
+        if (!isFinite(rem) || rem < 0 || rem > dur) rem = dur;
+        d.timer = { duration: dur, remaining: rem };
+      }
+      if (Array.isArray(s.history)) d.history = s.history.slice(0, 60);
+      return d;
+    } catch (e) { return d; }
+  }
+
+  function save(state) {
+    try { global.localStorage.setItem(KEY, JSON.stringify(state)); return true; }
+    catch (e) { return false; }
+  }
+
+  function wipe() { try { global.localStorage.removeItem(KEY); } catch (e) {} }
+
+  global.Store = { load: load, save: save, wipe: wipe, defaults: defaults, ORD: ORD, KEY: KEY };
+})(window);
+
+</script>
+<script>
+/* تصدير النتائج: شهادة صورة PNG أو ملف جدول CSV */
+(function (global) {
+  'use strict';
+  var T = global.Trees;
+
+  /* داخل إطار مضمّن (مثل صفحة المعاينة) يُمنع التنزيل المباشر،
+     فنعرض النتيجة لتُحفظ بالضغط المطوّل أو بالزر الأيمن. */
+  var EMBEDDED = (function () {
+    try { return window.self !== window.top; } catch (e) { return true; }
+  })();
+
+  function saveAs(blob, filename) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 6000);
+    return url;
+  }
+
+  function closePeek() {
+    var el = document.querySelector('.peek');
+    if (el) el.remove();
+  }
+
+  function peek(inner) {
+    closePeek();
+    var ov = document.createElement('div');
+    ov.className = 'overlay peek';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
+    ov.innerHTML = '<div class="sheet">' + inner +
+      '<div class="sheet-actions" style="justify-content:center">' +
+      '<button class="btn" type="button" data-peek-close>إغلاق</button></div></div>';
+    document.getElementById('modal-root').appendChild(ov);
+    ov.addEventListener('mousedown', function (e) { if (e.target === ov) closePeek(); });
+    ov.querySelector('[data-peek-close]').addEventListener('click', closePeek);
+    return ov;
+  }
+
+  /* على الصفحة المنشورة يمرّ الحفظ عبر منصّة العرض، وإلا يُنزَّل مباشرة */
+  function platformSave() {
+    if (!window.claude || typeof window.claude.use !== 'function') return Promise.resolve(null);
+    try {
+      return Promise.resolve(window.claude.use('downloads')).catch(function () { return null; });
+    } catch (e) { return Promise.resolve(null); }
+  }
+
+  function download(blob, filename) {
+    platformSave().then(function (ns) {
+      if (ns && typeof ns.save === 'function') {
+        return ns.save({ filename: filename, data: blob }).then(null, function (err) {
+          if (err && err.code === 'declined') return;
+          fallbackSave(blob, filename);
+        });
+      }
+      fallbackSave(blob, filename);
+    });
+  }
+
+  function fallbackSave(blob, filename) {
+    var url = saveAs(blob, filename);
+    if (!EMBEDDED) return;
+    if (/\.png$/.test(filename)) {
+      peek('<h2 style="justify-content:center">🖼️ صورة النتائج</h2>' +
+        '<p class="note" style="text-align:center">اضغطي مطوّلًا على الصورة لحفظها، أو بالزر الأيمن ثم «حفظ الصورة».</p>' +
+        '<img class="peek-img" src="' + url + '" alt="صورة نتائج المسابقة">');
+    } else {
+      var reader = new FileReader();
+      reader.onload = function () {
+        var text = String(reader.result).replace(/^\ufeff/, '');
+        var ov = peek('<h2 style="justify-content:center">📄 جدول النتائج</h2>' +
+          '<p class="note" style="text-align:center">انسخي النص والصقيه في أي جدول بيانات.</p>' +
+          '<textarea class="peek-text" readonly rows="9"></textarea>' +
+          '<div style="text-align:center"><button class="btn btn--sm" type="button" data-copy>📋 نسخ</button></div>');
+        var ta = ov.querySelector('.peek-text');
+        ta.value = text;
+        ov.querySelector('[data-copy]').addEventListener('click', function (e) {
+          ta.select();
+          try { document.execCommand('copy'); } catch (err) {}
+          e.target.textContent = '✓ تم النسخ';
+        });
+      };
+      reader.readAsText(blob);
+    }
+  }
+
+  function stamp(dateStr) {
+    var d = dateStr ? new Date(dateStr) : new Date();
+    if (isNaN(d.getTime())) d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function arabicDate(dateStr) {
+    var d = dateStr ? new Date(dateStr) : new Date();
+    if (isNaN(d.getTime())) d = new Date();
+    try {
+      return new Intl.DateTimeFormat('ar', { dateStyle: 'full' }).format(d);
+    } catch (e) { return stamp(dateStr); }
+  }
+
+  /* --------------------------------- CSV --------------------------------- */
+  function toCsv(record) {
+    var rows = [['الترتيب', 'المجموعة', 'الشجرة', 'الثمرة', 'العدد']];
+    var sorted = record.results.slice().sort(function (a, b) { return b.count - a.count; });
+    sorted.forEach(function (r, i) {
+      var t = T.byId[r.treeId];
+      rows.push([String(i + 1), r.name, t ? t.name : r.treeId, t ? t.fruit : '', String(r.count)]);
+    });
+    var csv = rows.map(function (r) {
+      return r.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(',');
+    }).join('\r\n');
+    download(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }),
+      'نتائج-' + stamp(record.date) + '.csv');
+  }
+
+  /* --------------------------------- PNG --------------------------------- */
+  function svgToImage(svgText) {
+    return new Promise(function (resolve) {
+      var img = new Image();
+      var blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = function () { URL.revokeObjectURL(url); resolve(null); };
+      img.src = url;
+    });
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function toPng(record) {
+    var sorted = record.results.slice().sort(function (a, b) { return b.count - a.count; });
+    var top = sorted.length ? sorted[0].count : 0;
+    var cols = Math.min(3, Math.max(1, Math.ceil(sorted.length / 2)));
+    var rowsN = Math.ceil(sorted.length / cols);
+
+    var pad = 70, cellW = 340, cellH = 400;
+    var W = pad * 2 + cellW * cols;
+    var H = 250 + rowsN * cellH + 90;
+
+    return Promise.all(sorted.map(function (r) {
+      return svgToImage(T.standalone(r.treeId, r.count, { texture: false }));
+    })).then(function (imgs) {
+      var cv = document.createElement('canvas');
+      cv.width = W; cv.height = H;
+      var ctx = cv.getContext('2d');
+      ctx.direction = 'rtl';
+      ctx.textAlign = 'center';
+
+      /* الخلفية */
+      ctx.fillStyle = '#FAF4D8'; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = '#C6AA82'; ctx.lineWidth = 8;
+      roundRect(ctx, 22, 22, W - 44, H - 44, 40); ctx.stroke();
+      ctx.strokeStyle = '#E7B23C'; ctx.lineWidth = 3;
+      roundRect(ctx, 40, 40, W - 80, H - 80, 28); ctx.stroke();
+
+      /* العنوان */
+      var fam = '"Baloo Bhaijaan 2","Tajawal","Noto Kufi Arabic",sans-serif';
+      ctx.fillStyle = '#3B4A2A';
+      ctx.font = '800 54px ' + fam;
+      ctx.fillText(record.title || 'بستان المجموعات', W / 2, 128);
+      ctx.fillStyle = '#74855D';
+      ctx.font = '700 26px ' + fam;
+      ctx.fillText(arabicDate(record.date), W / 2, 172);
+
+      /* الفائزة */
+      if (top > 0) {
+        var winners = sorted.filter(function (r) { return r.count === top; });
+        ctx.fillStyle = '#C9902A';
+        ctx.font = '800 32px ' + fam;
+        var label = winners.length > 1
+          ? 'تعادل في الصدارة: ' + winners.map(function (w) { return w.name; }).join(' و ')
+          : 'المجموعة الفائزة: ' + winners[0].name;
+        ctx.fillText(label, W / 2, 218);
+      }
+
+      /* البطاقات */
+      sorted.forEach(function (r, i) {
+        var c = cols - 1 - (i % cols), rw = Math.floor(i / cols);
+        var x = pad + c * cellW, y = 250 + rw * cellH;
+        var isWin = r.count === top && top > 0;
+        ctx.fillStyle = isWin ? '#FFFDF2' : '#FFFBEC';
+        ctx.strokeStyle = isWin ? '#E7B23C' : '#DDCCA6';
+        ctx.lineWidth = isWin ? 6 : 3;
+        roundRect(ctx, x + 12, y + 8, cellW - 24, cellH - 26, 30);
+        ctx.fill(); ctx.stroke();
+
+        if (imgs[i]) ctx.drawImage(imgs[i], x + cellW / 2 - 110, y + 24, 220, 250);
+
+        ctx.fillStyle = '#3B4A2A';
+        ctx.font = '800 30px ' + fam;
+        ctx.fillText(r.name, x + cellW / 2, y + 312);
+
+        var t = T.byId[r.treeId];
+        ctx.fillStyle = isWin ? '#C9902A' : '#74855D';
+        ctx.font = '800 34px ' + fam;
+        ctx.fillText(r.count + ' ' + (t ? T.unitFor(r.treeId, r.count) : ''), x + cellW / 2, y + 356);
+
+        if (isWin) { ctx.font = '40px ' + fam; ctx.fillText('👑', x + cellW / 2, y + 14); }
+      });
+
+      ctx.fillStyle = '#9BA886';
+      ctx.font = '600 22px ' + fam;
+      ctx.fillText('بستان المجموعات · أشجار عُمان المثمرة', W / 2, H - 56);
+
+      return new Promise(function (resolve) {
+        cv.toBlob(function (b) {
+          if (b) download(b, 'bustan-results-' + stamp(record.date) + '.png');
+          resolve(!!b);
+        }, 'image/png');
+      });
+    });
+  }
+
+  global.Exporter = { toCsv: toCsv, toPng: toPng, arabicDate: arabicDate, stamp: stamp };
+})(window);
+
+</script>
+<script>
+/* ==========================================================================
+   مؤقّت البستان - حلقة تتناقص وعليها رطبة تتحرّك مع الوقت
+   ========================================================================== */
+(function (global) {
+  'use strict';
+  var T = global.Trees, Sound = global.Sound;
+
+  var PRESETS = [
+    { s: 30,   label: '٣٠ ثانية' },
+    { s: 60,   label: 'دقيقة' },
+    { s: 120,  label: 'دقيقتان' },
+    { s: 180,  label: '٣ دقائق' },
+    { s: 300,  label: '٥ دقائق' },
+    { s: 600,  label: '١٠ دقائق' }
+  ];
+
+  var MIN = 5, MAX = 3600;
+
+  function clamp(n) { return Math.max(MIN, Math.min(MAX, Math.round(n) || MIN)); }
+
+  function fmt(sec) {
+    sec = Math.max(0, Math.ceil(sec));
+    var m = Math.floor(sec / 60), s = sec % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function ringSvg(cls, r, headScale, ticks) {
+    var c = 2 * Math.PI * r, box = r * 2 + 12, mid = box / 2, marks = '';
+    if (ticks) {
+      for (var i = 0; i < 12; i++) {
+        var a = (i / 12) * Math.PI * 2 - Math.PI / 2;
+        var r1 = r - 10, r2 = r - (i % 3 === 0 ? 17 : 14);
+        marks += '<line class="tr-tick" x1="' + (mid + r1 * Math.cos(a)).toFixed(2) + '" y1="' + (mid + r1 * Math.sin(a)).toFixed(2) +
+          '" x2="' + (mid + r2 * Math.cos(a)).toFixed(2) + '" y2="' + (mid + r2 * Math.sin(a)).toFixed(2) +
+          '" stroke-width="' + (i % 3 === 0 ? 3 : 2) + '"/>';
+      }
+    }
+    return '<svg class="' + cls + '" viewBox="0 0 ' + box + ' ' + box + '" aria-hidden="true">' +
+      marks +
+      '<circle class="tr-track" cx="' + mid + '" cy="' + mid + '" r="' + r + '"/>' +
+      '<circle class="tr-arc" cx="' + mid + '" cy="' + mid + '" r="' + r + '" ' +
+        'stroke-dasharray="' + c.toFixed(2) + '" stroke-dashoffset="0" ' +
+        'transform="rotate(-90 ' + mid + ' ' + mid + ')"/>' +
+      '<g class="tr-head" transform="translate(' + mid + ',' + (mid - r) + ') scale(' + headScale + ')">' +
+        T.fruitShape('nakhla') + '</g></svg>';
+  }
+
+  function Timer(opts) {
+    this.mount = opts.mount;
+    this.get = opts.get;              /* يُعيد كائن الحالة المحفوظ */
+    this.save = opts.save;            /* يحفظ التغييرات */
+    this.beforeOpen = opts.beforeOpen || function () {};  /* يُغلق النوافذ الأخرى */
+    this.endAt = 0;
+    this.tickId = null;
+    this.lastBeep = -1;
+    this.big = null;
+    this.render();
+    this.refresh();
+  }
+
+  Timer.prototype.data = function () {
+    var d = this.get();
+    if (!d.duration) d.duration = 120;
+    if (d.remaining == null) d.remaining = d.duration;
+    return d;
+  };
+
+  /* ------------------------------ بناء الواجهة ---------------------------- */
+  Timer.prototype.render = function () {
+    this.mount.innerHTML =
+      '<div class="timer-face">' +
+        '<span class="timer-ring-wrap">' + ringSvg('timer-ring', 20, 0.62) + '</span>' +
+        '<span class="timer-time" id="t-time">00:00</span>' +
+      '</div>' +
+      '<div class="timer-ctrl">' +
+        '<button class="tbtn t-toggle" type="button" aria-label="تشغيل المؤقّت">▶</button>' +
+        '<button class="tbtn t-reset" type="button" aria-label="إعادة ضبط المؤقّت">↺</button>' +
+        '<button class="tbtn t-open" type="button" aria-label="تكبير المؤقّت">⤢</button>' +
+      '</div>';
+
+    var self = this;
+    this.mount.querySelector('.t-toggle').addEventListener('click', function () { self.toggle(); });
+    this.mount.querySelector('.t-reset').addEventListener('click', function () { self.reset(); });
+    this.mount.querySelector('.t-open').addEventListener('click', function () { self.openBig(); });
+  };
+
+  /* -------------------------------- التشغيل ------------------------------- */
+  Timer.prototype.isRunning = function () { return this.tickId !== null; };
+
+  Timer.prototype.toggle = function () {
+    Sound.unlock();
+    if (this.isRunning()) this.pause(); else this.start();
+  };
+
+  Timer.prototype.start = function () {
+    var d = this.data();
+    if (d.remaining <= 0) d.remaining = d.duration;
+    this.endAt = Date.now() + d.remaining * 1000;
+    this.lastBeep = -1;
+    if (this.tickId) clearInterval(this.tickId);
+    var self = this;
+    this.tickId = setInterval(function () { self.tick(); }, 120);
+    this.mount.classList.remove('finished');
+    if (this.big) this.big.classList.remove('finished');
+    this.refresh();
+    Sound.sparkle();
+  };
+
+  Timer.prototype.pause = function () {
+    if (!this.isRunning()) return;
+    var d = this.data();
+    d.remaining = Math.max(0, (this.endAt - Date.now()) / 1000);
+    clearInterval(this.tickId);
+    this.tickId = null;
+    this.save();
+    this.refresh();
+  };
+
+  Timer.prototype.reset = function () {
+    var d = this.data();
+    if (this.tickId) { clearInterval(this.tickId); this.tickId = null; }
+    d.remaining = d.duration;
+    this.mount.classList.remove('finished');
+    if (this.big) this.big.classList.remove('finished');
+    this.save();
+    this.refresh();
+  };
+
+  Timer.prototype.setDuration = function (sec) {
+    var d = this.data();
+    d.duration = clamp(sec);
+    if (this.tickId) { clearInterval(this.tickId); this.tickId = null; }
+    d.remaining = d.duration;
+    this.mount.classList.remove('finished');
+    if (this.big) this.big.classList.remove('finished');
+    this.save();
+    this.refresh();
+  };
+
+  Timer.prototype.tick = function () {
+    var d = this.data();
+    var left = (this.endAt - Date.now()) / 1000;
+
+    if (left > 0) {
+      var whole = Math.ceil(left);
+      if (whole <= 3 && whole !== this.lastBeep) { this.lastBeep = whole; Sound.tickSoft(); }
+      d.remaining = left;
+      this.refresh();
+      return;
+    }
+
+    clearInterval(this.tickId);
+    this.tickId = null;
+    d.remaining = 0;
+    this.save();
+    this.refresh();
+    this.mount.classList.add('finished');
+    if (this.big) this.big.classList.add('finished');
+    Sound.timeUp();
+    this.toast();
+  };
+
+  /* -------------------------------- التحديث ------------------------------- */
+  Timer.prototype.refresh = function () {
+    var d = this.data();
+    var frac = d.duration > 0 ? Math.max(0, Math.min(1, d.remaining / d.duration)) : 0;
+    var txt = fmt(d.remaining);
+
+    this.paint(this.mount, frac, txt);
+    if (this.big) this.paint(this.big, frac, txt);
+
+    var warn = frac <= 0.10 ? 'danger' : (frac <= 0.25 ? 'warn' : '');
+    this.mount.classList.remove('warn', 'danger');
+    if (warn && d.remaining > 0) this.mount.classList.add(warn);
+    if (this.big) {
+      this.big.classList.remove('warn', 'danger');
+      if (warn && d.remaining > 0) this.big.classList.add(warn);
+    }
+
+    var running = this.isRunning();
+    var tog = this.mount.querySelector('.t-toggle');
+    tog.textContent = running ? '⏸' : '▶';
+    tog.setAttribute('aria-label', running ? 'إيقاف المؤقّت مؤقتًا' : 'تشغيل المؤقّت');
+    this.mount.classList.toggle('running', running);
+    if (this.big) {
+      var bt = this.big.querySelector('.t-toggle');
+      if (bt) { bt.textContent = running ? '⏸ إيقاف مؤقّت' : '▶ ابدأ'; }
+      this.big.classList.toggle('running', running);
+    }
+  };
+
+  Timer.prototype.paint = function (root, frac, txt) {
+    var arc = root.querySelector('.tr-arc');
+    var head = root.querySelector('.tr-head');
+    var time = root.querySelector('.timer-time');
+    if (time) time.textContent = txt;
+    if (!arc) return;
+    var len = parseFloat(arc.getAttribute('stroke-dasharray'));
+    arc.setAttribute('stroke-dashoffset', (len * (1 - frac)).toFixed(2));
+    if (head) {
+      var r = parseFloat(arc.getAttribute('r'));
+      var mid = parseFloat(arc.getAttribute('cx'));
+      var ang = (-90 + 360 * frac) * Math.PI / 180;
+      var sc = head.getAttribute('data-scale') || (root === this.mount ? 0.62 : 1.5);
+      head.setAttribute('transform', 'translate(' + (mid + r * Math.cos(ang)).toFixed(2) + ',' +
+        (mid + r * Math.sin(ang)).toFixed(2) + ') scale(' + sc + ')');
+      head.style.opacity = frac > 0 ? '1' : '0';
+    }
+  };
+
+  /* ------------------------------ رسالة الانتهاء -------------------------- */
+  Timer.prototype.toast = function () {
+    var old = document.querySelector('.time-toast');
+    if (old) old.remove();
+    var el = document.createElement('div');
+    el.className = 'time-toast';
+    el.setAttribute('role', 'status');
+    el.innerHTML = '<span aria-hidden="true">⏳</span> انتهى الوقت!';
+    document.body.appendChild(el);
+    setTimeout(function () { el.classList.add('out'); }, 3400);
+    setTimeout(function () { el.remove(); }, 4000);
+  };
+
+  /* ------------------------------ المؤقّت الكبير --------------------------- */
+  Timer.prototype.openBig = function () {
+    var self = this, d = this.data();
+    this.closeBig();
+    this.beforeOpen();
+    var chips = PRESETS.map(function (p) {
+      return '<button class="chip' + (p.s === d.duration ? ' on' : '') + '" type="button" data-sec="' + p.s + '">' + p.label + '</button>';
+    }).join('');
+
+    var ov = document.createElement('div');
+    ov.className = 'overlay timer-overlay';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
+    ov.setAttribute('aria-label', 'مؤقّت النشاط');
+    ov.innerHTML =
+      '<div class="sheet timer-big">' +
+        '<h2 style="justify-content:center">⏳ مؤقّت النشاط</h2>' +
+        '<div class="timer-face big">' +
+          '<span class="timer-ring-wrap">' + ringSvg('timer-ring', 84, 1.5, true) + '</span>' +
+          '<span class="timer-time">00:00</span>' +
+        '</div>' +
+        '<div class="chips">' + chips +
+          '<label class="chip custom"><input type="number" min="1" max="60" step="1" id="t-custom" placeholder="؟" aria-label="دقائق مخصّصة"> دقيقة</label>' +
+        '</div>' +
+        '<div class="sheet-actions" style="justify-content:center">' +
+          '<button class="btn btn--primary t-toggle" type="button">▶ ابدأ</button>' +
+          '<button class="btn t-reset" type="button">↺ إعادة</button>' +
+          '<button class="btn" data-close type="button">إغلاق</button>' +
+        '</div>' +
+      '</div>';
+
+    document.getElementById('modal-root').appendChild(ov);
+    this.big = ov;
+    if (this.mount.classList.contains('finished')) ov.classList.add('finished');
+
+    ov.addEventListener('mousedown', function (e) { if (e.target === ov) self.closeBig(); });
+    ov.querySelector('[data-close]').addEventListener('click', function () { self.closeBig(); });
+    ov.querySelector('.t-toggle').addEventListener('click', function () { self.toggle(); });
+    ov.querySelector('.t-reset').addEventListener('click', function () { self.reset(); });
+    Array.prototype.forEach.call(ov.querySelectorAll('.chip[data-sec]'), function (b) {
+      b.addEventListener('click', function () {
+        self.setDuration(+b.getAttribute('data-sec'));
+        Array.prototype.forEach.call(ov.querySelectorAll('.chip[data-sec]'), function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        var ci = ov.querySelector('#t-custom'); if (ci) ci.value = '';
+      });
+    });
+    var custom = ov.querySelector('#t-custom');
+    custom.addEventListener('change', function () {
+      var m = parseFloat(custom.value);
+      if (!m || m <= 0) return;
+      self.setDuration(Math.min(60, m) * 60);
+      Array.prototype.forEach.call(ov.querySelectorAll('.chip[data-sec]'), function (x) { x.classList.remove('on'); });
+    });
+
+    this.escHandler = function (e) { if (e.key === 'Escape') self.closeBig(); };
+    document.addEventListener('keydown', this.escHandler);
+    this.refresh();
+    ov.querySelector('.t-toggle').focus();
+  };
+
+  Timer.prototype.closeBig = function () {
+    if (!this.big) return;
+    this.big.remove();
+    this.big = null;
+    if (this.escHandler) document.removeEventListener('keydown', this.escHandler);
+    this.refresh();
+  };
+
+  global.BustanTimer = { create: function (o) { return new Timer(o); }, PRESETS: PRESETS, fmt: fmt };
+})(window);
+
+</script>
+<script>
+/* ==========================================================================
+   بستان المجموعات - المنطق الرئيسي
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var T = window.Trees, Sound = window.Sound, Store = window.Store, Exporter = window.Exporter;
+  var timer = null;
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var state = Store.load();
+
+  /* ------------------------------- أدوات عامة ---------------------------- */
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  function esc(str) {
+    return String(str).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function svgNode(markup) {
+    var doc = new DOMParser().parseFromString('<svg xmlns="' + SVGNS + '">' + markup + '</svg>', 'image/svg+xml');
+    var first = doc.documentElement.firstChild;
+    return first ? document.importNode(first, true) : null;
+  }
+
+  function persist() { Store.save(state); }
+
+
+  function leaders() {
+    var top = 0, i;
+    for (i = 0; i < state.groups.length; i++) if (state.groups[i].count > top) top = state.groups[i].count;
+    if (top === 0) return { top: 0, list: [] };
+    return { top: top, list: state.groups.filter(function (g) { return g.count === top; }) };
+  }
+
+  /* ============================ شاشة الدخول ============================== */
+  function initLogin() {
+    var mark = $('#login-mark');
+    mark.innerHTML = T.standalone('nakhla', 6);
+
+    $('#login-hint').textContent = 'تُحفظ بيانات المسابقة في هذا الجهاز ولا تُرسل إلى أي مكان.';
+
+    /* الدخول يعمل بالضغط وبمفتاح Enter معًا، حتى داخل الصفحات المضمّنة
+       التي يُمنع فيها إرسال النماذج */
+    var busy = false;
+    function attempt(e) {
+      if (e) e.preventDefault();
+      if (busy) return;
+      busy = true;
+      setTimeout(function () { busy = false; }, 150);
+
+      Sound.unlock();
+      var u = $('#in-user').value.trim().toLowerCase();
+      var p = $('#in-pin').value.trim();
+      if (u === String(state.auth.user).toLowerCase() && p === String(state.auth.pin)) {
+        state.loggedIn = true; persist();
+        Sound.open();
+        showBoard();
+      } else {
+        var card = $('.login-card');
+        $('#login-msg').textContent = 'اسم المستخدم أو رمز الدخول غير صحيح';
+        card.classList.remove('shake');
+        void card.offsetWidth;
+        card.classList.add('shake');
+        Sound.error();
+        $('#in-pin').value = '';
+        $('#in-pin').focus();
+      }
+    }
+
+    $('#login-form').addEventListener('submit', attempt);
+    $('#login-go').addEventListener('click', attempt);
+    $$('#login-form input').forEach(function (inp) {
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') attempt(e); });
+    });
+  }
+
+  function showLogin() {
+    $('#board').classList.add('hidden');
+    $('#login').classList.remove('hidden');
+    $('#login-msg').textContent = '';
+    $('#in-user').value = '';
+    $('#in-pin').value = '';
+    setTimeout(function () { $('#in-user').focus(); }, 60);
+  }
+
+  /* ============================== بناء البطاقة =========================== */
+  function cardMarkup(g) {
+    var t = T.byId[g.treeId];
+    return '<article class="card" data-gid="' + esc(g.id) + '" style="--tone:' + t.tone + '">' +
+      '<div class="card-head">' +
+        '<input class="gname" type="text" maxlength="30" value="' + esc(g.name) + '" aria-label="اسم المجموعة">' +
+        '<span class="tree-tag">' + esc(t.name) + '</span>' +
+      '</div>' +
+      '<button class="tree-btn" type="button" aria-label="أضف ' + esc(t.fruit) + ' إلى ' + esc(g.name) + '">' +
+        '<span class="tree-stage">' +
+          '<svg viewBox="' + T.VIEWBOX + '" aria-hidden="true">' + T.defs() +
+            '<g class="tree-scale" style="transform:scale(' + T.scaleOf(g.count) + ')">' +
+              T.treeSvg(g.treeId, g.count, { texture: state.texture }) +
+            '</g>' +
+          '</svg>' +
+        '</span>' +
+        '<span class="tap-hint">اضغطي لإضافة ' + esc(t.fruit) + '</span>' +
+      '</button>' +
+      '<div class="card-foot">' +
+        '<div class="score"><svg viewBox="-10 -11 20 22" aria-hidden="true">' + T.fruitShape(g.treeId) + '</svg>' +
+        '<span class="num">' + g.count + '</span><span class="unit">' + esc(T.unitFor(g.treeId, g.count)) + '</span></div>' +
+        '<button class="btn btn--sm undo" type="button" aria-label="تراجع عن آخر ثمرة في ' + esc(g.name) + '">↩︎ تراجع</button>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function renderBoard() {
+    $('#board-heading').textContent = state.title;
+    document.title = state.title;
+    $('#grid').innerHTML = state.groups.map(cardMarkup).join('');
+    updateWinner();
+  }
+
+  function cardOf(gid) { return $('.card[data-gid="' + gid + '"]'); }
+  function groupOf(gid) {
+    for (var i = 0; i < state.groups.length; i++) if (state.groups[i].id === gid) return state.groups[i];
+    return null;
+  }
+
+  /* --------------------------- إضافة ثمرة وتراجع -------------------------- */
+  function refreshTree(card, g) {
+    var body = $('.tree-body', card);
+    body.setAttribute('data-stage', T.stageOf(g.count));
+    body.setAttribute('data-fruit', g.count ? '1' : '0');
+    $('.tree-scale', card).style.transform = 'scale(' + T.scaleOf(g.count) + ')';
+    var num = $('.score .num', card);
+    num.textContent = g.count;
+    $('.score .unit', card).textContent = T.unitFor(g.treeId, g.count);
+    num.classList.remove('bump');
+    void num.offsetWidth;
+    num.classList.add('bump');
+  }
+
+  function rebuildFruitLayer(card, g) {
+    var layer = $('.fruit-layer', card);
+    var size = T.fruitSize(g.count), html = '';
+    for (var i = 0; i < g.count; i++) html += T.fruitMarkup(g.treeId, i, size);
+    var holder = svgNode('<g>' + html + '</g>');
+    layer.textContent = '';
+    while (holder && holder.firstChild) layer.appendChild(holder.firstChild);
+  }
+
+  function addFruit(gid) {
+    var g = groupOf(gid); if (!g) return;
+    var card = cardOf(gid); if (!card) return;
+    var prevSize = T.fruitSize(g.count);
+    g.count += 1;
+    var size = T.fruitSize(g.count);
+
+    if (size !== prevSize) {
+      rebuildFruitLayer(card, g);
+    } else {
+      var node = svgNode(T.fruitMarkup(g.treeId, g.count - 1, size));
+      if (node) {
+        node.setAttribute('class', 'fruit pop');
+        $('.fruit-layer', card).appendChild(node);
+        setTimeout(function () { node.setAttribute('class', 'fruit'); }, 560);
+      }
+    }
+    refreshTree(card, g);
+
+    var plus = document.createElement('span');
+    plus.className = 'plusone';
+    plus.textContent = '+1';
+    $('.tree-stage', card).appendChild(plus);
+    setTimeout(function () { plus.remove(); }, 900);
+
+    Sound.pop(g.count);
+    persist();
+    updateWinner();
+  }
+
+  function undoFruit(gid) {
+    var g = groupOf(gid); if (!g || g.count === 0) return;
+    var card = cardOf(gid);
+    var prevSize = T.fruitSize(g.count);
+    g.count -= 1;
+    if (T.fruitSize(g.count) !== prevSize) {
+      rebuildFruitLayer(card, g);
+    } else {
+      var layer = $('.fruit-layer', card);
+      var last = layer.lastChild;
+      if (last) {
+        last.setAttribute('class', 'fruit vanish');
+        setTimeout(function () { if (last.parentNode) last.parentNode.removeChild(last); }, 300);
+      }
+    }
+    refreshTree(card, g);
+    Sound.undo();
+    persist();
+    updateWinner();
+  }
+
+  function updateWinner() {
+    var w = leaders();
+    $$('.card').forEach(function (c) {
+      var g = groupOf(c.getAttribute('data-gid'));
+      c.classList.toggle('leader', !!g && w.top > 0 && g.count === w.top);
+    });
+    var b = $('#banner');
+    if (w.top === 0) {
+      b.innerHTML = '<span class="crown" aria-hidden="true">🌱</span> البستان في انتظار أول ثمرة — اضغطي على أي شجرة!';
+    } else if (w.list.length === 1) {
+      var t = T.byId[w.list[0].treeId];
+      b.innerHTML = '<span class="crown" aria-hidden="true">👑</span> المتصدّرة الآن: <strong>' +
+        esc(w.list[0].name) + '</strong> بـ ' + esc(T.countLabel(w.list[0].treeId, w.top));
+    } else {
+      b.innerHTML = '<span class="crown" aria-hidden="true">🤝</span> تعادل في الصدارة بـ ' + w.top + ' — ' +
+        w.list.map(function (g) { return '<strong>' + esc(g.name) + '</strong>'; }).join(' و ');
+    }
+  }
+
+  /* ============================== نوافذ منبثقة ============================ */
+  var lastFocus = null;
+
+  function openSheet(html, onReady) {
+    closeSheet();
+    if (timer) timer.closeBig();
+    lastFocus = document.activeElement;
+    var ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
+    ov.innerHTML = '<div class="sheet">' + html + '</div>';
+    $('#modal-root').appendChild(ov);
+    ov.addEventListener('mousedown', function (e) { if (e.target === ov) closeSheet(); });
+    document.addEventListener('keydown', escClose);
+    var focusable = $$('button, input, select, [tabindex]', ov);
+    if (focusable.length) focusable[0].focus();
+    if (onReady) onReady(ov);
+    return ov;
+  }
+
+  function escClose(e) { if (e.key === 'Escape') closeSheet(); }
+
+  function closeSheet() {
+    var ov = $('#modal-root .overlay:not(.timer-overlay)');
+    if (ov) ov.remove();
+    document.removeEventListener('keydown', escClose);
+    if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
+    lastFocus = null;
+  }
+
+  /* ------------------------------- الاحتفال ------------------------------- */
+  function fruitRain(treeId, count) {
+    var rain = document.createElement('div');
+    rain.className = 'rain';
+    rain.setAttribute('aria-hidden', 'true');
+    var shape = T.fruitShape(treeId);
+    for (var i = 0; i < (count || 40); i++) {
+      var s = document.createElement('span');
+      var sz = 18 + Math.random() * 20;
+      s.style.insetInlineStart = (Math.random() * 100) + '%';
+      s.style.animationDuration = (2.2 + Math.random() * 2.2) + 's';
+      s.style.animationDelay = (Math.random() * 1.6) + 's';
+      s.innerHTML = '<svg width="' + sz + '" height="' + sz + '" viewBox="-10 -11 20 22">' + shape + '</svg>';
+      rain.appendChild(s);
+    }
+    document.body.appendChild(rain);
+    setTimeout(function () { rain.remove(); }, 6500);
+  }
+
+  function celebrate() {
+    var w = leaders();
+    if (w.top === 0) {
+      openSheet('<h2>🌱 لم تبدأ المسابقة بعد</h2><p class="note">أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.</p>' +
+        '<div class="sheet-actions"><button class="btn" data-close type="button">حسنًا</button></div>');
+      return;
+    }
+    var first = w.list[0], t = T.byId[first.treeId];
+    var head = w.list.length === 1 ? '🏆 المجموعة الفائزة' : '🤝 تعادل في الصدارة';
+    var extra = w.list.length > 1
+      ? '<p class="win-tie">تشاركت في الصدارة: ' + w.list.map(function (g) { return esc(g.name); }).join(' و ') + '</p>'
+      : '';
+    openSheet(
+      '<h2 style="justify-content:center">' + head + '</h2>' +
+      '<div class="win-tree">' + T.standalone(first.treeId, first.count) + '</div>' +
+      '<p class="win-name">' + esc(first.name) + '</p>' +
+      '<p class="win-count">' + esc(T.countLabel(first.treeId, first.count)) + ' على ' + esc(t.name) + '</p>' +
+      extra +
+      '<div class="sheet-actions" style="justify-content:center">' +
+        '<button class="btn btn--gold" id="cel-png" type="button">🖼️ حفظ صورة النتائج</button>' +
+        '<button class="btn" data-close type="button">إغلاق</button>' +
+      '</div>',
+      function (ov) {
+        $('#cel-png', ov).addEventListener('click', function () { Exporter.toPng(snapshot()); });
+      }
+    );
+    fruitRain(first.treeId, 46);
+    Sound.fanfare();
+  }
+
+  /* ------------------------------ إعادة المسابقة -------------------------- */
+  function snapshot() {
+    return {
+      date: new Date().toISOString(),
+      title: state.title,
+      results: state.groups.map(function (g) { return { name: g.name, treeId: g.treeId, count: g.count }; })
+    };
+  }
+
+  function confirmReset() {
+    var total = state.groups.reduce(function (s, g) { return s + g.count; }, 0);
+    openSheet(
+      '<h2>🔄 إعادة المسابقة</h2>' +
+      '<p class="note">سيعود عدّاد كل مجموعة إلى صفر وتبدأ الأشجار من جديد.' +
+      (total > 0 ? ' تُحفظ النتيجة الحالية في السجل قبل المسح.' : '') + '</p>' +
+      '<label class="switch"><input type="checkbox" id="keep-names" checked> الاحتفاظ بأسماء المجموعات</label>' +
+      (total > 0 ? '<label class="switch"><input type="checkbox" id="archive" checked> حفظ النتيجة الحالية في السجل</label>' : '') +
+      '<div class="sheet-actions">' +
+        '<button class="btn" data-close type="button">إلغاء</button>' +
+        '<button class="btn btn--danger" id="do-reset" type="button">نعم، ابدئي من جديد</button>' +
+      '</div>',
+      function (ov) {
+        $('#do-reset', ov).addEventListener('click', function () {
+          var arch = $('#archive', ov);
+          if (arch && arch.checked && total > 0) state.history.unshift(snapshot());
+          if (state.history.length > 60) state.history.length = 60;
+          var keep = $('#keep-names', ov).checked;
+          state.groups.forEach(function (g, i) {
+            g.count = 0;
+            if (!keep) g.name = 'المجموعة ' + (Store.ORD[i] || (i + 1));
+          });
+          persist();
+          closeSheet();
+          renderBoard();
+          Sound.sparkle();
+        });
+      }
+    );
+  }
+
+  /* --------------------------------- السجل -------------------------------- */
+  function historySheet() {
+    var cur = snapshot();
+    var curTotal = cur.results.reduce(function (s, r) { return s + r.count; }, 0);
+    var html = '<h2>📜 سجل المسابقات</h2><p class="note">النتيجة الحالية والنتائج المحفوظة سابقًا.</p>';
+
+    html += '<div class="hist-item"><h3>النتيجة الحالية</h3><div class="meta">' + esc(Exporter.arabicDate(cur.date)) + '</div>' +
+      histList(cur) +
+      '<div class="sheet-actions" style="justify-content:flex-start;margin-top:4px">' +
+      '<button class="btn btn--sm" data-png="now" type="button">🖼️ صورة</button>' +
+      '<button class="btn btn--sm" data-csv="now" type="button">📄 جدول</button></div></div>';
+
+    if (!state.history.length) {
+      html += '<p class="empty">لا توجد مسابقات محفوظة بعد. تُحفظ النتيجة تلقائيًا عند الضغط على «إعادة المسابقة».</p>';
+    } else {
+      state.history.forEach(function (rec, i) {
+        html += '<div class="hist-item"><h3>' + esc(rec.title || 'مسابقة') + '</h3>' +
+          '<div class="meta">' + esc(Exporter.arabicDate(rec.date)) + '</div>' + histList(rec) +
+          '<div class="sheet-actions" style="justify-content:flex-start;margin-top:4px">' +
+          '<button class="btn btn--sm" data-png="' + i + '" type="button">🖼️ صورة</button>' +
+          '<button class="btn btn--sm" data-csv="' + i + '" type="button">📄 جدول</button>' +
+          '<button class="btn btn--sm btn--danger" data-del="' + i + '" type="button">حذف</button></div></div>';
+      });
+    }
+    html += '<div class="sheet-actions"><button class="btn" data-close type="button">إغلاق</button></div>';
+
+    openSheet(html, function (ov) {
+      if (curTotal === 0) $$('[data-png="now"],[data-csv="now"]', ov).forEach(function (b) { b.disabled = true; b.style.opacity = '.5'; });
+      $$('[data-png]', ov).forEach(function (b) {
+        b.addEventListener('click', function () {
+          var k = b.getAttribute('data-png');
+          Exporter.toPng(k === 'now' ? cur : state.history[+k]);
+        });
+      });
+      $$('[data-csv]', ov).forEach(function (b) {
+        b.addEventListener('click', function () {
+          var k = b.getAttribute('data-csv');
+          Exporter.toCsv(k === 'now' ? cur : state.history[+k]);
+        });
+      });
+      $$('[data-del]', ov).forEach(function (b) {
+        b.addEventListener('click', function () {
+          state.history.splice(+b.getAttribute('data-del'), 1);
+          persist();
+          historySheet();
+        });
+      });
+    });
+  }
+
+  function histList(rec) {
+    var sorted = rec.results.slice().sort(function (a, b) { return b.count - a.count; });
+    var top = sorted.length ? sorted[0].count : 0;
+    return '<ul class="hist-list">' + sorted.map(function (r) {
+      var t = T.byId[r.treeId];
+      var win = top > 0 && r.count === top;
+      return '<li class="' + (win ? 'win' : '') + '"><span>' + (win ? '👑 ' : '') + esc(r.name) +
+        ' <small style="color:#9BA886">' + esc(t ? t.name : '') + '</small></span><span>' + r.count + '</span></li>';
+    }).join('') + '</ul>';
+  }
+
+  /* -------------------------------- الإعدادات ----------------------------- */
+  function settingsSheet() {
+    var treeOptions = function (sel) {
+      return T.LIST.map(function (t) {
+        return '<option value="' + t.id + '"' + (t.id === sel ? ' selected' : '') + '>' + t.emoji + ' ' + esc(t.name) + '</option>';
+      }).join('');
+    };
+    var groupsHtml = state.groups.map(function (g, i) {
+      return '<div class="group-row">' +
+        '<input type="text" maxlength="30" data-gname="' + i + '" value="' + esc(g.name) + '" aria-label="اسم المجموعة ' + (i + 1) + '">' +
+        '<select data-gtree="' + i + '" aria-label="شجرة المجموعة ' + (i + 1) + '">' + treeOptions(g.treeId) + '</select>' +
+      '</div>';
+    }).join('');
+
+    openSheet(
+      '<h2>⚙️ الإعدادات</h2><p class="note">كل التغييرات تُحفظ في هذا الجهاز.</p>' +
+      '<fieldset class="block"><legend>المسابقة</legend>' +
+        '<div class="row"><label for="set-title">عنوان اللوحة</label><input type="text" id="set-title" maxlength="40" value="' + esc(state.title) + '"></div>' +
+      '</fieldset>' +
+      '<fieldset class="block"><legend>المجموعات وأشجارها</legend>' + groupsHtml + '</fieldset>' +
+      '<fieldset class="block"><legend>المظهر والصوت</legend>' +
+        '<label class="switch"><input type="checkbox" id="set-sound"' + (state.sound ? ' checked' : '') + '> الأصوات اللطيفة</label>' +
+        '<label class="switch"><input type="checkbox" id="set-texture"' + (state.texture ? ' checked' : '') + '> ملمس الطباعة على الأشجار</label>' +
+      '</fieldset>' +
+      '<fieldset class="block"><legend>بيانات الدخول</legend>' +
+        '<div class="row"><label for="set-user">اسم المستخدم</label><input type="text" id="set-user" value="' + esc(state.auth.user) + '" spellcheck="false"></div>' +
+        '<div class="row"><label for="set-pin">رمز الدخول</label><input type="text" id="set-pin" value="' + esc(state.auth.pin) + '" spellcheck="false"></div>' +
+      '</fieldset>' +
+      '<div class="sheet-actions">' +
+        '<button class="btn" data-close type="button">إلغاء</button>' +
+        '<button class="btn btn--primary" id="set-save" type="button">حفظ التغييرات</button>' +
+      '</div>',
+      function (ov) {
+        $('#set-save', ov).addEventListener('click', function () {
+          var title = $('#set-title', ov).value.trim();
+          if (title) state.title = title;
+          $$('[data-gname]', ov).forEach(function (inp) {
+            var i = +inp.getAttribute('data-gname');
+            var v = inp.value.trim();
+            if (v) state.groups[i].name = v;
+          });
+          $$('[data-gtree]', ov).forEach(function (sel) {
+            var i = +sel.getAttribute('data-gtree');
+            if (T.byId[sel.value]) state.groups[i].treeId = sel.value;
+          });
+          state.sound = $('#set-sound', ov).checked;
+          state.texture = $('#set-texture', ov).checked;
+          var u = $('#set-user', ov).value.trim();
+          var pin = $('#set-pin', ov).value.trim();
+          if (u) state.auth.user = u;
+          if (pin) state.auth.pin = pin;
+          Sound.setEnabled(state.sound);
+          document.body.classList.toggle('no-texture', !state.texture);
+          persist();
+          closeSheet();
+          renderBoard();
+          Sound.sparkle();
+        });
+      }
+    );
+  }
+
+  /* ============================== ربط الأحداث ============================= */
+  function bindBoard() {
+    $('#grid').addEventListener('click', function (e) {
+      var tree = e.target.closest('.tree-btn');
+      if (tree) { addFruit(tree.closest('.card').getAttribute('data-gid')); return; }
+      var undo = e.target.closest('.undo');
+      if (undo) { undoFruit(undo.closest('.card').getAttribute('data-gid')); }
+    });
+
+    $('#grid').addEventListener('change', function (e) {
+      if (!e.target.classList.contains('gname')) return;
+      var card = e.target.closest('.card');
+      var g = groupOf(card.getAttribute('data-gid'));
+      var v = e.target.value.trim();
+      if (!v) { e.target.value = g.name; return; }
+      g.name = v;
+      var t = T.byId[g.treeId];
+      $('.tree-btn', card).setAttribute('aria-label', 'أضف ' + t.fruit + ' إلى ' + v);
+      persist();
+      updateWinner();
+    });
+
+    $('#btn-celebrate').addEventListener('click', celebrate);
+    $('#btn-history').addEventListener('click', historySheet);
+    $('#btn-settings').addEventListener('click', settingsSheet);
+    $('#btn-reset').addEventListener('click', confirmReset);
+    $('#btn-logout').addEventListener('click', function () {
+      state.loggedIn = false; persist(); showLogin();
+    });
+
+    $('#modal-root').addEventListener('click', function (e) {
+      if (e.target.closest('.timer-overlay')) return;
+      if (e.target.closest('[data-close]')) closeSheet();
+    });
+
+    /* مفاتيح الأرقام ١-٦ لإضافة ثمرة بسرعة */
+    document.addEventListener('keydown', function (e) {
+      if ($('#board').classList.contains('hidden')) return;
+      if ($('#modal-root .overlay')) return;
+      var tag = (e.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+      var map = { '1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5,
+                  '١': 0, '٢': 1, '٣': 2, '٤': 3, '٥': 4, '٦': 5 };
+      if (map[e.key] != null && state.groups[map[e.key]]) {
+        e.preventDefault();
+        Sound.unlock();
+        addFruit(state.groups[map[e.key]].id);
+      }
+    });
+  }
+
+  function showBoard() {
+    $('#login').classList.add('hidden');
+    $('#board').classList.remove('hidden');
+    renderBoard();
+    if (!timer) {
+      timer = window.BustanTimer.create({
+        mount: $('#timer'),
+        get: function () { return state.timer; },
+        save: persist,
+        beforeOpen: closeSheet
+      });
+    }
+  }
+
+  /* ================================= الإقلاع ============================== */
+  function init() {
+    Sound.setEnabled(state.sound);
+    document.body.classList.toggle('no-texture', !state.texture);
+    initLogin();
+    bindBoard();
+    if (state.loggedIn) showBoard(); else showLogin();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+</script>

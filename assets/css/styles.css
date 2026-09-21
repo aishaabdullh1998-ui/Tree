@@ -529,3 +529,17 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
   .status-row { flex-direction: column; }
   .timer { justify-content: center; border-radius: var(--r-md); padding: 6px 12px; }
 }
+
+/* ===================== معاينة الحفظ داخل الإطارات المضمّنة ================ */
+.peek .sheet { text-align: center; }
+.peek-img {
+  display: block; width: 100%; max-width: 100%; height: auto;
+  border: 3px solid var(--bark); border-radius: var(--r-md);
+  margin: 4px 0 6px;
+}
+.peek-text {
+  width: 100%; font-family: inherit; font-size: .84rem; line-height: 1.6;
+  color: var(--ink); background: #FFF; direction: ltr; text-align: left;
+  border: 2.5px solid var(--cream-3); border-radius: var(--r-sm);
+  padding: .7em .8em; margin-bottom: 10px; resize: vertical;
+}

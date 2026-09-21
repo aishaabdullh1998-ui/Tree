@@ -3,13 +3,87 @@
   'use strict';
   var T = global.Trees;
 
-  function download(blob, filename) {
+  /* داخل إطار مضمّن (مثل صفحة المعاينة) يُمنع التنزيل المباشر،
+     فنعرض النتيجة لتُحفظ بالضغط المطوّل أو بالزر الأيمن. */
+  var EMBEDDED = (function () {
+    try { return window.self !== window.top; } catch (e) { return true; }
+  })();
+
+  function saveAs(blob, filename) {
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url; a.download = filename;
     document.body.appendChild(a); a.click();
     document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 6000);
+    return url;
+  }
+
+  function closePeek() {
+    var el = document.querySelector('.peek');
+    if (el) el.remove();
+  }
+
+  function peek(inner) {
+    closePeek();
+    var ov = document.createElement('div');
+    ov.className = 'overlay peek';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
+    ov.innerHTML = '<div class="sheet">' + inner +
+      '<div class="sheet-actions" style="justify-content:center">' +
+      '<button class="btn" type="button" data-peek-close>إغلاق</button></div></div>';
+    document.getElementById('modal-root').appendChild(ov);
+    ov.addEventListener('mousedown', function (e) { if (e.target === ov) closePeek(); });
+    ov.querySelector('[data-peek-close]').addEventListener('click', closePeek);
+    return ov;
+  }
+
+  /* على الصفحة المنشورة يمرّ الحفظ عبر منصّة العرض، وإلا يُنزَّل مباشرة */
+  function platformSave() {
+    if (!window.claude || typeof window.claude.use !== 'function') return Promise.resolve(null);
+    try {
+      return Promise.resolve(window.claude.use('downloads')).catch(function () { return null; });
+    } catch (e) { return Promise.resolve(null); }
+  }
+
+  function download(blob, filename) {
+    platformSave().then(function (ns) {
+      if (ns && typeof ns.save === 'function') {
+        return ns.save({ filename: filename, data: blob }).then(null, function (err) {
+          if (err && err.code === 'declined') return;
+          fallbackSave(blob, filename);
+        });
+      }
+      fallbackSave(blob, filename);
+    });
+  }
+
+  function fallbackSave(blob, filename) {
+    var url = saveAs(blob, filename);
+    if (!EMBEDDED) return;
+    if (/\.png$/.test(filename)) {
+      peek('<h2 style="justify-content:center">🖼️ صورة النتائج</h2>' +
+        '<p class="note" style="text-align:center">اضغطي مطوّلًا على الصورة لحفظها، أو بالزر الأيمن ثم «حفظ الصورة».</p>' +
+        '<img class="peek-img" src="' + url + '" alt="صورة نتائج المسابقة">');
+    } else {
+      var reader = new FileReader();
+      reader.onload = function () {
+        var text = String(reader.result).replace(/^\ufeff/, '');
+        var ov = peek('<h2 style="justify-content:center">📄 جدول النتائج</h2>' +
+          '<p class="note" style="text-align:center">انسخي النص والصقيه في أي جدول بيانات.</p>' +
+          '<textarea class="peek-text" readonly rows="9"></textarea>' +
+          '<div style="text-align:center"><button class="btn btn--sm" type="button" data-copy>📋 نسخ</button></div>');
+        var ta = ov.querySelector('.peek-text');
+        ta.value = text;
+        ov.querySelector('[data-copy]').addEventListener('click', function (e) {
+          ta.select();
+          try { document.execCommand('copy'); } catch (err) {}
+          e.target.textContent = '✓ تم النسخ';
+        });
+      };
+      reader.readAsText(blob);
+    }
   }
 
   function stamp(dateStr) {
