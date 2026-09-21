@@ -75,9 +75,15 @@ node tools/build-single.js
 
 ### رابط دائم عبر GitHub Pages
 
-من صفحة المستودع: **Settings ← Pages**، ثم في **Source** اختاري
-`Deploy from a branch`، والفرع `main` والمجلّد `/ (root)`، ثم **Save**.
-بعد دقيقة يصبح الموقع على `https://<اسم-المستخدم>.github.io/Tree/`.
+التفعيل يحتاج ثلاث نقرات من صفحة المستودع (لا يمكن فعله من سير عمل،
+لأن رمز الإجراءات لا يملك صلاحية إنشاء موقع Pages):
+
+1. **Settings ← Pages**
+2. في **Source** اختاري `Deploy from a branch`
+3. الفرع `main` والمجلّد `/ (root)` ثم **Save**
+
+بعد دقيقة يصبح الموقع على `https://aishaabdullh1998-ui.github.io/Tree/`،
+ويتحدّث تلقائيًا مع كل دفع جديد إلى `main`.
 
 ## البنية
 
