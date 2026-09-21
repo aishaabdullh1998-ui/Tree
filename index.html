@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="بستان المجموعات: لوحة تحفيز للطلاب، لكل مجموعة شجرة عُمانية مثمرة تزداد ثمارها مع كل إجابة صحيحة.">
+<meta name="theme-color" content="#FAF4D8">
+<title>بستان المجموعات</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌴%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<!-- تعريفات الرسم المشتركة -->
+<svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"></svg>
+
+<!-- ============================== شاشة الدخول ============================ -->
+<section id="login" class="screen" aria-labelledby="login-title">
+  <form class="login-card" id="login-form" autocomplete="off">
+    <div class="mark" id="login-mark" aria-hidden="true"></div>
+    <h1 id="login-title">بستان المجموعات</h1>
+    <p class="sub">لوحة تحفيز الطلاب بأشجار عُمان المثمرة</p>
+
+    <div class="field">
+      <label for="in-user">اسم المستخدم</label>
+      <input id="in-user" name="user" type="text" autocomplete="username" spellcheck="false" required>
+    </div>
+    <div class="field">
+      <label for="in-pin">رمز الدخول</label>
+      <input id="in-pin" name="pin" type="password" inputmode="numeric" autocomplete="current-password" required>
+    </div>
+
+    <p class="login-msg" id="login-msg" role="alert" aria-live="polite"></p>
+    <button class="btn btn--primary" type="submit" style="width:100%;justify-content:center">دخول 🌿</button>
+    <p class="login-hint" id="login-hint"></p>
+  </form>
+</section>
+
+<!-- ================================ اللوحة =============================== -->
+<section id="board" class="screen hidden" aria-labelledby="board-title">
+  <div class="topbar">
+    <h1 id="board-title"><span aria-hidden="true">🌿</span> <span id="board-heading">بستان المجموعات</span></h1>
+    <div class="tools">
+      <button class="btn btn--gold btn--sm" id="btn-celebrate" type="button">🏆 إعلان الفائزة</button>
+      <button class="btn btn--sm" id="btn-history" type="button">📜 السجل</button>
+      <button class="btn btn--sm" id="btn-settings" type="button">⚙️ الإعدادات</button>
+      <button class="btn btn--danger btn--sm" id="btn-reset" type="button">🔄 إعادة المسابقة</button>
+      <button class="btn btn--sm" id="btn-logout" type="button">🚪 خروج</button>
+    </div>
+  </div>
+
+  <div class="banner" id="banner" aria-live="polite"></div>
+
+  <div class="grid" id="grid"></div>
+
+  <p class="foot-note">اضغطي على الشجرة لإضافة ثمرة · أو استعملي مفاتيح الأرقام من ١ إلى ٦</p>
+</section>
+
+<div id="modal-root"></div>
+
+<script src="assets/js/trees.js"></script>
+<script src="assets/js/sound.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/exporter.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
