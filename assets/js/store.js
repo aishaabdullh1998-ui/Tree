@@ -13,6 +13,7 @@
       loggedIn: false,
       sound: true,
       texture: true,
+      timer: { duration: 120, remaining: 120 },
       groups: global.Trees.LIST.map(function (t, i) {
         return { id: 'g' + (i + 1), name: 'المجموعة ' + (ORD[i] || (i + 1)), treeId: t.id, count: 0 };
       }),
@@ -42,6 +43,12 @@
             count: Math.max(0, parseInt(g.count, 10) || 0)
           };
         });
+      }
+      if (s.timer && typeof s.timer === 'object') {
+        var dur = Math.max(5, Math.min(3600, parseInt(s.timer.duration, 10) || 120));
+        var rem = parseFloat(s.timer.remaining);
+        if (!isFinite(rem) || rem < 0 || rem > dur) rem = dur;
+        d.timer = { duration: dur, remaining: rem };
       }
       if (Array.isArray(s.history)) d.history = s.history.slice(0, 60);
       return d;

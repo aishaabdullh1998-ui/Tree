@@ -5,6 +5,7 @@
   'use strict';
 
   var T = window.Trees, Sound = window.Sound, Store = window.Store, Exporter = window.Exporter;
+  var timer = null;
   var SVGNS = 'http://www.w3.org/2000/svg';
   var state = Store.load();
 
@@ -209,6 +210,7 @@
 
   function openSheet(html, onReady) {
     closeSheet();
+    if (timer) timer.closeBig();
     lastFocus = document.activeElement;
     var ov = document.createElement('div');
     ov.className = 'overlay';
@@ -227,7 +229,7 @@
   function escClose(e) { if (e.key === 'Escape') closeSheet(); }
 
   function closeSheet() {
-    var ov = $('#modal-root .overlay');
+    var ov = $('#modal-root .overlay:not(.timer-overlay)');
     if (ov) ov.remove();
     document.removeEventListener('keydown', escClose);
     if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
@@ -477,6 +479,7 @@
     });
 
     $('#modal-root').addEventListener('click', function (e) {
+      if (e.target.closest('.timer-overlay')) return;
       if (e.target.closest('[data-close]')) closeSheet();
     });
 
@@ -500,6 +503,14 @@
     $('#login').classList.add('hidden');
     $('#board').classList.remove('hidden');
     renderBoard();
+    if (!timer) {
+      timer = window.BustanTimer.create({
+        mount: $('#timer'),
+        get: function () { return state.timer; },
+        save: persist,
+        beforeOpen: closeSheet
+      });
+    }
   }
 
   /* ================================= الإقلاع ============================== */

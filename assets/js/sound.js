@@ -75,6 +75,21 @@
       });
       tone(1567.98, 0.86, 0.9, 'sine', 0.10);
     },
+    /* نبضة هادئة في الثواني الأخيرة */
+    tickSoft: function () {
+      if (!enabled) return;
+      tone(760, 0, 0.09, 'sine', 0.07);
+    },
+    /* نغمة دافئة عند انتهاء الوقت */
+    timeUp: function () {
+      if (!enabled) return;
+      var notes = [659.25, 587.33, 493.88, 392.00];
+      notes.forEach(function (f, i) {
+        tone(f, i * 0.20, 0.42, 'sine', 0.13);
+        tone(f * 2, i * 0.20, 0.30, 'triangle', 0.05);
+      });
+      tone(392.00, 0.86, 1.1, 'sine', 0.10);
+    },
     sparkle: function () {
       if (!enabled) return;
       for (var i = 0; i < 5; i++) tone(900 + Math.random() * 900, i * 0.045, 0.14, 'sine', 0.05);
