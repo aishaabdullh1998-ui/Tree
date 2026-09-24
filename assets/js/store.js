@@ -2,14 +2,19 @@
 (function (global) {
   'use strict';
   var KEY = 'bustan.groups.v1';
+  /* يُرفع هذا الرقم عند تغيير الرمز الافتراضي، لتحديث الأجهزة التي تحمل الرمز القديم */
+  var DEFAULTS_VERSION = 2;
+  var DEFAULT_PIN = '19961998';
+  var OLD_PINS = ['2030'];
 
   var ORD = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة'];
 
   function defaults() {
     return {
       v: 1,
+      defaultsVersion: DEFAULTS_VERSION,
       title: 'بستان المجموعات',
-      auth: { user: 'aisha', pin: '2030' },
+      auth: { user: 'aisha', pin: DEFAULT_PIN },
       loggedIn: false,
       sound: true,
       texture: true,
@@ -31,6 +36,12 @@
       /* دمج آمن مع القيم الافتراضية */
       d.title = typeof s.title === 'string' ? s.title : d.title;
       if (s.auth && s.auth.user && s.auth.pin) d.auth = { user: String(s.auth.user), pin: String(s.auth.pin) };
+      /* ترقية الرمز الافتراضي القديم، دون المساس برمز اختاره المستخدم بنفسه */
+      var saved = parseInt(s.defaultsVersion, 10) || 1;
+      if (saved < DEFAULTS_VERSION && OLD_PINS.indexOf(d.auth.pin) !== -1) {
+        d.auth.pin = DEFAULT_PIN;
+      }
+      d.defaultsVersion = DEFAULTS_VERSION;
       d.loggedIn = !!s.loggedIn;
       d.sound = s.sound !== false;
       d.texture = s.texture !== false;

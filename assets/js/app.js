@@ -528,6 +528,8 @@
 
   /* ================================= الإقلاع ============================== */
   function init() {
+    /* يثبّت أي ترقية جرت أثناء التحميل، مثل تغيير الرمز الافتراضي */
+    persist();
     Sound.setEnabled(state.sound);
     document.body.classList.toggle('no-texture', !state.texture);
     initLogin();
