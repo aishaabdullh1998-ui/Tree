@@ -80,6 +80,11 @@
       if (!enabled) return;
       tone(760, 0, 0.09, 'sine', 0.07);
     },
+    /* نقرة قصيرة جدًّا أثناء دوران العجلة */
+    tick: function () {
+      if (!enabled) return;
+      tone(1150 + Math.random() * 260, 0, 0.04, 'square', 0.035);
+    },
     /* نغمة دافئة عند انتهاء الوقت */
     timeUp: function () {
       if (!enabled) return;

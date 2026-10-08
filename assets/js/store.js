@@ -9,6 +9,14 @@
 
   var ORD = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة'];
 
+  /* أسماء الطلاب في عجلة الحظ.
+     القائمة فارغة في هذه النسخة حفاظًا على خصوصية الطلاب؛ تُضاف الأسماء من
+     صفحة الإعدادات وتُحفظ في متصفّح الجهاز وحده. يمكن لنسخة خاصة تزويدها
+     مسبقًا عبر window.BUSTAN_NAMES قبل تحميل هذا الملف. */
+  var STUDENTS = (global.BUSTAN_NAMES && global.BUSTAN_NAMES.length)
+    ? global.BUSTAN_NAMES.map(String)
+    : [];
+
   function defaults() {
     return {
       v: 1,
@@ -19,6 +27,7 @@
       sound: true,
       texture: true,
       timer: { duration: 120, remaining: 120 },
+      wheel: { list: STUDENTS.slice(), picked: [], skipPicked: true },
       groups: global.Trees.LIST.map(function (t, i) {
         return { id: 'g' + (i + 1), name: 'المجموعة ' + (ORD[i] || (i + 1)), treeId: t.id, count: 0 };
       }),
@@ -61,6 +70,15 @@
         if (!isFinite(rem) || rem < 0 || rem > dur) rem = dur;
         d.timer = { duration: dur, remaining: rem };
       }
+      if (s.wheel && typeof s.wheel === 'object') {
+        var list = Array.isArray(s.wheel.list)
+          ? s.wheel.list.map(function (x) { return String(x).trim(); }).filter(Boolean).slice(0, 120)
+          : d.wheel.list;
+        var picked = Array.isArray(s.wheel.picked)
+          ? s.wheel.picked.map(String).filter(function (x) { return list.indexOf(x) !== -1; })
+          : [];
+        d.wheel = { list: list, picked: picked, skipPicked: s.wheel.skipPicked !== false };
+      }
       if (Array.isArray(s.history)) d.history = s.history.slice(0, 60);
       return d;
     } catch (e) { return d; }
@@ -73,5 +91,5 @@
 
   function wipe() { try { global.localStorage.removeItem(KEY); } catch (e) {} }
 
-  global.Store = { load: load, save: save, wipe: wipe, defaults: defaults, ORD: ORD, KEY: KEY };
+  global.Store = { load: load, save: save, wipe: wipe, defaults: defaults, ORD: ORD, KEY: KEY, STUDENTS: STUDENTS };
 })(window);

@@ -84,6 +84,9 @@ body.no-texture::before { display: none; }
 .btn:hover { background: #FFF; transform: translateY(-2px); }
 .btn:active { transform: translateY(2px); border-bottom-width: 2.5px; }
 .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.btn:disabled { opacity: .42; cursor: not-allowed; }
+.btn:disabled:hover { transform: none; background: var(--cream-2); }
+.btn--primary:disabled:hover { background: var(--leaf); }
 .btn--primary {
   background: var(--leaf); color: #FFF9E4; border-color: var(--leaf-dark);
 }
@@ -543,3 +546,62 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
   border: 2.5px solid var(--cream-3); border-radius: var(--r-sm);
   padding: .7em .8em; margin-bottom: 10px; resize: vertical;
 }
+
+/* ============================== عجلة الحظ =============================== */
+.wheel-sheet { width: min(620px, 100%); text-align: center; }
+
+.wheel-result {
+  margin: 2px 0 10px;
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
+  font-weight: 800;
+  color: var(--ink-soft);
+  min-height: 1.6em;
+  transition: color .25s ease, transform .25s ease;
+}
+.wheel-result.win {
+  color: var(--gold-deep);
+  font-size: clamp(1.5rem, 6vw, 2.3rem);
+  animation: winPop .5s cubic-bezier(.3,1.6,.4,1);
+}
+@keyframes winPop { 0% { transform: scale(.7); opacity: 0; } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+
+.wheel-stage { position: relative; margin: 0 auto 6px; width: min(450px, 84vw); }
+.wheel-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.wheel-svg .seg { stroke: #FAF4D8; stroke-width: 1.2; }
+.wheel-svg .seg.win { stroke: var(--gold); stroke-width: 4; filter: drop-shadow(0 0 7px rgba(231,178,60,.85)); }
+.wheel-svg .seg-label { font-family: inherit; font-weight: 700; pointer-events: none; }
+.wheel-svg .seg-label.win { font-weight: 800; }
+.wheel-svg .hub, .wheel-svg .hub-text { cursor: pointer; }
+.wheel-svg .hub { transition: fill .2s ease; }
+.wheel-svg .hub-text { font-family: inherit; pointer-events: none; }
+.wheel-stage:hover .hub { fill: #FFF; }
+.wheel-svg .wheel-pointer { filter: drop-shadow(0 2px 3px rgba(120,100,50,.35)); }
+
+.wheel-count { margin: 2px 0 8px; font-size: .88rem; font-weight: 700; color: var(--ink-soft); }
+.switch.wheel-skip { justify-content: center; margin-bottom: 4px; }
+
+.names-box {
+  width: 100%;
+  font-family: inherit; font-size: .92rem; line-height: 1.75;
+  color: var(--ink); background: #FFF;
+  border: 2.5px solid var(--cream-3); border-radius: var(--r-sm);
+  padding: .6em .8em; margin-bottom: 8px; resize: vertical;
+}
+.names-box:focus { outline: none; border-color: var(--leaf-light); }
+
+@media (prefers-reduced-motion: reduce) {
+  .wheel-svg .wheel-rotor { transition: none !important; }
+}
+
+/* حالة العجلة بلا أسماء */
+.wheel-empty {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 26px 16px;
+  border: 3px dashed var(--cream-3);
+  border-radius: var(--r-lg);
+  background: #FFFDF4;
+}
+.wheel-empty-ico { font-size: 2.6rem; }
+.wheel-empty p { margin: 0; font-weight: 700; color: var(--ink); }
+.wheel-empty .wheel-empty-hint { font-weight: 500; font-size: .88rem; color: var(--ink-soft); max-width: 34ch; line-height: 1.7; }
+.names-box::placeholder { color: #BFB89A; }

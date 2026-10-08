@@ -5,7 +5,7 @@
   'use strict';
 
   var T = window.Trees, Sound = window.Sound, Store = window.Store, Exporter = window.Exporter;
-  var timer = null;
+  var timer = null, wheel = null;
   var SVGNS = 'http://www.w3.org/2000/svg';
   var state = Store.load();
 
@@ -224,6 +224,7 @@
   function openSheet(html, onReady) {
     closeSheet();
     if (timer) timer.closeBig();
+    if (wheel) wheel.close();
     lastFocus = document.activeElement;
     var ov = document.createElement('div');
     ov.className = 'overlay';
@@ -242,7 +243,7 @@
   function escClose(e) { if (e.key === 'Escape') closeSheet(); }
 
   function closeSheet() {
-    var ov = $('#modal-root .overlay:not(.timer-overlay)');
+    var ov = $('#modal-root .overlay:not(.timer-overlay):not(.wheel-overlay)');
     if (ov) ov.remove();
     document.removeEventListener('keydown', escClose);
     if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
@@ -267,6 +268,12 @@
     document.body.appendChild(rain);
     setTimeout(function () { rain.remove(); }, 6500);
   }
+
+  window.BustanRain = function (count) {
+    var w = leaders();
+    var id = w.list.length ? w.list[0].treeId : state.groups[0].treeId;
+    fruitRain(id, count || 32);
+  };
 
   function celebrate() {
     var w = leaders();
@@ -419,6 +426,14 @@
         '<div class="row"><label for="set-title">عنوان اللوحة</label><input type="text" id="set-title" maxlength="40" value="' + esc(state.title) + '"></div>' +
       '</fieldset>' +
       '<fieldset class="block"><legend>المجموعات وأشجارها</legend>' + groupsHtml + '</fieldset>' +
+      '<fieldset class="block"><legend>أسماء عجلة الحظ</legend>' +
+        '<p class="note" style="margin:0 0 8px">اسم في كل سطر. الأسماء المحذوفة تخرج من العجلة.</p>' +
+        '<textarea id="set-names" class="names-box" rows="7" aria-label="أسماء الطلاب" ' +
+          'placeholder="أحمد&#10;مريم&#10;سالم">' + esc(state.wheel.list.join('\n')) + '</textarea>' +
+        (Store.STUDENTS.length
+          ? '<button class="btn btn--sm" id="set-names-restore" type="button">↺ استعادة القائمة الأصلية</button>'
+          : '') +
+      '</fieldset>' +
       '<fieldset class="block"><legend>المظهر والصوت</legend>' +
         '<label class="switch"><input type="checkbox" id="set-sound"' + (state.sound ? ' checked' : '') + '> الأصوات اللطيفة</label>' +
         '<label class="switch"><input type="checkbox" id="set-texture"' + (state.texture ? ' checked' : '') + '> ملمس الطباعة على الأشجار</label>' +
@@ -432,6 +447,10 @@
         '<button class="btn btn--primary" id="set-save" type="button">حفظ التغييرات</button>' +
       '</div>',
       function (ov) {
+        var restore = $('#set-names-restore', ov);
+        if (restore) restore.addEventListener('click', function () {
+          $('#set-names', ov).value = Store.STUDENTS.join('\n');
+        });
         $('#set-save', ov).addEventListener('click', function () {
           var title = $('#set-title', ov).value.trim();
           if (title) state.title = title;
@@ -444,6 +463,11 @@
             var i = +sel.getAttribute('data-gtree');
             if (T.byId[sel.value]) state.groups[i].treeId = sel.value;
           });
+          var names = $('#set-names', ov).value.split('\n')
+            .map(function (x) { return x.trim(); })
+            .filter(Boolean).slice(0, 120);
+          state.wheel.list = names;
+          state.wheel.picked = state.wheel.picked.filter(function (x) { return names.indexOf(x) !== -1; });
           state.sound = $('#set-sound', ov).checked;
           state.texture = $('#set-texture', ov).checked;
           var u = $('#set-user', ov).value.trim();
@@ -484,6 +508,7 @@
     });
 
     $('#btn-celebrate').addEventListener('click', celebrate);
+    $('#btn-wheel').addEventListener('click', function () { if (wheel) wheel.open(); });
     $('#btn-history').addEventListener('click', historySheet);
     $('#btn-settings').addEventListener('click', settingsSheet);
     $('#btn-reset').addEventListener('click', confirmReset);
@@ -492,7 +517,7 @@
     });
 
     $('#modal-root').addEventListener('click', function (e) {
-      if (e.target.closest('.timer-overlay')) return;
+      if (e.target.closest('.timer-overlay') || e.target.closest('.wheel-overlay')) return;
       if (e.target.closest('[data-close]')) closeSheet();
     });
 
@@ -522,6 +547,14 @@
         get: function () { return state.timer; },
         save: persist,
         beforeOpen: closeSheet
+      });
+    }
+    if (!wheel) {
+      wheel = window.BustanWheel.create({
+        get: function () { return state.wheel; },
+        save: persist,
+        beforeOpen: function () { closeSheet(); if (timer) timer.closeBig(); },
+        openSettings: settingsSheet
       });
     }
   }
