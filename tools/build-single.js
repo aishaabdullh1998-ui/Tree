@@ -1,10 +1,10 @@
-/* يبني نسخة الملف الواحد من الموقع (لرفعها على أي مستضيف أو كصفحة منشورة) */
+/* يبني صفحة الموقع في ملف واحد مكتفٍ بذاته (index.html) من dev.html والوحدات */
 const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '..');
 const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 
-const html = read('index.html');
+const html = read('dev.html');
 const css = read('assets/css/styles.css');
 const scripts = ['trees', 'sound', 'store', 'exporter', 'timer', 'wheel', 'app']
   .map(n => read('assets/js/' + n + '.js'));
@@ -52,6 +52,10 @@ document.documentElement.setAttribute('lang', 'ar');
 ${namesScript}${scripts.map(s => '<script>\n' + s + '\n</script>').join('\n')}
 `;
 
-fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
-fs.writeFileSync(path.join(root, 'dist/bustan.html'), out);
-console.log('dist/bustan.html', (Buffer.byteLength(out) / 1024).toFixed(1) + ' KB');
+/* المخرَج الافتراضي هو صفحة الموقع نفسها؛ BUSTAN_OUT يوجّهه إلى مكان آخر */
+const outPath = process.env.BUSTAN_OUT
+  ? path.resolve(process.env.BUSTAN_OUT)
+  : path.join(root, 'index.html');
+fs.mkdirSync(path.dirname(outPath), { recursive: true });
+fs.writeFileSync(outPath, out);
+console.log(path.relative(root, outPath) || outPath, (Buffer.byteLength(out) / 1024).toFixed(1) + ' KB');
