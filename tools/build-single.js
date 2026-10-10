@@ -6,7 +6,7 @@ const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 
 const html = read('dev.html');
 const css = read('assets/css/styles.css');
-const scripts = ['trees', 'sound', 'store', 'exporter', 'timer', 'wheel', 'app']
+const scripts = ['trees', 'sound', 'store', 'exporter', 'timer', 'wheel', 'groups', 'app']
   .map(n => read('assets/js/' + n + '.js'));
 
 /* نسخة خاصة بأسماء مُحمّلة مسبقًا: BUSTAN_NAMES_FILE=<ملف JSON فيه مصفوفة أسماء>.

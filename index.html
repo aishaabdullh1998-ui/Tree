@@ -14,21 +14,41 @@ html, body { height: 100%; }
    بستان المجموعات - التنسيق
    ========================================================================== */
 :root {
-  --cream:      #FAF4D8;
-  --cream-2:    #FFFBEC;
-  --cream-3:    #F2E8C6;
-  --ink:        #3B4A2A;
-  --ink-soft:   #74855D;
-  --leaf:       #4F7C33;
-  --leaf-dark:  #3B6026;
-  --leaf-light: #6E9A46;
-  --bark:       #C6AA82;
-  --bark-dark:  #A98A61;
-  --gold:       #E7B23C;
-  --gold-deep:  #C9902A;
-  --red:        #D9482F;
-  --shadow-sm:  0 4px 0 rgba(122,138,92,.16);
-  --shadow-md:  0 10px 26px rgba(120,132,88,.18);
+  /* باليت الموقع: BUTTER · MOSS · PALM · GUAVA · SUNSET · SANGRIA · SEABREEZE · LAGOON · ODYSSEY */
+  --butter:     #F4D892;
+  --butter-dp:  #DCBB64;
+  --moss:       #C0B05B;
+  --moss-dp:    #A2923F;
+  --palm:       #657652;
+  --palm-dp:    #4A573B;
+  --palm-lt:    #8CA173;
+  --guava:      #F2B6A3;
+  --sunset:     #E89C73;
+  --sangria:    #E36559;
+  --sangria-dp: #C04A3F;
+  --seabreeze:  #E5E9EB;
+  --lagoon:     #94BEBB;
+  --odyssey:    #23617E;
+
+  --cream:      #F3E7DA;
+  --cream-2:    #FCF6EE;
+  --cream-3:    #EADCCB;
+  --ink:        #35402E;
+  --ink-soft:   #7E8A72;
+  --line:       #D8C5AE;
+
+  /* أسماء قديمة تبقى للتوافق مع بقيّة الملف */
+  --leaf:       var(--palm);
+  --leaf-dark:  var(--palm-dp);
+  --leaf-light: var(--palm-lt);
+  --bark:       var(--line);
+  --bark-dark:  #B49C7E;
+  --gold:       var(--moss);
+  --gold-deep:  var(--moss-dp);
+  --red:        var(--sangria);
+
+  --shadow-sm:  0 4px 0 rgba(101,118,82,.14);
+  --shadow-md:  0 12px 28px rgba(101,118,82,.20);
   --r-lg: 30px;
   --r-md: 20px;
   --r-sm: 14px;
@@ -45,9 +65,9 @@ body {
   color: var(--ink);
   background-color: var(--cream);
   background-image:
-    radial-gradient(circle at 12% 18%, rgba(110,154,70,.07) 0 26%, transparent 26%),
-    radial-gradient(circle at 88% 72%, rgba(231,178,60,.08) 0 24%, transparent 24%),
-    radial-gradient(circle at 60% 6%, rgba(217,72,47,.05) 0 18%, transparent 18%);
+    radial-gradient(circle at 12% 18%, rgba(148,190,187,.20) 0 26%, transparent 26%),
+    radial-gradient(circle at 88% 72%, rgba(244,216,146,.26) 0 24%, transparent 24%),
+    radial-gradient(circle at 60% 4%, rgba(242,182,163,.18) 0 18%, transparent 18%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   min-height: 100%;
@@ -59,13 +79,14 @@ body::before {
   position: fixed; inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: .5;
+  opacity: .28;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
   mix-blend-mode: multiply;
 }
 body.no-texture::before { display: none; }
 
 .hidden { display: none !important; }
+[hidden] { display: none !important; }
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
@@ -100,13 +121,13 @@ body.no-texture::before { display: none; }
 .btn:disabled:hover { transform: none; background: var(--cream-2); }
 .btn--primary:disabled:hover { background: var(--leaf); }
 .btn--primary {
-  background: var(--leaf); color: #FFF9E4; border-color: var(--leaf-dark);
+  background: var(--leaf); color: #FCF6EE; border-color: var(--leaf-dark);
 }
 .btn--primary:hover { background: var(--leaf-light); }
-.btn--gold { background: var(--gold); color: #4A3510; border-color: var(--gold-deep); }
-.btn--gold:hover { background: #F2C55A; }
-.btn--danger { background: #FBE6E0; border-color: #D9A08F; color: #93331F; }
-.btn--danger:hover { background: #FFEFEA; }
+.btn--gold { background: var(--gold); color: #5A4A16; border-color: var(--gold-deep); }
+.btn--gold:hover { background: #F8E2A8; }
+.btn--danger { background: #FBE4DC; border-color: #E09A89; color: #8E3528; }
+.btn--danger:hover { background: #FDF0EB; }
 .btn--sm { font-size: .84rem; padding: .45em .85em; border-radius: var(--r-sm); }
 
 /* ============================ شاشة تسجيل الدخول ========================== */
@@ -146,7 +167,7 @@ body.no-texture::before { display: none; }
   padding: .68em .9em;
   transition: border-color .18s ease, box-shadow .18s ease;
 }
-.field input:focus { outline: none; border-color: var(--leaf-light); box-shadow: 0 0 0 4px rgba(110,154,70,.18); }
+.field input:focus { outline: none; border-color: var(--leaf-light); box-shadow: 0 0 0 4px rgba(101,118,82,.20); }
 .field input[inputmode="numeric"] { letter-spacing: .5em; text-align: center; }
 
 .login-msg { min-height: 22px; font-size: .9rem; color: var(--red); font-weight: 700; margin: 2px 0 10px; }
@@ -166,25 +187,30 @@ body.no-texture::before { display: none; }
   background: var(--cream-2);
   border: 3px solid var(--bark);
   border-radius: var(--r-lg);
-  padding: 9px 16px;
+  padding: 7px 14px;
   box-shadow: var(--shadow-sm);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
-.topbar h1 { font-size: clamp(1.1rem, 2.4vw, 1.55rem); margin: 0; flex: 1 1 200px; display: flex; align-items: center; gap: .5em; }
+.topbar h1 {
+  font-size: clamp(1rem, 2vw, 1.35rem); margin: 0;
+  flex: 1 1 auto; min-width: 0; white-space: nowrap;
+  display: flex; align-items: center; gap: .45em;
+}
 .topbar h1 svg { flex: none; }
-.topbar .tools { display: flex; flex-wrap: wrap; gap: 8px; }
+.topbar .tools { display: flex; flex-wrap: wrap; gap: 6px; }
+.topbar .tools .btn { font-size: .8rem; padding: .42em .72em; border-radius: var(--r-sm); }
 
 .banner {
   display: flex; align-items: center; justify-content: center; gap: .6em;
   flex-wrap: wrap;
-  background: linear-gradient(180deg, #FFF3CE, #FBE6AE);
+  background: linear-gradient(180deg, #FBEBC4, #F4D892);
   border: 3px solid var(--gold);
   border-radius: var(--r-lg);
   padding: 8px 18px;
   margin-bottom: 12px;
   font-size: clamp(.95rem, 2vw, 1.18rem);
   font-weight: 700;
-  color: #6A4A12;
+  color: #5A4A16;
   box-shadow: var(--shadow-sm);
   animation: rise .4s cubic-bezier(.22,1,.3,1) both;
 }
@@ -219,14 +245,14 @@ body.no-texture::before { display: none; }
 .card:nth-child(odd) { transform: rotate(-.35deg); }
 .card:nth-child(even) { transform: rotate(.35deg); }
 .card:hover { box-shadow: var(--shadow-md); }
-.card.leader { border-color: var(--gold); background: #FFFDF2; box-shadow: 0 0 0 4px rgba(231,178,60,.22), var(--shadow-md); }
+.card.leader { border-color: var(--gold); background: #FFFCF4; box-shadow: 0 0 0 4px rgba(192,176,91,.30), var(--shadow-md); }
 .card.leader::after {
   content: '👑';
   position: absolute; top: -17px; left: 50%;
   transform: translateX(-50%);
   font-size: 1.6rem;
   animation: crownBob 2.6s ease-in-out infinite;
-  filter: drop-shadow(0 3px 3px rgba(150,120,40,.3));
+  filter: drop-shadow(0 3px 3px rgba(120,104,40,.32));
 }
 
 .card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
@@ -238,9 +264,9 @@ body.no-texture::before { display: none; }
   min-width: 0;
 }
 .gname:hover { background: var(--cream-3); }
-.gname:focus { outline: none; background: #FFF; box-shadow: 0 0 0 3px rgba(110,154,70,.28); }
+.gname:focus { outline: none; background: #FFF; box-shadow: 0 0 0 3px rgba(101,118,82,.28); }
 .tree-tag {
-  font-size: .74rem; font-weight: 700; color: #57502F;
+  font-size: .74rem; font-weight: 700; color: #5B5435;
   background: var(--cream-3); border-radius: 999px; padding: .28em .7em; white-space: nowrap;
 }
 
@@ -261,7 +287,7 @@ body.no-texture::before { display: none; }
   position: relative;
   width: 100%;
   height: clamp(140px, 24vh, 250px);
-  background: radial-gradient(ellipse 70% 58% at 50% 92%, rgba(202,219,168,.42), transparent 70%);
+  background: radial-gradient(ellipse 70% 58% at 50% 92%, rgba(148,190,187,.30), transparent 70%);
   border-radius: var(--r-md);
   overflow: visible;
 }
@@ -303,7 +329,7 @@ body.no-texture::before { display: none; }
   font-size: 1.5rem; font-weight: 800; color: var(--leaf);
   pointer-events: none;
   animation: floatUp .9s cubic-bezier(.2,.9,.3,1) forwards;
-  text-shadow: 0 2px 0 #FFF8E0;
+  text-shadow: 0 2px 0 #FFFCF4;
 }
 @keyframes floatUp {
   0% { opacity: 0; transform: translateX(-50%) translateY(6px) scale(.6); }
@@ -320,9 +346,9 @@ body.no-texture::before { display: none; }
   border-radius: 999px;
   padding: .3em .85em;
   font-size: 1.15rem; font-weight: 800;
-  border: 2.5px solid rgba(169,138,97,.35);
+  border: 2.5px solid rgba(126,138,114,.28);
 }
-.card.leader .score { background: #FDF0C8; border-color: var(--gold); }
+.card.leader .score { background: #FAEDC6; border-color: var(--gold); }
 .score svg { width: 24px; height: 24px; flex: none; }
 .score .num { min-width: 1.6ch; text-align: center; font-variant-numeric: tabular-nums; }
 .score .num.bump { animation: numBump .42s cubic-bezier(.3,1.6,.4,1); }
@@ -332,7 +358,7 @@ body.no-texture::before { display: none; }
 /* ================================ النوافذ =============================== */
 .overlay {
   position: fixed; inset: 0; z-index: 60;
-  background: rgba(74,84,52,.45);
+  background: rgba(53,64,46,.42);
   backdrop-filter: blur(3px);
   display: grid; place-items: center;
   padding: 18px;
@@ -345,7 +371,7 @@ body.no-texture::before { display: none; }
   background: var(--cream-2);
   border: 3px solid var(--bark);
   border-radius: 32px;
-  box-shadow: 0 24px 60px rgba(60,70,40,.3);
+  box-shadow: 0 24px 60px rgba(53,64,46,.3);
   padding: 22px 22px 20px;
   animation: rise .32s cubic-bezier(.22,1,.3,1) both;
 }
@@ -458,7 +484,7 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
   display: grid; place-items: center;
   color: var(--ink);
   background: var(--cream-3);
-  border: 2px solid rgba(169,138,97,.45);
+  border: 2px solid rgba(126,138,114,.32);
   border-radius: 12px;
   cursor: pointer;
   transition: transform .12s ease, background .18s ease;
@@ -466,10 +492,10 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 .tbtn:hover { background: #FFF; transform: translateY(-2px); }
 .tbtn:active { transform: translateY(1px); }
 .tbtn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
-.timer.running .t-toggle { background: var(--leaf); color: #FFF9E4; border-color: var(--leaf-dark); }
+.timer.running .t-toggle { background: var(--leaf); color: #FCF6EE; border-color: var(--leaf-dark); }
 
 /* تدرّج التحذير: أخضر ثم ذهبي ثم أحمر */
-.timer-ring .tr-tick { stroke: rgba(169,138,97,.45); stroke-linecap: round; }
+.timer-ring .tr-tick { stroke: rgba(126,138,114,.42); stroke-linecap: round; }
 .timer.warn .tr-arc, .timer-overlay.warn .tr-arc { stroke: var(--gold); }
 .timer.warn .timer-time, .timer-overlay.warn .timer-time { color: var(--gold-deep); }
 .timer.danger .tr-arc, .timer-overlay.danger .tr-arc { stroke: var(--red); }
@@ -477,7 +503,7 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 .timer.danger.running .timer-time { animation: pulseNum 1s ease-in-out infinite; }
 @keyframes pulseNum { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
-.timer.finished { border-color: var(--gold); background: #FFFDF2; animation: ring 1.1s ease-in-out 3; }
+.timer.finished { border-color: var(--gold); background: #FFFCF4; animation: ring 1.1s ease-in-out 3; }
 .timer.finished .tr-arc, .timer-overlay.finished .tr-arc { stroke: var(--red); }
 .timer.finished .timer-time, .timer-overlay.finished .timer-time { color: var(--red); }
 @keyframes ring {
@@ -503,14 +529,14 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
   font-family: inherit; font-size: .9rem; font-weight: 700;
   color: var(--ink);
   background: var(--cream-3);
-  border: 2.5px solid rgba(169,138,97,.4);
+  border: 2.5px solid rgba(126,138,114,.3);
   border-radius: 999px;
   padding: .4em .95em;
   cursor: pointer;
   transition: background .18s ease, border-color .18s ease, transform .12s ease;
 }
 .chip:hover { background: #FFF; transform: translateY(-2px); }
-.chip.on { background: var(--leaf); color: #FFF9E4; border-color: var(--leaf-dark); }
+.chip.on { background: var(--leaf); color: #FCF6EE; border-color: var(--leaf-dark); }
 .chip:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .chip.custom { display: inline-flex; align-items: center; gap: .35em; cursor: text; }
 .chip.custom input {
@@ -528,12 +554,12 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
   position: fixed; z-index: 90;
   inset-inline: 0; bottom: 26px;
   width: max-content; max-width: 90vw; margin-inline: auto;
-  background: var(--gold); color: #4A3510;
+  background: var(--gold); color: #5A4A16;
   border: 3px solid var(--gold-deep);
   border-radius: 999px;
   padding: .6em 1.5em;
   font-size: 1.15rem; font-weight: 800;
-  box-shadow: 0 12px 30px rgba(120,90,20,.28);
+  box-shadow: 0 12px 30px rgba(120,104,40,.3);
   animation: toastIn .4s cubic-bezier(.2,1.4,.4,1) both;
 }
 .time-toast.out { animation: toastOut .55s ease forwards; }
@@ -579,15 +605,15 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 
 .wheel-stage { position: relative; margin: 0 auto 6px; width: min(450px, 84vw); }
 .wheel-svg { display: block; width: 100%; height: auto; overflow: visible; }
-.wheel-svg .seg { stroke: #FAF4D8; stroke-width: 1.2; }
-.wheel-svg .seg.win { stroke: var(--gold); stroke-width: 4; filter: drop-shadow(0 0 7px rgba(231,178,60,.85)); }
+.wheel-svg .seg { stroke: var(--cream); stroke-width: 1.2; }
+.wheel-svg .seg.win { stroke: var(--gold); stroke-width: 4; filter: drop-shadow(0 0 8px rgba(192,176,91,.9)); }
 .wheel-svg .seg-label { font-family: inherit; font-weight: 700; pointer-events: none; }
 .wheel-svg .seg-label.win { font-weight: 800; }
 .wheel-svg .hub, .wheel-svg .hub-text { cursor: pointer; }
 .wheel-svg .hub { transition: fill .2s ease; }
 .wheel-svg .hub-text { font-family: inherit; pointer-events: none; }
 .wheel-stage:hover .hub { fill: #FFF; }
-.wheel-svg .wheel-pointer { filter: drop-shadow(0 2px 3px rgba(120,100,50,.35)); }
+.wheel-svg .wheel-pointer { filter: drop-shadow(0 2px 3px rgba(101,118,82,.35)); }
 
 .wheel-count { margin: 2px 0 8px; font-size: .88rem; font-weight: 700; color: var(--ink-soft); }
 .switch.wheel-skip { justify-content: center; margin-bottom: 4px; }
@@ -611,12 +637,83 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
   padding: 26px 16px;
   border: 3px dashed var(--cream-3);
   border-radius: var(--r-lg);
-  background: #FFFDF4;
+  background: #FFFCF4;
 }
 .wheel-empty-ico { font-size: 2.6rem; }
 .wheel-empty p { margin: 0; font-weight: 700; color: var(--ink); }
 .wheel-empty .wheel-empty-hint { font-weight: 500; font-size: .88rem; color: var(--ink-soft); max-width: 34ch; line-height: 1.7; }
-.names-box::placeholder { color: #BFB89A; }
+.names-box::placeholder { color: #B9AE95; }
+
+/* ========================== المجموعات السريعة =========================== */
+.qg-sheet { width: min(760px, 100%); }
+
+.qg-controls {
+  background: var(--cream-2);
+  border: 2.5px dashed var(--cream-3);
+  border-radius: var(--r-md);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.qg-modes { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; flex-wrap: wrap; }
+.qg-row { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.qg-label { font-size: .92rem; font-weight: 700; color: var(--ink-soft); }
+.chip.num { min-width: 2.6em; justify-content: center; font-size: 1rem; }
+.qg-hint {
+  margin: 12px 0 0; text-align: center;
+  font-size: .86rem; font-weight: 700; color: var(--ink-soft);
+}
+
+.qg-result {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 10px;
+}
+.qg-result:empty { display: none; }
+
+.qg-card {
+  background: var(--cream-2);
+  border: 2.5px solid var(--cream-3);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  animation: qgIn .4s cubic-bezier(.22,1,.3,1) both;
+}
+@keyframes qgIn { from { opacity: 0; transform: translateY(14px) scale(.95); } }
+
+.qg-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: .5em .8em;
+  font-weight: 800; font-size: .98rem;
+}
+.qg-size {
+  border-radius: 999px; padding: .1em .62em;
+  font-size: .82rem; font-variant-numeric: tabular-nums;
+}
+.qg-list {
+  list-style: none; margin: 0; padding: 8px 12px 10px;
+  font-size: .94rem; font-weight: 700; color: var(--ink);
+  counter-reset: qg;
+}
+.qg-list li {
+  counter-increment: qg;
+  display: flex; align-items: baseline; gap: .5em;
+  padding: 3px 0;
+  border-bottom: 1px dashed var(--cream-3);
+}
+.qg-list li:last-child { border-bottom: 0; }
+.qg-list li::before {
+  content: counter(qg);
+  flex: none;
+  font-size: .74rem; font-weight: 800; color: var(--ink-soft);
+  min-width: 1.4ch; text-align: center;
+}
+
+@media (max-width: 520px) {
+  .qg-result { grid-template-columns: 1fr 1fr; }
+  .qg-list { font-size: .88rem; }
+}
+@media (max-width: 380px) {
+  .qg-result { grid-template-columns: 1fr; }
+}
 
 </style>
 
@@ -652,6 +749,7 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
     <div class="tools">
       <button class="btn btn--gold btn--sm" id="btn-celebrate" type="button">🏆 إعلان الفائزة</button>
       <button class="btn btn--sm" id="btn-wheel" type="button">🎡 عجلة الحظ</button>
+      <button class="btn btn--sm" id="btn-groups" type="button">👥 مجموعات سريعة</button>
       <button class="btn btn--sm" id="btn-history" type="button">📜 السجل</button>
       <button class="btn btn--sm" id="btn-settings" type="button">⚙️ الإعدادات</button>
       <button class="btn btn--danger btn--sm" id="btn-reset" type="button">🔄 إعادة المسابقة</button>
@@ -685,25 +783,31 @@ document.documentElement.setAttribute('lang', 'ar');
 
   /* ----------------------------- لوحة الألوان ----------------------------- */
   var C = {
-    cream:      '#FAF4D8',
-    creamDeep:  '#F1E6BE',
-    leaf:       '#4F7C33',
-    leafDark:   '#3B6026',
-    leafLight:  '#6E9A46',
-    leafPale:   '#89AE5B',
-    bark:       '#C6AA82',
-    barkDark:   '#A98A61',
-    barkLight:  '#DCC69F',
-    yellow:     '#EFCE4B',
-    yellowDeep: '#DFB52E',
-    red:        '#D9482F',
-    redDeep:    '#B63A22',
-    orange:     '#EE9A3C',
-    lime:       '#A9BE47',
-    limeDeep:   '#8CA337',
-    coco:       '#B08A5E',
-    cocoDark:   '#8E6B45',
-    shadow:     'rgba(93,110,60,.13)'
+    cream:      '#F3E7DA',
+    creamDeep:  '#EADCCB',
+    /* تدرّج أخضر مرتكز على PALM مع رفع الإشراق في الطبقات العليا */
+    leafDark:   '#3F4C30',
+    leaf:       '#566444',
+    leafMid:    '#7B9452',
+    leafLight:  '#9DB969',
+    leafPale:   '#BFD488',
+    bark:       '#5C4733',
+    barkDark:   '#412F1F',
+    barkLight:  '#7A6246',
+    butter:     '#F4D892',
+    butterDeep: '#DCBB64',
+    moss:       '#D2C45E',
+    mossDeep:   '#AE9E3C',
+    guava:      '#F2B6A3',
+    sunset:     '#E89C73',
+    sunsetDeep: '#CE7B4E',
+    sangria:    '#E36559',
+    sangriaDeep:'#C04A3F',
+    lagoon:     '#94BEBB',
+    odyssey:    '#23617E',
+    coco:       '#8A7257',
+    cocoDark:   '#5E4A36',
+    shadow:     'rgba(101,118,82,.17)'
   };
 
   /* ------------------------------ أدوات رياضية ---------------------------- */
@@ -843,6 +947,17 @@ document.documentElement.setAttribute('lang', 'ar');
       '" fill="none" stroke="' + vein + '" stroke-width="2.4" stroke-linecap="round" opacity=".9"/></g></g>';
   }
 
+  /* ------------------- تاج من دوائر متراكبة (أسلوب مسطّح) ------------------ */
+  function circleCanopy(circles) {
+    var out = [], i, c;
+    for (i = 0; i < circles.length; i++) {
+      c = circles[i];
+      out.push('<circle class="lf s' + (c.s || 0) + '" cx="' + f(c.x) + '" cy="' + f(c.y) + '" r="' + f(c.r) +
+        '" fill="' + c.fill + '" style="transform-origin:' + f(c.x) + 'px ' + f(c.y) + 'px"/>');
+    }
+    return out.join('');
+  }
+
   /* --------------------- تاج ورقي مفصّص (هالة الشجرة) --------------------- */
   function leafyBlob(cx, cy, rx, ry, lobes, seed, fill, stage) {
     var rnd = mulberry32(seed);
@@ -938,11 +1053,11 @@ document.documentElement.setAttribute('lang', 'ar');
         '" fill="none" stroke="' + C.barkDark + '" stroke-width="1.6" opacity=".5" stroke-linecap="round"/>');
     }
     var top = { x: 101, y: 118 };
-    o.push(palmFrond(top.x, top.y, -90, 74, { stage: 0, arch: 0.30, droop: 0.06 }));
+    o.push(palmFrond(top.x, top.y, -90, 74, { stage: 0, arch: 0.30, droop: 0.06, color: C.leafMid }));
     o.push(palmFrond(top.x, top.y, -146, 76, { stage: 0, color: C.leafDark }));
     o.push(palmFrond(top.x, top.y, -34, 76, { stage: 0, color: C.leafDark }));
-    o.push(palmFrond(top.x, top.y, -118, 82, { stage: 1 }));
-    o.push(palmFrond(top.x, top.y, -62, 82, { stage: 1 }));
+    o.push(palmFrond(top.x, top.y, -118, 82, { stage: 1, color: C.leafMid }));
+    o.push(palmFrond(top.x, top.y, -62, 82, { stage: 1, color: C.leafMid }));
     o.push(palmFrond(top.x, top.y, 177, 72, { stage: 2, color: C.leafLight, droop: 0.52 }));
     o.push(palmFrond(top.x, top.y, 3, 72, { stage: 2, color: C.leafLight, droop: 0.52 }));
     o.push(palmFrond(top.x, top.y, -162, 66, { stage: 3, color: C.leafPale, droop: 0.58 }));
@@ -964,11 +1079,11 @@ document.documentElement.setAttribute('lang', 'ar');
         '" stroke-width="1.3" opacity=".42" stroke-linecap="round"/>');
     }
     var t = { x: 99, y: 114 };
-    o.push(broadLeaf(t.x, t.y, -96, 80, 21, { stage: 0, color: C.leaf, arch: 0.24, droop: 0.14 }));
+    o.push(broadLeaf(t.x, t.y, -96, 80, 21, { stage: 0, color: C.leafMid, arch: 0.24, droop: 0.14 }));
     o.push(broadLeaf(t.x, t.y, -150, 76, 20, { stage: 0, color: C.leafDark, droop: 0.34, arch: 0.22 }));
     o.push(broadLeaf(t.x, t.y, -34, 76, 20, { stage: 0, color: C.leafDark, droop: 0.34, arch: 0.22 }));
-    o.push(broadLeaf(t.x, t.y, -176, 66, 18, { stage: 1, color: C.leaf, droop: 0.46, arch: 0.16 }));
-    o.push(broadLeaf(t.x, t.y, -6, 66, 18, { stage: 1, color: C.leaf, droop: 0.46, arch: 0.16 }));
+    o.push(broadLeaf(t.x, t.y, -176, 66, 18, { stage: 1, color: C.leafMid, droop: 0.46, arch: 0.16 }));
+    o.push(broadLeaf(t.x, t.y, -6, 66, 18, { stage: 1, color: C.leafMid, droop: 0.46, arch: 0.16 }));
     o.push(broadLeaf(t.x, t.y, -122, 70, 18, { stage: 2, color: C.leafLight, droop: 0.30, arch: 0.26 }));
     o.push(broadLeaf(135, 170, -62, 52, 16, { stage: 2, color: C.leafLight, droop: 0.24, veins: 8 }));
     o.push(broadLeaf(135, 170, -16, 46, 14, { stage: 3, color: C.leafPale, droop: 0.28, veins: 8 }));
@@ -985,8 +1100,8 @@ document.documentElement.setAttribute('lang', 'ar');
       tips.push({ x: b.x - 6.5, y: b.y + 2 }, { x: b.x + 6.5, y: b.y + 2 }, { x: b.x, y: b.y + 3.5 });
     }
     bo.push('<path d="M' + f(p2.x) + ' ' + f(p2.y) + ' q-1 6 -1 9" fill="none" stroke="' + C.barkDark + '" stroke-width="2.6" stroke-linecap="round"/>');
-    bo.push('<path d="M76 176 q-8 -6 -6 -14 q6 -6 12 0 q2 8 -6 14 Z" fill="' + C.red + '"/>');
-    bo.push('<path d="M76 176 q-8 -6 -6 -14 q4 6 6 14 Z" fill="' + C.redDeep + '" opacity=".45"/>');
+    bo.push('<path d="M76 176 q-8 -6 -6 -14 q6 -6 12 0 q2 8 -6 14 Z" fill="' + C.sangria + '"/>');
+    bo.push('<path d="M76 176 q-8 -6 -6 -14 q4 6 6 14 Z" fill="' + C.sangriaDeep + '" opacity=".45"/>');
     o.push('<g class="bunch">' + bo.join('') + '</g>');
     ANCHORS.mawz = tips;
     return o.join('');
@@ -997,12 +1112,18 @@ document.documentElement.setAttribute('lang', 'ar');
     var o = [];
     var b = branchSystem(100, 176, -90, 36, 8.5, 3, 404, C.barkDark);
     o.push(ground());
-    o.push('<path d="' + trunkPath(100, 230, 100, 174, 19, 12, -3) + '" fill="' + C.bark + '"/>');
-    o.push(leafyBlob(100, 124, 58, 46, 13, 21, C.leafDark, 0));
-    o.push(leafyBlob(70, 136, 30, 25, 10, 55, C.leaf, 1));
-    o.push(leafyBlob(130, 136, 30, 25, 10, 91, C.leaf, 1));
-    o.push(leafyBlob(100, 100, 38, 28, 11, 133, C.leaf, 2));
-    o.push(leafyBlob(100, 84, 26, 19, 9, 177, C.leafLight, 3));
+    o.push('<path d="' + trunkPath(100, 230, 100, 174, 19, 13, -3) + '" fill="' + C.bark + '"/>');
+    o.push(circleCanopy([
+      { x: 76,  y: 118, r: 40, fill: C.leaf,      s: 0 },
+      { x: 124, y: 116, r: 40, fill: C.leafDark,  s: 0 },
+      { x: 100, y: 136, r: 38, fill: C.leafMid,   s: 0 },
+      { x: 60,  y: 132, r: 28, fill: C.leafLight, s: 1 },
+      { x: 140, y: 130, r: 28, fill: C.leaf,      s: 1 },
+      { x: 100, y: 94,  r: 34, fill: C.leafLight, s: 2 },
+      { x: 74,  y: 96,  r: 26, fill: C.leafMid,   s: 2 },
+      { x: 126, y: 92,  r: 26, fill: C.leafPale,  s: 3 },
+      { x: 100, y: 74,  r: 21, fill: C.leafLight, s: 3 }
+    ]));
     o.push(b.markup);
     ANCHORS.ruman = b.tips;
     return o.join('');
@@ -1013,12 +1134,18 @@ document.documentElement.setAttribute('lang', 'ar');
     var o = [];
     var b = branchSystem(100, 168, -90, 40, 9.5, 3, 811, C.barkDark);
     o.push(ground());
-    o.push('<path d="' + trunkPath(100, 230, 100, 166, 22, 13, 3) + '" fill="' + C.barkDark + '"/>');
-    o.push(leafyBlob(100, 116, 64, 48, 15, 7, C.leafDark, 0));
-    o.push(leafyBlob(66, 128, 31, 26, 10, 43, C.leaf, 1));
-    o.push(leafyBlob(134, 128, 31, 26, 10, 71, C.leaf, 1));
-    o.push(leafyBlob(100, 92, 42, 31, 13, 109, C.leaf, 2));
-    o.push(leafyBlob(100, 72, 29, 21, 10, 151, C.leafLight, 3));
+    o.push('<path d="' + trunkPath(100, 230, 100, 166, 22, 14, 3) + '" fill="' + C.bark + '"/>');
+    o.push(circleCanopy([
+      { x: 74,  y: 110, r: 42, fill: C.leafDark,  s: 0 },
+      { x: 128, y: 108, r: 42, fill: C.leaf,      s: 0 },
+      { x: 100, y: 128, r: 40, fill: C.leafMid,   s: 0 },
+      { x: 56,  y: 126, r: 30, fill: C.leaf,      s: 1 },
+      { x: 146, y: 124, r: 30, fill: C.leafLight, s: 1 },
+      { x: 100, y: 84,  r: 36, fill: C.leafLight, s: 2 },
+      { x: 70,  y: 86,  r: 28, fill: C.leafMid,   s: 2 },
+      { x: 132, y: 82,  r: 28, fill: C.leafPale,  s: 3 },
+      { x: 100, y: 62,  r: 22, fill: C.leafLight, s: 3 }
+    ]));
     o.push(b.markup);
     ANCHORS.manju = b.tips;
     return o.join('');
@@ -1029,12 +1156,17 @@ document.documentElement.setAttribute('lang', 'ar');
     var o = [];
     var b = branchSystem(100, 190, -90, 33, 7.5, 3, 1215, C.barkDark);
     o.push(ground());
-    o.push('<path d="' + trunkPath(100, 230, 100, 188, 17, 11, 2) + '" fill="' + C.bark + '"/>');
-    o.push(leafyBlob(100, 142, 56, 44, 13, 29, C.leaf, 0));
-    o.push(leafyBlob(72, 150, 29, 24, 10, 63, C.leafLight, 1));
-    o.push(leafyBlob(128, 150, 29, 24, 10, 97, C.leafLight, 1));
-    o.push(leafyBlob(100, 118, 38, 28, 12, 139, C.leafPale, 2));
-    o.push(leafyBlob(100, 100, 25, 18, 9, 181, C.leafLight, 3));
+    o.push('<path d="' + trunkPath(100, 230, 100, 188, 17, 12, 2) + '" fill="' + C.bark + '"/>');
+    o.push(circleCanopy([
+      { x: 80,  y: 138, r: 36, fill: C.leaf,      s: 0 },
+      { x: 122, y: 136, r: 36, fill: C.leafDark,  s: 0 },
+      { x: 100, y: 152, r: 34, fill: C.leafMid,   s: 0 },
+      { x: 62,  y: 150, r: 26, fill: C.leafMid,   s: 1 },
+      { x: 140, y: 148, r: 26, fill: C.leaf,      s: 1 },
+      { x: 100, y: 112, r: 31, fill: C.leafLight, s: 2 },
+      { x: 76,  y: 114, r: 23, fill: C.leafMid,   s: 2 },
+      { x: 124, y: 110, r: 23, fill: C.leafLight, s: 3 }
+    ]));
     o.push(b.markup);
     ANCHORS.loomi = b.tips;
     return o.join('');
@@ -1054,10 +1186,10 @@ document.documentElement.setAttribute('lang', 'ar');
     }
     var t = { x: 107, y: 104 };
     o.push(palmFrond(t.x, t.y, -90, 78, { stage: 0, arch: 0.36, droop: 0.06, color: C.leafDark }));
-    o.push(palmFrond(t.x, t.y, -142, 80, { stage: 0, color: C.leaf, droop: 0.30, arch: 0.26 }));
-    o.push(palmFrond(t.x, t.y, -38, 80, { stage: 0, color: C.leaf, droop: 0.30, arch: 0.26 }));
-    o.push(palmFrond(t.x, t.y, -116, 84, { stage: 1, color: C.leafDark, droop: 0.36, arch: 0.22 }));
-    o.push(palmFrond(t.x, t.y, -64, 84, { stage: 1, color: C.leafDark, droop: 0.36, arch: 0.22 }));
+    o.push(palmFrond(t.x, t.y, -142, 80, { stage: 0, color: C.leafMid, droop: 0.30, arch: 0.26 }));
+    o.push(palmFrond(t.x, t.y, -38, 80, { stage: 0, color: C.leafMid, droop: 0.30, arch: 0.26 }));
+    o.push(palmFrond(t.x, t.y, -116, 84, { stage: 1, color: C.leaf, droop: 0.36, arch: 0.22 }));
+    o.push(palmFrond(t.x, t.y, -64, 84, { stage: 1, color: C.leaf, droop: 0.36, arch: 0.22 }));
     o.push(palmFrond(t.x, t.y, 174, 72, { stage: 2, color: C.leafLight, droop: 0.44 }));
     o.push(palmFrond(t.x, t.y, 6, 72, { stage: 2, color: C.leafLight, droop: 0.44 }));
     o.push(palmFrond(t.x, t.y, -160, 64, { stage: 3, color: C.leafPale, droop: 0.52 }));
@@ -1087,61 +1219,65 @@ document.documentElement.setAttribute('lang', 'ar');
   /* ============================== رسم الثمار ============================== */
   var FRUIT = {
     date: function () {
-      return '<path d="M0 -6 v-3.5" stroke="' + C.barkDark + '" stroke-width="1.3" stroke-linecap="round" fill="none"/>' +
-             '<ellipse cx="0" cy="0" rx="3.5" ry="5" fill="' + C.yellow + '"/>' +
-             '<ellipse cx="-1" cy="-1.2" rx="1.5" ry="2" fill="#F7E38C" opacity=".8"/>';
+      return '<path d="M0 -9 v-5" stroke="' + C.barkDark + '" stroke-width="2" stroke-linecap="round" fill="none"/>' +
+             '<ellipse cx="0" cy="0" rx="5.6" ry="7.6" fill="' + C.butter + '" stroke="' + C.cream + '" stroke-width="1.4"/>' +
+             '<ellipse cx="1.6" cy="1.8" rx="3" ry="4.6" fill="' + C.butterDeep + '" opacity=".55"/>' +
+             '<ellipse cx="-1.8" cy="-2.4" rx="1.8" ry="2.6" fill="#FFF1C4" opacity=".9"/>';
     },
     banana: function () {
-      return '<path d="M-5 -3 Q0 6 6 1 Q1 2 -3 -4 Z" fill="' + C.yellow + '"/>' +
-             '<path d="M-5 -3 Q0 6 6 1" fill="none" stroke="' + C.yellowDeep + '" stroke-width="1.1" stroke-linecap="round"/>' +
-             '<circle cx="-4.6" cy="-3.4" r="1" fill="' + C.barkDark + '"/>';
+      return '<path d="M-7.5 -5 Q0 9.5 9 1.5 Q1.5 3.5 -4.5 -6.5 Z" fill="' + C.butter + '" stroke="' + C.cream + '" stroke-width="1.3"/>' +
+             '<path d="M-7 -4.6 Q0 8 8 1" fill="none" stroke="' + C.butterDeep + '" stroke-width="1.6" stroke-linecap="round"/>' +
+             '<circle cx="-7" cy="-5.2" r="1.7" fill="' + C.barkDark + '"/>';
     },
     pomegranate: function () {
-      return '<path d="M0 -6 v-4" stroke="' + C.barkDark + '" stroke-width="1.4" stroke-linecap="round" fill="none"/>' +
-             '<circle cx="0" cy="0" r="5.2" fill="' + C.red + '"/>' +
-             '<circle cx="-1.6" cy="-1.8" r="1.8" fill="#E9765C" opacity=".75"/>' +
-             '<path d="M-2 -5 L0 -8 L2 -5 L0 -4 Z" fill="' + C.redDeep + '"/>';
+      return '<path d="M0 -9 v-5" stroke="' + C.barkDark + '" stroke-width="2" stroke-linecap="round" fill="none"/>' +
+             '<circle cx="0" cy="0" r="8.4" fill="' + C.sangria + '" stroke="' + C.cream + '" stroke-width="1.4"/>' +
+             '<path d="M8.4 0 a8.4 8.4 0 0 1 -8.4 8.4 a8.4 8.4 0 0 0 0 -16.8 Z" fill="' + C.sangriaDeep + '" opacity=".45"/>' +
+             '<circle cx="-3" cy="-3.2" r="2.6" fill="' + C.guava + '" opacity=".85"/>' +
+             '<path d="M-3.2 -8 L0 -12.4 L3.2 -8 L0 -6.4 Z" fill="' + C.sangriaDeep + '"/>';
     },
     mango: function () {
-      return '<path d="M1 -7 q1.5 -3 3.5 -4" fill="none" stroke="' + C.barkDark + '" stroke-width="1.4" stroke-linecap="round"/>' +
-             '<path d="M0 -5.4 Q6 -3 5 2.4 Q3.4 6 0 5.6 Q-5 4.6 -5.2 -0.6 Q-5 -4.4 0 -5.4 Z" fill="' + C.orange + '"/>' +
-             '<path d="M0 -5.4 Q6 -3 5 2.4 Q2 -1 0 -5.4 Z" fill="' + C.red + '" opacity=".7"/>';
+      return '<path d="M1.5 -10 q2.4 -4.4 5.4 -5.4" fill="none" stroke="' + C.barkDark + '" stroke-width="2" stroke-linecap="round"/>' +
+             '<path d="M0 -8.8 Q9.6 -4.8 8 3.8 Q5.4 9.6 0 9 Q-8 7.4 -8.4 -1 Q-8 -7 0 -8.8 Z" fill="' + C.sunset + '" stroke="' + C.cream + '" stroke-width="1.4"/>' +
+             '<path d="M0 -8.8 Q9.6 -4.8 8 3.8 Q3.2 -1.6 0 -8.8 Z" fill="' + C.sangria + '" opacity=".72"/>' +
+             '<ellipse cx="-3.4" cy="-2.6" rx="2.4" ry="3.2" fill="' + C.butter + '" opacity=".7"/>';
     },
     lime: function () {
-      return '<path d="M0 -5.5 v-4" stroke="' + C.barkDark + '" stroke-width="1.3" stroke-linecap="round" fill="none"/>' +
-             '<circle cx="0" cy="0" r="4.8" fill="' + C.lime + '"/>' +
-             '<circle cx="-1.5" cy="-1.6" r="1.7" fill="#C6D877" opacity=".8"/>' +
-             '<path d="M0 -4.6 q2.6 -3 5 -2 q-1.4 3 -4.4 2.6 Z" fill="' + C.leafDark + '"/>';
+      return '<path d="M0 -8.6 v-5" stroke="' + C.barkDark + '" stroke-width="2" stroke-linecap="round" fill="none"/>' +
+             '<circle cx="0" cy="0" r="7.8" fill="' + C.moss + '" stroke="' + C.cream + '" stroke-width="1.4"/>' +
+             '<path d="M7.8 0 a7.8 7.8 0 0 1 -7.8 7.8 a7.8 7.8 0 0 0 0 -15.6 Z" fill="' + C.mossDeep + '" opacity=".4"/>' +
+             '<circle cx="-2.6" cy="-2.8" r="2.4" fill="#DED26F" opacity=".9"/>' +
+             '<path d="M0.5 -7.6 q4.4 -4.6 8.4 -3 q-2.4 4.8 -7.4 4.2 Z" fill="' + C.leaf + '"/>';
     },
     coconut: function () {
-      return '<circle cx="0" cy="0" r="4.9" fill="' + C.coco + '"/>' +
-             '<path d="M-4.9 0 a4.9 4.9 0 0 1 9.8 0 Z" fill="' + C.cocoDark + '" opacity=".35"/>' +
-             '<circle cx="-1.8" cy="1.4" r=".9" fill="' + C.cocoDark + '"/>' +
-             '<circle cx="1.6" cy="1.4" r=".9" fill="' + C.cocoDark + '"/>' +
-             '<circle cx="-.1" cy="-1.2" r=".9" fill="' + C.cocoDark + '"/>';
+      return '<circle cx="0" cy="0" r="7.8" fill="' + C.coco + '" stroke="' + C.cream + '" stroke-width="1.4"/>' +
+             '<path d="M-7.8 0 a7.8 7.8 0 0 1 15.6 0 Z" fill="' + C.barkLight + '" opacity=".55"/>' +
+             '<circle cx="-2.8" cy="2.2" r="1.5" fill="' + C.cocoDark + '"/>' +
+             '<circle cx="2.6" cy="2.2" r="1.5" fill="' + C.cocoDark + '"/>' +
+             '<circle cx="-0.1" cy="-2" r="1.5" fill="' + C.cocoDark + '"/>';
     }
   };
 
   /* ========================== تعريف الأشجار الستّ ========================= */
   var LIST = [
     { id: 'nakhla',  name: 'النخلة',          fruit: 'رطبة',   few: 'رطبات',       many: 'رطبة',      emoji: '🌴',
-      tone: C.yellow,     build: buildPalm,         shape: 'date',
+      tone: C.butter,     build: buildPalm,         shape: 'date',
       zones: [ { x: 80, y: 150, rx: 13, ry: 19, w: 1 }, { x: 122, y: 150, rx: 13, ry: 19, w: 1 } ] },
 
     { id: 'mawz',    name: 'شجرة الموز',      fruit: 'موزة',   few: 'موزات',       many: 'موزة',      emoji: '🍌',
-      tone: C.yellowDeep, build: buildBanana,       shape: 'banana',
+      tone: C.butterDeep, build: buildBanana,       shape: 'banana',
       zones: [ { x: 80, y: 146, rx: 9, ry: 16, w: 1.6, rot: 10 }, { x: 124, y: 158, rx: 8, ry: 12, w: .5, rot: 10 } ] },
 
     { id: 'ruman',   name: 'شجرة الرمان',     fruit: 'رمانة',  few: 'رمانات',      many: 'رمانة',     emoji: '🍎',
-      tone: C.red,        build: buildPomegranate,  shape: 'pomegranate',
+      tone: C.sangria,        build: buildPomegranate,  shape: 'pomegranate',
       zones: [ { x: 100, y: 126, rx: 46, ry: 32, w: 1 } ] },
 
     { id: 'manju',   name: 'شجرة المانجو',    fruit: 'مانجوة', few: 'حبات مانجو',  many: 'حبة مانجو', emoji: '🥭',
-      tone: C.orange,     build: buildMango,        shape: 'mango',
+      tone: C.sunset,     build: buildMango,        shape: 'mango',
       zones: [ { x: 100, y: 116, rx: 50, ry: 36, w: 1 } ] },
 
     { id: 'loomi',   name: 'الليمون العماني', fruit: 'لومية',  few: 'لوميات',      many: 'لومية',     emoji: '🍋',
-      tone: C.lime,       build: buildLoomi,        shape: 'lime',
+      tone: C.moss,       build: buildLoomi,        shape: 'lime',
       zones: [ { x: 100, y: 142, rx: 44, ry: 32, w: 1 } ] },
 
     { id: 'narjeel', name: 'جوز الهند',       fruit: 'جوزة',   few: 'جوزات',       many: 'جوزة',      emoji: '🥥',
@@ -1176,12 +1312,12 @@ document.documentElement.setAttribute('lang', 'ar');
     var rnd = mulberry32(seed), out = [], i, k, m, ring;
     var ordered = spreadOrder(anchors || []);
     for (i = 0; i < ordered.length && out.length < n; i++) {
-      out.push({ x: ordered[i].x + (rnd() * 2 - 1) * 1.4, y: ordered[i].y + 2.5 + rnd() * 1.5, rot: (rnd() * 2 - 1) * 14 });
+      out.push({ x: ordered[i].x + (rnd() * 2 - 1) * 1.6, y: ordered[i].y + 4 + rnd() * 2, rot: (rnd() * 2 - 1) * 13 });
     }
     ring = 1;
     while (out.length < n && ordered.length && ring <= 10) {
       for (i = 0; i < ordered.length && out.length < n; i++) {
-        var a = rnd() * Math.PI * 2, rr = 6 + ring * 3.6;
+        var a = rnd() * Math.PI * 2, rr = 9 + ring * 5.2;
         out.push({ x: ordered[i].x + Math.cos(a) * rr, y: ordered[i].y + Math.sin(a) * rr * 0.7 + 2, rot: (rnd() * 2 - 1) * 20 });
       }
       ring++;
@@ -1257,10 +1393,10 @@ document.documentElement.setAttribute('lang', 'ar');
   }
 
   function fruitSize(count) {
-    if (count <= 45) return 1;
-    if (count <= 80) return 0.86;
-    if (count <= 120) return 0.76;
-    return 0.66;
+    if (count <= 24) return 1;
+    if (count <= 45) return 0.84;
+    if (count <= 80) return 0.7;
+    return 0.58;
   }
 
   function treeSvg(treeId, count, opts) {
@@ -1270,8 +1406,7 @@ document.documentElement.setAttribute('lang', 'ar');
     var size = fruitSize(n);
     var fruits = [];
     for (var i = 0; i < n; i++) fruits.push(fruitMarkup(treeId, i, size));
-    var grain = opts.texture === false ? '' : ' filter="url(#printGrain)"';
-    return '<g class="tree-body" data-stage="' + stageOf(n) + '" data-fruit="' + (n ? 1 : 0) + '"' + grain + '>' +
+    return '<g class="tree-body" data-stage="' + stageOf(n) + '" data-fruit="' + (n ? 1 : 0) + '">' +
       t.body + '<g class="fruit-layer">' + fruits.join('') + '</g></g>';
   }
 
@@ -1291,13 +1426,7 @@ document.documentElement.setAttribute('lang', 'ar');
     '.tree-body .bunch{transition:opacity .4s ease}' +
     '.tree-body[data-fruit="0"] .bunch{opacity:0}';
 
-  function defs() {
-    return '<defs><filter id="printGrain" x="-12%" y="-12%" width="124%" height="124%">' +
-      '<feTurbulence type="fractalNoise" baseFrequency="1.05" numOctaves="2" seed="9" result="noise"/>' +
-      '<feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.98  0 0 0 0 0.95  0 0 0 0 0.84  0 0 0 0.42 0" result="grain"/>' +
-      '<feComposite in="grain" in2="SourceGraphic" operator="in" result="gin"/>' +
-      '<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gin"/></feMerge></filter></defs>';
-  }
+  function defs() { return ''; }
 
   global.Trees = {
     LIST: LIST, byId: byId, COLORS: C, VIEWBOX: VIEWBOX,
@@ -1447,7 +1576,8 @@ document.documentElement.setAttribute('lang', 'ar');
       sound: true,
       texture: true,
       timer: { duration: 120, remaining: 120 },
-      wheel: { list: STUDENTS.slice(), picked: [], skipPicked: true },
+      wheel: { list: STUDENTS.slice(), picked: [], skipPicked: true,
+               quick: { mode: 'size', size: 5, count: 4, last: null } },
       groups: global.Trees.LIST.map(function (t, i) {
         return { id: 'g' + (i + 1), name: 'المجموعة ' + (ORD[i] || (i + 1)), treeId: t.id, count: 0 };
       }),
@@ -1497,7 +1627,24 @@ document.documentElement.setAttribute('lang', 'ar');
         var picked = Array.isArray(s.wheel.picked)
           ? s.wheel.picked.map(String).filter(function (x) { return list.indexOf(x) !== -1; })
           : [];
-        d.wheel = { list: list, picked: picked, skipPicked: s.wheel.skipPicked !== false };
+        var q = d.wheel.quick, sq = s.wheel.quick;
+        if (sq && typeof sq === 'object') {
+          var last = null;
+          if (Array.isArray(sq.last)) {
+            last = sq.last
+              .filter(Array.isArray)
+              .map(function (g) { return g.map(String).filter(function (x) { return list.indexOf(x) !== -1; }); })
+              .filter(function (g) { return g.length; });
+            if (!last.length) last = null;
+          }
+          q = {
+            mode: sq.mode === 'count' ? 'count' : 'size',
+            size: Math.max(2, Math.min(12, parseInt(sq.size, 10) || 5)),
+            count: Math.max(2, Math.min(12, parseInt(sq.count, 10) || 4)),
+            last: last
+          };
+        }
+        d.wheel = { list: list, picked: picked, skipPicked: s.wheel.skipPicked !== false, quick: q };
       }
       if (Array.isArray(s.history)) d.history = s.history.slice(0, 60);
       return d;
@@ -1675,25 +1822,25 @@ document.documentElement.setAttribute('lang', 'ar');
       ctx.textAlign = 'center';
 
       /* الخلفية */
-      ctx.fillStyle = '#FAF4D8'; ctx.fillRect(0, 0, W, H);
-      ctx.strokeStyle = '#C6AA82'; ctx.lineWidth = 8;
+      ctx.fillStyle = '#F3E7DA'; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = '#D8C5AE'; ctx.lineWidth = 8;
       roundRect(ctx, 22, 22, W - 44, H - 44, 40); ctx.stroke();
-      ctx.strokeStyle = '#E7B23C'; ctx.lineWidth = 3;
+      ctx.strokeStyle = '#C0B05B'; ctx.lineWidth = 3;
       roundRect(ctx, 40, 40, W - 80, H - 80, 28); ctx.stroke();
 
       /* العنوان */
       var fam = '"Baloo Bhaijaan 2","Tajawal","Noto Kufi Arabic",sans-serif';
-      ctx.fillStyle = '#3B4A2A';
+      ctx.fillStyle = '#35402E';
       ctx.font = '800 54px ' + fam;
       ctx.fillText(record.title || 'بستان المجموعات', W / 2, 128);
-      ctx.fillStyle = '#74855D';
+      ctx.fillStyle = '#7E8A72';
       ctx.font = '700 26px ' + fam;
       ctx.fillText(arabicDate(record.date), W / 2, 172);
 
       /* الفائزة */
       if (top > 0) {
         var winners = sorted.filter(function (r) { return r.count === top; });
-        ctx.fillStyle = '#C9902A';
+        ctx.fillStyle = '#A2923F';
         ctx.font = '800 32px ' + fam;
         var label = winners.length > 1
           ? 'تعادل في الصدارة: ' + winners.map(function (w) { return w.name; }).join(' و ')
@@ -1706,27 +1853,27 @@ document.documentElement.setAttribute('lang', 'ar');
         var c = cols - 1 - (i % cols), rw = Math.floor(i / cols);
         var x = pad + c * cellW, y = 250 + rw * cellH;
         var isWin = r.count === top && top > 0;
-        ctx.fillStyle = isWin ? '#FFFDF2' : '#FFFBEC';
-        ctx.strokeStyle = isWin ? '#E7B23C' : '#DDCCA6';
+        ctx.fillStyle = isWin ? '#FFFCF4' : '#FCF6EE';
+        ctx.strokeStyle = isWin ? '#C0B05B' : '#DFCDB4';
         ctx.lineWidth = isWin ? 6 : 3;
         roundRect(ctx, x + 12, y + 8, cellW - 24, cellH - 26, 30);
         ctx.fill(); ctx.stroke();
 
         if (imgs[i]) ctx.drawImage(imgs[i], x + cellW / 2 - 110, y + 24, 220, 250);
 
-        ctx.fillStyle = '#3B4A2A';
+        ctx.fillStyle = '#35402E';
         ctx.font = '800 30px ' + fam;
         ctx.fillText(r.name, x + cellW / 2, y + 312);
 
         var t = T.byId[r.treeId];
-        ctx.fillStyle = isWin ? '#C9902A' : '#74855D';
+        ctx.fillStyle = isWin ? '#A2923F' : '#7E8A72';
         ctx.font = '800 34px ' + fam;
         ctx.fillText(r.count + ' ' + (t ? T.unitFor(r.treeId, r.count) : ''), x + cellW / 2, y + 356);
 
         if (isWin) { ctx.font = '40px ' + fam; ctx.fillText('👑', x + cellW / 2, y + 14); }
       });
 
-      ctx.fillStyle = '#9BA886';
+      ctx.fillStyle = '#A6AE97';
       ctx.font = '600 22px ' + fam;
       ctx.fillText('بستان المجموعات · أشجار عُمان المثمرة', W / 2, H - 56);
 
@@ -2050,13 +2197,14 @@ document.documentElement.setAttribute('lang', 'ar');
 
   /* ألوان القطاعات: سبعة ألوان لا يتجاور منها لونان متشابهان */
   var SEG = [
-    { fill: '#4F7C33', text: '#FBF6DC' },
-    { fill: '#EFCE4B', text: '#3B4A2A' },
-    { fill: '#D9482F', text: '#FFF3E2' },
-    { fill: '#A9BE47', text: '#2F4019' },
-    { fill: '#EE9A3C', text: '#4A2D08' },
-    { fill: '#3B6026', text: '#F3EAC4' },
-    { fill: '#C6AA82', text: '#3B2E18' }
+    { fill: '#657652', text: '#F6F2E6' },   /* PALM     */
+    { fill: '#F4D892', text: '#4A4420' },   /* BUTTER   */
+    { fill: '#E36559', text: '#FFF2EE' },   /* SANGRIA  */
+    { fill: '#94BEBB', text: '#20413F' },   /* LAGOON   */
+    { fill: '#E89C73', text: '#4C2B16' },   /* SUNSET   */
+    { fill: '#23617E', text: '#E8F1F5' },   /* ODYSSEY  */
+    { fill: '#C0B05B', text: '#403A16' },   /* MOSS     */
+    { fill: '#F2B6A3', text: '#5A3024' }    /* GUAVA    */
   ];
 
   var CX = 200, CY = 200, R = 178, LABEL_R = 164, HUB = 46;
@@ -2121,8 +2269,8 @@ document.documentElement.setAttribute('lang', 'ar');
       var big = a > 180 ? 1 : 0;
       var done = d.picked.indexOf(list[i]) !== -1;
       var tone = SEG[i % SEG.length];
-      var fill = done ? '#EBE2C2' : tone.fill;
-      var col = done ? '#9BA886' : tone.text;
+      var fill = done ? '#E7DCCB' : tone.fill;
+      var col = done ? '#A6AE97' : tone.text;
 
       parts.push('<path class="seg' + (done ? ' done' : '') + '" data-i="' + i + '" d="M' + f(CX) + ' ' + f(CY) +
         ' L' + f(p0.x) + ' ' + f(p0.y) + ' A' + R + ' ' + R + ' 0 ' + big + ' 1 ' + f(p1.x) + ' ' + f(p1.y) + ' Z" fill="' + fill + '"/>');
@@ -2139,17 +2287,17 @@ document.documentElement.setAttribute('lang', 'ar');
     }
 
     return '<svg class="wheel-svg" viewBox="0 0 400 400" aria-hidden="true">' +
-      '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 10) + '" fill="#C6AA82"/>' +
-      '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 4) + '" fill="#FAF4D8"/>' +
+      '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 10) + '" fill="#D8C5AE"/>' +
+      '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 4) + '" fill="#F3E7DA"/>' +
       '<g class="wheel-rotor">' + parts.join('') + labels.join('') + '</g>' +
-      '<circle cx="' + CX + '" cy="' + CY + '" r="' + R + '" fill="none" stroke="#A98A61" stroke-width="3"/>' +
-      '<circle class="hub" cx="' + CX + '" cy="' + CY + '" r="' + HUB + '" fill="#FFFBEC" stroke="#A98A61" stroke-width="4"/>' +
+      '<circle cx="' + CX + '" cy="' + CY + '" r="' + R + '" fill="none" stroke="#C3AE94" stroke-width="3"/>' +
+      '<circle class="hub" cx="' + CX + '" cy="' + CY + '" r="' + HUB + '" fill="#FCF6EE" stroke="#C3AE94" stroke-width="4"/>' +
       '<text class="hub-text" x="' + CX + '" y="' + CY + '" text-anchor="middle" dominant-baseline="middle" ' +
-        'font-size="19" font-weight="800" fill="#4F7C33">أدِر</text>' +
+        'font-size="19" font-weight="800" fill="#657652">أدِر</text>' +
       '<g class="wheel-pointer">' +
-        '<path d="M200 48 l16 -26 h-32 Z" fill="#D9482F"/>' +
-        '<path d="M200 26 m-18 -4 a18 14 0 1 1 36 0 Z" fill="#A98A61"/>' +
-        '<circle cx="200" cy="18" r="7" fill="#EFCE4B" stroke="#A98A61" stroke-width="2.5"/>' +
+        '<path d="M200 48 l16 -26 h-32 Z" fill="#E36559"/>' +
+        '<path d="M200 26 m-18 -4 a18 14 0 1 1 36 0 Z" fill="#C3AE94"/>' +
+        '<circle cx="200" cy="18" r="7" fill="#EFCE4B" stroke="#C3AE94" stroke-width="2.5"/>' +
       '</g></svg>';
   };
 
@@ -2369,13 +2517,280 @@ document.documentElement.setAttribute('lang', 'ar');
 </script>
 <script>
 /* ==========================================================================
+   المجموعات السريعة - توزيع أسماء الطلاب على مجموعات بشكل عشوائي
+   ========================================================================== */
+(function (global) {
+  'use strict';
+  var Sound = global.Sound;
+
+  /* ألوان الباليت لبطاقات المجموعات */
+  var TONE = [
+    { bg: '#657652', ink: '#F6F2E6', soft: 'rgba(246,242,230,.18)' },  /* PALM    */
+    { bg: '#F4D892', ink: '#4A4420', soft: 'rgba(74,68,32,.10)'     },  /* BUTTER  */
+    { bg: '#E36559', ink: '#FFF2EE', soft: 'rgba(255,242,238,.18)' },  /* SANGRIA */
+    { bg: '#94BEBB', ink: '#20413F', soft: 'rgba(32,65,63,.10)'     },  /* LAGOON  */
+    { bg: '#E89C73', ink: '#4C2B16', soft: 'rgba(76,43,22,.10)'     },  /* SUNSET  */
+    { bg: '#23617E', ink: '#E8F1F5', soft: 'rgba(232,241,245,.18)' },  /* ODYSSEY */
+    { bg: '#C0B05B', ink: '#403A16', soft: 'rgba(64,58,22,.10)'     },  /* MOSS    */
+    { bg: '#F2B6A3', ink: '#5A3024', soft: 'rgba(90,48,36,.10)'     }   /* GUAVA   */
+  ];
+
+  var ORD = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة',
+             'السابعة', 'الثامنة', 'التاسعة', 'العاشرة', 'الحادية عشرة', 'الثانية عشرة'];
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function groupName(i) { return 'المجموعة ' + (ORD[i] || (i + 1)); }
+
+  /* خلط فيشر-ييتس */
+  function shuffle(arr) {
+    var a = arr.slice(), i, j, t;
+    for (i = a.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  /* توزيع متساوٍ: الفائض يُضاف فردًا فردًا بدل ترك مجموعة ناقصة */
+  function split(names, nGroups) {
+    var a = shuffle(names), out = [], base = Math.floor(a.length / nGroups),
+        rem = a.length % nGroups, k = 0, i, size;
+    for (i = 0; i < nGroups; i++) {
+      size = base + (i < rem ? 1 : 0);
+      out.push(a.slice(k, k + size));
+      k += size;
+    }
+    return out;
+  }
+
+  function groupsCount(total, mode, value) {
+    if (mode === 'count') return Math.max(1, Math.min(total, value));
+    /* mode === 'size': مجموعات بحجم value، والفائض يوزَّع عليها */
+    return Math.max(1, Math.min(total, Math.floor(total / value) || 1));
+  }
+
+  function Groups(opts) {
+    this.get = opts.get;
+    this.save = opts.save;
+    this.beforeOpen = opts.beforeOpen || function () {};
+    this.openSettings = opts.openSettings || null;
+    this.ov = null;
+  }
+
+  Groups.prototype.data = function () {
+    var d = this.get();
+    if (!d.quick) d.quick = { mode: 'size', size: 5, count: 4, last: null };
+    if (!Array.isArray(d.list)) d.list = [];
+    return d;
+  };
+
+  /* -------------------------------- النافذة ------------------------------- */
+  Groups.prototype.open = function () {
+    var self = this;
+    this.close();
+    this.beforeOpen();
+    var d = this.data(), q = d.quick, n = d.list.length;
+
+    var body = n
+      ? '<div class="qg-controls">' +
+          '<div class="qg-modes" role="radiogroup" aria-label="طريقة التقسيم">' +
+            '<button class="chip' + (q.mode === 'size' ? ' on' : '') + '" type="button" data-mode="size" role="radio" aria-checked="' + (q.mode === 'size') + '">حسب عدد الأفراد</button>' +
+            '<button class="chip' + (q.mode === 'count' ? ' on' : '') + '" type="button" data-mode="count" role="radio" aria-checked="' + (q.mode === 'count') + '">حسب عدد المجموعات</button>' +
+          '</div>' +
+          '<div class="qg-row" id="qg-size"' + (q.mode === 'size' ? '' : ' hidden') + '>' +
+            '<span class="qg-label">كم طالبًا في كل مجموعة؟</span>' +
+            '<div class="chips">' + [2, 3, 4, 5, 6, 7, 8].map(function (v) {
+              return '<button class="chip num' + (v === q.size ? ' on' : '') + '" type="button" data-size="' + v + '">' + v + '</button>';
+            }).join('') + '</div>' +
+          '</div>' +
+          '<div class="qg-row" id="qg-count"' + (q.mode === 'count' ? '' : ' hidden') + '>' +
+            '<span class="qg-label">كم مجموعة تريدين؟</span>' +
+            '<div class="chips">' + [2, 3, 4, 5, 6, 7, 8].map(function (v) {
+              return '<button class="chip num' + (v === q.count ? ' on' : '') + '" type="button" data-count="' + v + '">' + v + '</button>';
+            }).join('') + '</div>' +
+          '</div>' +
+          '<p class="qg-hint" id="qg-hint"></p>' +
+        '</div>' +
+        '<div class="qg-result" id="qg-result"></div>'
+      : '<div class="wheel-empty">' +
+          '<span class="wheel-empty-ico" aria-hidden="true">👥</span>' +
+          '<p>لا توجد أسماء بعد.</p>' +
+          '<p class="wheel-empty-hint">أضيفي أسماء طلابك من صفحة الإعدادات، اسمًا في كل سطر، ' +
+          'ثم يوزّعهم الموقع على مجموعات بضغطة واحدة.</p>' +
+          '<button class="btn btn--primary" id="qg-add-names" type="button">⚙️ أضيفي الأسماء</button>' +
+        '</div>';
+
+    var ov = document.createElement('div');
+    ov.className = 'overlay qg-overlay';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
+    ov.setAttribute('aria-label', 'المجموعات السريعة');
+    ov.innerHTML =
+      '<div class="sheet qg-sheet">' +
+        '<h2 style="justify-content:center">👥 المجموعات السريعة</h2>' +
+        body +
+        '<div class="sheet-actions" style="justify-content:center">' +
+          (n ? '<button class="btn btn--primary" id="qg-go" type="button">🎲 وزّعي المجموعات</button>' +
+               '<button class="btn" id="qg-copy" type="button" hidden>📋 نسخ</button>' : '') +
+          '<button class="btn" id="qg-close" type="button">إغلاق</button>' +
+        '</div>' +
+      '</div>';
+
+    document.getElementById('modal-root').appendChild(ov);
+    this.ov = ov;
+
+    ov.addEventListener('mousedown', function (e) { if (e.target === ov) self.close(); });
+    ov.querySelector('#qg-close').addEventListener('click', function () { self.close(); });
+
+    var add = ov.querySelector('#qg-add-names');
+    if (add) add.addEventListener('click', function () {
+      var open = self.openSettings;
+      self.close();
+      if (open) open();
+    });
+
+    if (n) {
+      Array.prototype.forEach.call(ov.querySelectorAll('[data-mode]'), function (b) {
+        b.addEventListener('click', function () {
+          q.mode = b.getAttribute('data-mode');
+          Array.prototype.forEach.call(ov.querySelectorAll('[data-mode]'), function (x) {
+            var on = x.getAttribute('data-mode') === q.mode;
+            x.classList.toggle('on', on);
+            x.setAttribute('aria-checked', on);
+          });
+          ov.querySelector('#qg-size').hidden = q.mode !== 'size';
+          ov.querySelector('#qg-count').hidden = q.mode !== 'count';
+          self.save();
+          self.hint();
+        });
+      });
+      Array.prototype.forEach.call(ov.querySelectorAll('[data-size]'), function (b) {
+        b.addEventListener('click', function () {
+          q.size = +b.getAttribute('data-size');
+          Array.prototype.forEach.call(ov.querySelectorAll('[data-size]'), function (x) { x.classList.remove('on'); });
+          b.classList.add('on');
+          self.save();
+          self.hint();
+        });
+      });
+      Array.prototype.forEach.call(ov.querySelectorAll('[data-count]'), function (b) {
+        b.addEventListener('click', function () {
+          q.count = +b.getAttribute('data-count');
+          Array.prototype.forEach.call(ov.querySelectorAll('[data-count]'), function (x) { x.classList.remove('on'); });
+          b.classList.add('on');
+          self.save();
+          self.hint();
+        });
+      });
+      ov.querySelector('#qg-go').addEventListener('click', function () { self.make(); });
+      ov.querySelector('#qg-copy').addEventListener('click', function (e) { self.copy(e.target); });
+      this.hint();
+      if (q.last && q.last.length) this.paint(q.last, true);
+    }
+
+    this.escHandler = function (e) { if (e.key === 'Escape') self.close(); };
+    document.addEventListener('keydown', this.escHandler);
+    (ov.querySelector('#qg-go') || ov.querySelector('#qg-close')).focus();
+  };
+
+  Groups.prototype.close = function () {
+    if (this.escHandler) { document.removeEventListener('keydown', this.escHandler); this.escHandler = null; }
+    if (this.ov) { this.ov.remove(); this.ov = null; }
+  };
+
+  /* يشرح مقدّمًا كيف ستُقسَّم الأسماء */
+  Groups.prototype.hint = function () {
+    if (!this.ov) return;
+    var el = this.ov.querySelector('#qg-hint');
+    if (!el) return;
+    var d = this.data(), q = d.quick, n = d.list.length;
+    var g = groupsCount(n, q.mode, q.mode === 'size' ? q.size : q.count);
+    var base = Math.floor(n / g), rem = n % g;
+    var txt = n + ' طالبًا على ' + g + (g === 1 ? ' مجموعة' : (g === 2 ? ' مجموعتين' : ' مجموعات')) + ': ';
+    if (rem === 0) txt += 'كل مجموعة ' + base;
+    else txt += rem + ' منها ' + (base + 1) + ' والباقي ' + base;
+    el.textContent = txt;
+  };
+
+  Groups.prototype.make = function () {
+    var d = this.data(), q = d.quick, n = d.list.length;
+    if (!n) return;
+    Sound.unlock();
+    var g = groupsCount(n, q.mode, q.mode === 'size' ? q.size : q.count);
+    q.last = split(d.list, g);
+    this.save();
+    this.paint(q.last, false);
+    Sound.sparkle();
+  };
+
+  Groups.prototype.paint = function (groups, quiet) {
+    if (!this.ov) return;
+    var host = this.ov.querySelector('#qg-result');
+    host.innerHTML = groups.map(function (members, i) {
+      var t = TONE[i % TONE.length];
+      return '<div class="qg-card"' + (quiet ? '' : ' style="animation-delay:' + (i * 55) + 'ms"') +
+        ' data-i="' + i + '">' +
+        '<div class="qg-head" style="background:' + t.bg + ';color:' + t.ink + '">' +
+          '<span class="qg-name">' + esc(groupName(i)) + '</span>' +
+          '<span class="qg-size" style="background:' + t.soft + '">' + members.length + '</span>' +
+        '</div>' +
+        '<ol class="qg-list">' + members.map(function (m) {
+          return '<li>' + esc(m) + '</li>';
+        }).join('') + '</ol>' +
+      '</div>';
+    }).join('');
+    var go = this.ov.querySelector('#qg-go');
+    if (go) go.textContent = '🔄 وزّعي من جديد';
+    var copy = this.ov.querySelector('#qg-copy');
+    if (copy) { copy.hidden = false; copy.textContent = '📋 نسخ'; }
+  };
+
+  Groups.prototype.asText = function () {
+    var q = this.data().quick;
+    if (!q.last) return '';
+    return q.last.map(function (members, i) {
+      return groupName(i) + ':\n' + members.map(function (m, k) {
+        return '  ' + (k + 1) + '. ' + m;
+      }).join('\n');
+    }).join('\n\n');
+  };
+
+  Groups.prototype.copy = function (btn) {
+    var text = this.asText();
+    if (!text) return;
+    var done = function () { if (btn) btn.textContent = '✓ تم النسخ'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) {}
+      ta.remove();
+    }
+  };
+
+  global.BustanGroups = { create: function (o) { return new Groups(o); }, split: split, groupsCount: groupsCount };
+})(window);
+
+</script>
+<script>
+/* ==========================================================================
    بستان المجموعات - المنطق الرئيسي
    ========================================================================== */
 (function () {
   'use strict';
 
   var T = window.Trees, Sound = window.Sound, Store = window.Store, Exporter = window.Exporter;
-  var timer = null, wheel = null;
+  var timer = null, wheel = null, groups = null;
   var SVGNS = 'http://www.w3.org/2000/svg';
   var state = Store.load();
 
@@ -2595,6 +3010,7 @@ document.documentElement.setAttribute('lang', 'ar');
     closeSheet();
     if (timer) timer.closeBig();
     if (wheel) wheel.close();
+    if (groups) groups.close();
     lastFocus = document.activeElement;
     var ov = document.createElement('div');
     ov.className = 'overlay';
@@ -2613,7 +3029,7 @@ document.documentElement.setAttribute('lang', 'ar');
   function escClose(e) { if (e.key === 'Escape') closeSheet(); }
 
   function closeSheet() {
-    var ov = $('#modal-root .overlay:not(.timer-overlay):not(.wheel-overlay)');
+    var ov = $('#modal-root .overlay:not(.timer-overlay):not(.wheel-overlay):not(.qg-overlay)');
     if (ov) ov.remove();
     document.removeEventListener('keydown', escClose);
     if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
@@ -2797,7 +3213,7 @@ document.documentElement.setAttribute('lang', 'ar');
       '</fieldset>' +
       '<fieldset class="block"><legend>المجموعات وأشجارها</legend>' + groupsHtml + '</fieldset>' +
       '<fieldset class="block"><legend>أسماء عجلة الحظ</legend>' +
-        '<p class="note" style="margin:0 0 8px">اسم في كل سطر. الأسماء المحذوفة تخرج من العجلة.</p>' +
+        '<p class="note" style="margin:0 0 8px">اسم في كل سطر. تُستخدم في عجلة الحظ وفي المجموعات السريعة.</p>' +
         '<textarea id="set-names" class="names-box" rows="7" aria-label="أسماء الطلاب" ' +
           'placeholder="أحمد&#10;مريم&#10;سالم">' + esc(state.wheel.list.join('\n')) + '</textarea>' +
         (Store.STUDENTS.length
@@ -2806,7 +3222,7 @@ document.documentElement.setAttribute('lang', 'ar');
       '</fieldset>' +
       '<fieldset class="block"><legend>المظهر والصوت</legend>' +
         '<label class="switch"><input type="checkbox" id="set-sound"' + (state.sound ? ' checked' : '') + '> الأصوات اللطيفة</label>' +
-        '<label class="switch"><input type="checkbox" id="set-texture"' + (state.texture ? ' checked' : '') + '> ملمس الطباعة على الأشجار</label>' +
+        '<label class="switch"><input type="checkbox" id="set-texture"' + (state.texture ? ' checked' : '') + '> ملمس الورق الخفيف في الخلفية</label>' +
       '</fieldset>' +
       '<fieldset class="block"><legend>بيانات الدخول</legend>' +
         '<div class="row"><label for="set-user">اسم المستخدم</label><input type="text" id="set-user" value="' + esc(state.auth.user) + '" spellcheck="false"></div>' +
@@ -2836,8 +3252,10 @@ document.documentElement.setAttribute('lang', 'ar');
           var names = $('#set-names', ov).value.split('\n')
             .map(function (x) { return x.trim(); })
             .filter(Boolean).slice(0, 120);
+          var changed = state.wheel.list.join('\n') !== names.join('\n');
           state.wheel.list = names;
           state.wheel.picked = state.wheel.picked.filter(function (x) { return names.indexOf(x) !== -1; });
+          if (changed && state.wheel.quick) state.wheel.quick.last = null;
           state.sound = $('#set-sound', ov).checked;
           state.texture = $('#set-texture', ov).checked;
           var u = $('#set-user', ov).value.trim();
@@ -2879,6 +3297,7 @@ document.documentElement.setAttribute('lang', 'ar');
 
     $('#btn-celebrate').addEventListener('click', celebrate);
     $('#btn-wheel').addEventListener('click', function () { if (wheel) wheel.open(); });
+    $('#btn-groups').addEventListener('click', function () { if (groups) groups.open(); });
     $('#btn-history').addEventListener('click', historySheet);
     $('#btn-settings').addEventListener('click', settingsSheet);
     $('#btn-reset').addEventListener('click', confirmReset);
@@ -2887,7 +3306,7 @@ document.documentElement.setAttribute('lang', 'ar');
     });
 
     $('#modal-root').addEventListener('click', function (e) {
-      if (e.target.closest('.timer-overlay') || e.target.closest('.wheel-overlay')) return;
+      if (e.target.closest('.timer-overlay') || e.target.closest('.wheel-overlay') || e.target.closest('.qg-overlay')) return;
       if (e.target.closest('[data-close]')) closeSheet();
     });
 
@@ -2923,7 +3342,15 @@ document.documentElement.setAttribute('lang', 'ar');
       wheel = window.BustanWheel.create({
         get: function () { return state.wheel; },
         save: persist,
-        beforeOpen: function () { closeSheet(); if (timer) timer.closeBig(); },
+        beforeOpen: function () { closeSheet(); if (timer) timer.closeBig(); if (groups) groups.close(); },
+        openSettings: settingsSheet
+      });
+    }
+    if (!groups) {
+      groups = window.BustanGroups.create({
+        get: function () { return state.wheel; },
+        save: persist,
+        beforeOpen: function () { closeSheet(); if (timer) timer.closeBig(); if (wheel) wheel.close(); },
         openSettings: settingsSheet
       });
     }

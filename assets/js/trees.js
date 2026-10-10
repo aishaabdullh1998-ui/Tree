@@ -7,25 +7,31 @@
 
   /* ----------------------------- لوحة الألوان ----------------------------- */
   var C = {
-    cream:      '#FAF4D8',
-    creamDeep:  '#F1E6BE',
-    leaf:       '#4F7C33',
-    leafDark:   '#3B6026',
-    leafLight:  '#6E9A46',
-    leafPale:   '#89AE5B',
-    bark:       '#C6AA82',
-    barkDark:   '#A98A61',
-    barkLight:  '#DCC69F',
-    yellow:     '#EFCE4B',
-    yellowDeep: '#DFB52E',
-    red:        '#D9482F',
-    redDeep:    '#B63A22',
-    orange:     '#EE9A3C',
-    lime:       '#A9BE47',
-    limeDeep:   '#8CA337',
-    coco:       '#B08A5E',
-    cocoDark:   '#8E6B45',
-    shadow:     'rgba(93,110,60,.13)'
+    cream:      '#F3E7DA',
+    creamDeep:  '#EADCCB',
+    /* تدرّج أخضر مرتكز على PALM مع رفع الإشراق في الطبقات العليا */
+    leafDark:   '#3F4C30',
+    leaf:       '#566444',
+    leafMid:    '#7B9452',
+    leafLight:  '#9DB969',
+    leafPale:   '#BFD488',
+    bark:       '#5C4733',
+    barkDark:   '#412F1F',
+    barkLight:  '#7A6246',
+    butter:     '#F4D892',
+    butterDeep: '#DCBB64',
+    moss:       '#D2C45E',
+    mossDeep:   '#AE9E3C',
+    guava:      '#F2B6A3',
+    sunset:     '#E89C73',
+    sunsetDeep: '#CE7B4E',
+    sangria:    '#E36559',
+    sangriaDeep:'#C04A3F',
+    lagoon:     '#94BEBB',
+    odyssey:    '#23617E',
+    coco:       '#8A7257',
+    cocoDark:   '#5E4A36',
+    shadow:     'rgba(101,118,82,.17)'
   };
 
   /* ------------------------------ أدوات رياضية ---------------------------- */
@@ -165,6 +171,17 @@
       '" fill="none" stroke="' + vein + '" stroke-width="2.4" stroke-linecap="round" opacity=".9"/></g></g>';
   }
 
+  /* ------------------- تاج من دوائر متراكبة (أسلوب مسطّح) ------------------ */
+  function circleCanopy(circles) {
+    var out = [], i, c;
+    for (i = 0; i < circles.length; i++) {
+      c = circles[i];
+      out.push('<circle class="lf s' + (c.s || 0) + '" cx="' + f(c.x) + '" cy="' + f(c.y) + '" r="' + f(c.r) +
+        '" fill="' + c.fill + '" style="transform-origin:' + f(c.x) + 'px ' + f(c.y) + 'px"/>');
+    }
+    return out.join('');
+  }
+
   /* --------------------- تاج ورقي مفصّص (هالة الشجرة) --------------------- */
   function leafyBlob(cx, cy, rx, ry, lobes, seed, fill, stage) {
     var rnd = mulberry32(seed);
@@ -260,11 +277,11 @@
         '" fill="none" stroke="' + C.barkDark + '" stroke-width="1.6" opacity=".5" stroke-linecap="round"/>');
     }
     var top = { x: 101, y: 118 };
-    o.push(palmFrond(top.x, top.y, -90, 74, { stage: 0, arch: 0.30, droop: 0.06 }));
+    o.push(palmFrond(top.x, top.y, -90, 74, { stage: 0, arch: 0.30, droop: 0.06, color: C.leafMid }));
     o.push(palmFrond(top.x, top.y, -146, 76, { stage: 0, color: C.leafDark }));
     o.push(palmFrond(top.x, top.y, -34, 76, { stage: 0, color: C.leafDark }));
-    o.push(palmFrond(top.x, top.y, -118, 82, { stage: 1 }));
-    o.push(palmFrond(top.x, top.y, -62, 82, { stage: 1 }));
+    o.push(palmFrond(top.x, top.y, -118, 82, { stage: 1, color: C.leafMid }));
+    o.push(palmFrond(top.x, top.y, -62, 82, { stage: 1, color: C.leafMid }));
     o.push(palmFrond(top.x, top.y, 177, 72, { stage: 2, color: C.leafLight, droop: 0.52 }));
     o.push(palmFrond(top.x, top.y, 3, 72, { stage: 2, color: C.leafLight, droop: 0.52 }));
     o.push(palmFrond(top.x, top.y, -162, 66, { stage: 3, color: C.leafPale, droop: 0.58 }));
@@ -286,11 +303,11 @@
         '" stroke-width="1.3" opacity=".42" stroke-linecap="round"/>');
     }
     var t = { x: 99, y: 114 };
-    o.push(broadLeaf(t.x, t.y, -96, 80, 21, { stage: 0, color: C.leaf, arch: 0.24, droop: 0.14 }));
+    o.push(broadLeaf(t.x, t.y, -96, 80, 21, { stage: 0, color: C.leafMid, arch: 0.24, droop: 0.14 }));
     o.push(broadLeaf(t.x, t.y, -150, 76, 20, { stage: 0, color: C.leafDark, droop: 0.34, arch: 0.22 }));
     o.push(broadLeaf(t.x, t.y, -34, 76, 20, { stage: 0, color: C.leafDark, droop: 0.34, arch: 0.22 }));
-    o.push(broadLeaf(t.x, t.y, -176, 66, 18, { stage: 1, color: C.leaf, droop: 0.46, arch: 0.16 }));
-    o.push(broadLeaf(t.x, t.y, -6, 66, 18, { stage: 1, color: C.leaf, droop: 0.46, arch: 0.16 }));
+    o.push(broadLeaf(t.x, t.y, -176, 66, 18, { stage: 1, color: C.leafMid, droop: 0.46, arch: 0.16 }));
+    o.push(broadLeaf(t.x, t.y, -6, 66, 18, { stage: 1, color: C.leafMid, droop: 0.46, arch: 0.16 }));
     o.push(broadLeaf(t.x, t.y, -122, 70, 18, { stage: 2, color: C.leafLight, droop: 0.30, arch: 0.26 }));
     o.push(broadLeaf(135, 170, -62, 52, 16, { stage: 2, color: C.leafLight, droop: 0.24, veins: 8 }));
     o.push(broadLeaf(135, 170, -16, 46, 14, { stage: 3, color: C.leafPale, droop: 0.28, veins: 8 }));
@@ -307,8 +324,8 @@
       tips.push({ x: b.x - 6.5, y: b.y + 2 }, { x: b.x + 6.5, y: b.y + 2 }, { x: b.x, y: b.y + 3.5 });
     }
     bo.push('<path d="M' + f(p2.x) + ' ' + f(p2.y) + ' q-1 6 -1 9" fill="none" stroke="' + C.barkDark + '" stroke-width="2.6" stroke-linecap="round"/>');
-    bo.push('<path d="M76 176 q-8 -6 -6 -14 q6 -6 12 0 q2 8 -6 14 Z" fill="' + C.red + '"/>');
-    bo.push('<path d="M76 176 q-8 -6 -6 -14 q4 6 6 14 Z" fill="' + C.redDeep + '" opacity=".45"/>');
+    bo.push('<path d="M76 176 q-8 -6 -6 -14 q6 -6 12 0 q2 8 -6 14 Z" fill="' + C.sangria + '"/>');
+    bo.push('<path d="M76 176 q-8 -6 -6 -14 q4 6 6 14 Z" fill="' + C.sangriaDeep + '" opacity=".45"/>');
     o.push('<g class="bunch">' + bo.join('') + '</g>');
     ANCHORS.mawz = tips;
     return o.join('');
@@ -319,12 +336,18 @@
     var o = [];
     var b = branchSystem(100, 176, -90, 36, 8.5, 3, 404, C.barkDark);
     o.push(ground());
-    o.push('<path d="' + trunkPath(100, 230, 100, 174, 19, 12, -3) + '" fill="' + C.bark + '"/>');
-    o.push(leafyBlob(100, 124, 58, 46, 13, 21, C.leafDark, 0));
-    o.push(leafyBlob(70, 136, 30, 25, 10, 55, C.leaf, 1));
-    o.push(leafyBlob(130, 136, 30, 25, 10, 91, C.leaf, 1));
-    o.push(leafyBlob(100, 100, 38, 28, 11, 133, C.leaf, 2));
-    o.push(leafyBlob(100, 84, 26, 19, 9, 177, C.leafLight, 3));
+    o.push('<path d="' + trunkPath(100, 230, 100, 174, 19, 13, -3) + '" fill="' + C.bark + '"/>');
+    o.push(circleCanopy([
+      { x: 76,  y: 118, r: 40, fill: C.leaf,      s: 0 },
+      { x: 124, y: 116, r: 40, fill: C.leafDark,  s: 0 },
+      { x: 100, y: 136, r: 38, fill: C.leafMid,   s: 0 },
+      { x: 60,  y: 132, r: 28, fill: C.leafLight, s: 1 },
+      { x: 140, y: 130, r: 28, fill: C.leaf,      s: 1 },
+      { x: 100, y: 94,  r: 34, fill: C.leafLight, s: 2 },
+      { x: 74,  y: 96,  r: 26, fill: C.leafMid,   s: 2 },
+      { x: 126, y: 92,  r: 26, fill: C.leafPale,  s: 3 },
+      { x: 100, y: 74,  r: 21, fill: C.leafLight, s: 3 }
+    ]));
     o.push(b.markup);
     ANCHORS.ruman = b.tips;
     return o.join('');
@@ -335,12 +358,18 @@
     var o = [];
     var b = branchSystem(100, 168, -90, 40, 9.5, 3, 811, C.barkDark);
     o.push(ground());
-    o.push('<path d="' + trunkPath(100, 230, 100, 166, 22, 13, 3) + '" fill="' + C.barkDark + '"/>');
-    o.push(leafyBlob(100, 116, 64, 48, 15, 7, C.leafDark, 0));
-    o.push(leafyBlob(66, 128, 31, 26, 10, 43, C.leaf, 1));
-    o.push(leafyBlob(134, 128, 31, 26, 10, 71, C.leaf, 1));
-    o.push(leafyBlob(100, 92, 42, 31, 13, 109, C.leaf, 2));
-    o.push(leafyBlob(100, 72, 29, 21, 10, 151, C.leafLight, 3));
+    o.push('<path d="' + trunkPath(100, 230, 100, 166, 22, 14, 3) + '" fill="' + C.bark + '"/>');
+    o.push(circleCanopy([
+      { x: 74,  y: 110, r: 42, fill: C.leafDark,  s: 0 },
+      { x: 128, y: 108, r: 42, fill: C.leaf,      s: 0 },
+      { x: 100, y: 128, r: 40, fill: C.leafMid,   s: 0 },
+      { x: 56,  y: 126, r: 30, fill: C.leaf,      s: 1 },
+      { x: 146, y: 124, r: 30, fill: C.leafLight, s: 1 },
+      { x: 100, y: 84,  r: 36, fill: C.leafLight, s: 2 },
+      { x: 70,  y: 86,  r: 28, fill: C.leafMid,   s: 2 },
+      { x: 132, y: 82,  r: 28, fill: C.leafPale,  s: 3 },
+      { x: 100, y: 62,  r: 22, fill: C.leafLight, s: 3 }
+    ]));
     o.push(b.markup);
     ANCHORS.manju = b.tips;
     return o.join('');
@@ -351,12 +380,17 @@
     var o = [];
     var b = branchSystem(100, 190, -90, 33, 7.5, 3, 1215, C.barkDark);
     o.push(ground());
-    o.push('<path d="' + trunkPath(100, 230, 100, 188, 17, 11, 2) + '" fill="' + C.bark + '"/>');
-    o.push(leafyBlob(100, 142, 56, 44, 13, 29, C.leaf, 0));
-    o.push(leafyBlob(72, 150, 29, 24, 10, 63, C.leafLight, 1));
-    o.push(leafyBlob(128, 150, 29, 24, 10, 97, C.leafLight, 1));
-    o.push(leafyBlob(100, 118, 38, 28, 12, 139, C.leafPale, 2));
-    o.push(leafyBlob(100, 100, 25, 18, 9, 181, C.leafLight, 3));
+    o.push('<path d="' + trunkPath(100, 230, 100, 188, 17, 12, 2) + '" fill="' + C.bark + '"/>');
+    o.push(circleCanopy([
+      { x: 80,  y: 138, r: 36, fill: C.leaf,      s: 0 },
+      { x: 122, y: 136, r: 36, fill: C.leafDark,  s: 0 },
+      { x: 100, y: 152, r: 34, fill: C.leafMid,   s: 0 },
+      { x: 62,  y: 150, r: 26, fill: C.leafMid,   s: 1 },
+      { x: 140, y: 148, r: 26, fill: C.leaf,      s: 1 },
+      { x: 100, y: 112, r: 31, fill: C.leafLight, s: 2 },
+      { x: 76,  y: 114, r: 23, fill: C.leafMid,   s: 2 },
+      { x: 124, y: 110, r: 23, fill: C.leafLight, s: 3 }
+    ]));
     o.push(b.markup);
     ANCHORS.loomi = b.tips;
     return o.join('');
@@ -376,10 +410,10 @@
     }
     var t = { x: 107, y: 104 };
     o.push(palmFrond(t.x, t.y, -90, 78, { stage: 0, arch: 0.36, droop: 0.06, color: C.leafDark }));
-    o.push(palmFrond(t.x, t.y, -142, 80, { stage: 0, color: C.leaf, droop: 0.30, arch: 0.26 }));
-    o.push(palmFrond(t.x, t.y, -38, 80, { stage: 0, color: C.leaf, droop: 0.30, arch: 0.26 }));
-    o.push(palmFrond(t.x, t.y, -116, 84, { stage: 1, color: C.leafDark, droop: 0.36, arch: 0.22 }));
-    o.push(palmFrond(t.x, t.y, -64, 84, { stage: 1, color: C.leafDark, droop: 0.36, arch: 0.22 }));
+    o.push(palmFrond(t.x, t.y, -142, 80, { stage: 0, color: C.leafMid, droop: 0.30, arch: 0.26 }));
+    o.push(palmFrond(t.x, t.y, -38, 80, { stage: 0, color: C.leafMid, droop: 0.30, arch: 0.26 }));
+    o.push(palmFrond(t.x, t.y, -116, 84, { stage: 1, color: C.leaf, droop: 0.36, arch: 0.22 }));
+    o.push(palmFrond(t.x, t.y, -64, 84, { stage: 1, color: C.leaf, droop: 0.36, arch: 0.22 }));
     o.push(palmFrond(t.x, t.y, 174, 72, { stage: 2, color: C.leafLight, droop: 0.44 }));
     o.push(palmFrond(t.x, t.y, 6, 72, { stage: 2, color: C.leafLight, droop: 0.44 }));
     o.push(palmFrond(t.x, t.y, -160, 64, { stage: 3, color: C.leafPale, droop: 0.52 }));
@@ -409,61 +443,65 @@
   /* ============================== رسم الثمار ============================== */
   var FRUIT = {
     date: function () {
-      return '<path d="M0 -6 v-3.5" stroke="' + C.barkDark + '" stroke-width="1.3" stroke-linecap="round" fill="none"/>' +
-             '<ellipse cx="0" cy="0" rx="3.5" ry="5" fill="' + C.yellow + '"/>' +
-             '<ellipse cx="-1" cy="-1.2" rx="1.5" ry="2" fill="#F7E38C" opacity=".8"/>';
+      return '<path d="M0 -9 v-5" stroke="' + C.barkDark + '" stroke-width="2" stroke-linecap="round" fill="none"/>' +
+             '<ellipse cx="0" cy="0" rx="5.6" ry="7.6" fill="' + C.butter + '" stroke="' + C.cream + '" stroke-width="1.4"/>' +
+             '<ellipse cx="1.6" cy="1.8" rx="3" ry="4.6" fill="' + C.butterDeep + '" opacity=".55"/>' +
+             '<ellipse cx="-1.8" cy="-2.4" rx="1.8" ry="2.6" fill="#FFF1C4" opacity=".9"/>';
     },
     banana: function () {
-      return '<path d="M-5 -3 Q0 6 6 1 Q1 2 -3 -4 Z" fill="' + C.yellow + '"/>' +
-             '<path d="M-5 -3 Q0 6 6 1" fill="none" stroke="' + C.yellowDeep + '" stroke-width="1.1" stroke-linecap="round"/>' +
-             '<circle cx="-4.6" cy="-3.4" r="1" fill="' + C.barkDark + '"/>';
+      return '<path d="M-7.5 -5 Q0 9.5 9 1.5 Q1.5 3.5 -4.5 -6.5 Z" fill="' + C.butter + '" stroke="' + C.cream + '" stroke-width="1.3"/>' +
+             '<path d="M-7 -4.6 Q0 8 8 1" fill="none" stroke="' + C.butterDeep + '" stroke-width="1.6" stroke-linecap="round"/>' +
+             '<circle cx="-7" cy="-5.2" r="1.7" fill="' + C.barkDark + '"/>';
     },
     pomegranate: function () {
-      return '<path d="M0 -6 v-4" stroke="' + C.barkDark + '" stroke-width="1.4" stroke-linecap="round" fill="none"/>' +
-             '<circle cx="0" cy="0" r="5.2" fill="' + C.red + '"/>' +
-             '<circle cx="-1.6" cy="-1.8" r="1.8" fill="#E9765C" opacity=".75"/>' +
-             '<path d="M-2 -5 L0 -8 L2 -5 L0 -4 Z" fill="' + C.redDeep + '"/>';
+      return '<path d="M0 -9 v-5" stroke="' + C.barkDark + '" stroke-width="2" stroke-linecap="round" fill="none"/>' +
+             '<circle cx="0" cy="0" r="8.4" fill="' + C.sangria + '" stroke="' + C.cream + '" stroke-width="1.4"/>' +
+             '<path d="M8.4 0 a8.4 8.4 0 0 1 -8.4 8.4 a8.4 8.4 0 0 0 0 -16.8 Z" fill="' + C.sangriaDeep + '" opacity=".45"/>' +
+             '<circle cx="-3" cy="-3.2" r="2.6" fill="' + C.guava + '" opacity=".85"/>' +
+             '<path d="M-3.2 -8 L0 -12.4 L3.2 -8 L0 -6.4 Z" fill="' + C.sangriaDeep + '"/>';
     },
     mango: function () {
-      return '<path d="M1 -7 q1.5 -3 3.5 -4" fill="none" stroke="' + C.barkDark + '" stroke-width="1.4" stroke-linecap="round"/>' +
-             '<path d="M0 -5.4 Q6 -3 5 2.4 Q3.4 6 0 5.6 Q-5 4.6 -5.2 -0.6 Q-5 -4.4 0 -5.4 Z" fill="' + C.orange + '"/>' +
-             '<path d="M0 -5.4 Q6 -3 5 2.4 Q2 -1 0 -5.4 Z" fill="' + C.red + '" opacity=".7"/>';
+      return '<path d="M1.5 -10 q2.4 -4.4 5.4 -5.4" fill="none" stroke="' + C.barkDark + '" stroke-width="2" stroke-linecap="round"/>' +
+             '<path d="M0 -8.8 Q9.6 -4.8 8 3.8 Q5.4 9.6 0 9 Q-8 7.4 -8.4 -1 Q-8 -7 0 -8.8 Z" fill="' + C.sunset + '" stroke="' + C.cream + '" stroke-width="1.4"/>' +
+             '<path d="M0 -8.8 Q9.6 -4.8 8 3.8 Q3.2 -1.6 0 -8.8 Z" fill="' + C.sangria + '" opacity=".72"/>' +
+             '<ellipse cx="-3.4" cy="-2.6" rx="2.4" ry="3.2" fill="' + C.butter + '" opacity=".7"/>';
     },
     lime: function () {
-      return '<path d="M0 -5.5 v-4" stroke="' + C.barkDark + '" stroke-width="1.3" stroke-linecap="round" fill="none"/>' +
-             '<circle cx="0" cy="0" r="4.8" fill="' + C.lime + '"/>' +
-             '<circle cx="-1.5" cy="-1.6" r="1.7" fill="#C6D877" opacity=".8"/>' +
-             '<path d="M0 -4.6 q2.6 -3 5 -2 q-1.4 3 -4.4 2.6 Z" fill="' + C.leafDark + '"/>';
+      return '<path d="M0 -8.6 v-5" stroke="' + C.barkDark + '" stroke-width="2" stroke-linecap="round" fill="none"/>' +
+             '<circle cx="0" cy="0" r="7.8" fill="' + C.moss + '" stroke="' + C.cream + '" stroke-width="1.4"/>' +
+             '<path d="M7.8 0 a7.8 7.8 0 0 1 -7.8 7.8 a7.8 7.8 0 0 0 0 -15.6 Z" fill="' + C.mossDeep + '" opacity=".4"/>' +
+             '<circle cx="-2.6" cy="-2.8" r="2.4" fill="#DED26F" opacity=".9"/>' +
+             '<path d="M0.5 -7.6 q4.4 -4.6 8.4 -3 q-2.4 4.8 -7.4 4.2 Z" fill="' + C.leaf + '"/>';
     },
     coconut: function () {
-      return '<circle cx="0" cy="0" r="4.9" fill="' + C.coco + '"/>' +
-             '<path d="M-4.9 0 a4.9 4.9 0 0 1 9.8 0 Z" fill="' + C.cocoDark + '" opacity=".35"/>' +
-             '<circle cx="-1.8" cy="1.4" r=".9" fill="' + C.cocoDark + '"/>' +
-             '<circle cx="1.6" cy="1.4" r=".9" fill="' + C.cocoDark + '"/>' +
-             '<circle cx="-.1" cy="-1.2" r=".9" fill="' + C.cocoDark + '"/>';
+      return '<circle cx="0" cy="0" r="7.8" fill="' + C.coco + '" stroke="' + C.cream + '" stroke-width="1.4"/>' +
+             '<path d="M-7.8 0 a7.8 7.8 0 0 1 15.6 0 Z" fill="' + C.barkLight + '" opacity=".55"/>' +
+             '<circle cx="-2.8" cy="2.2" r="1.5" fill="' + C.cocoDark + '"/>' +
+             '<circle cx="2.6" cy="2.2" r="1.5" fill="' + C.cocoDark + '"/>' +
+             '<circle cx="-0.1" cy="-2" r="1.5" fill="' + C.cocoDark + '"/>';
     }
   };
 
   /* ========================== تعريف الأشجار الستّ ========================= */
   var LIST = [
     { id: 'nakhla',  name: 'النخلة',          fruit: 'رطبة',   few: 'رطبات',       many: 'رطبة',      emoji: '🌴',
-      tone: C.yellow,     build: buildPalm,         shape: 'date',
+      tone: C.butter,     build: buildPalm,         shape: 'date',
       zones: [ { x: 80, y: 150, rx: 13, ry: 19, w: 1 }, { x: 122, y: 150, rx: 13, ry: 19, w: 1 } ] },
 
     { id: 'mawz',    name: 'شجرة الموز',      fruit: 'موزة',   few: 'موزات',       many: 'موزة',      emoji: '🍌',
-      tone: C.yellowDeep, build: buildBanana,       shape: 'banana',
+      tone: C.butterDeep, build: buildBanana,       shape: 'banana',
       zones: [ { x: 80, y: 146, rx: 9, ry: 16, w: 1.6, rot: 10 }, { x: 124, y: 158, rx: 8, ry: 12, w: .5, rot: 10 } ] },
 
     { id: 'ruman',   name: 'شجرة الرمان',     fruit: 'رمانة',  few: 'رمانات',      many: 'رمانة',     emoji: '🍎',
-      tone: C.red,        build: buildPomegranate,  shape: 'pomegranate',
+      tone: C.sangria,        build: buildPomegranate,  shape: 'pomegranate',
       zones: [ { x: 100, y: 126, rx: 46, ry: 32, w: 1 } ] },
 
     { id: 'manju',   name: 'شجرة المانجو',    fruit: 'مانجوة', few: 'حبات مانجو',  many: 'حبة مانجو', emoji: '🥭',
-      tone: C.orange,     build: buildMango,        shape: 'mango',
+      tone: C.sunset,     build: buildMango,        shape: 'mango',
       zones: [ { x: 100, y: 116, rx: 50, ry: 36, w: 1 } ] },
 
     { id: 'loomi',   name: 'الليمون العماني', fruit: 'لومية',  few: 'لوميات',      many: 'لومية',     emoji: '🍋',
-      tone: C.lime,       build: buildLoomi,        shape: 'lime',
+      tone: C.moss,       build: buildLoomi,        shape: 'lime',
       zones: [ { x: 100, y: 142, rx: 44, ry: 32, w: 1 } ] },
 
     { id: 'narjeel', name: 'جوز الهند',       fruit: 'جوزة',   few: 'جوزات',       many: 'جوزة',      emoji: '🥥',
@@ -498,12 +536,12 @@
     var rnd = mulberry32(seed), out = [], i, k, m, ring;
     var ordered = spreadOrder(anchors || []);
     for (i = 0; i < ordered.length && out.length < n; i++) {
-      out.push({ x: ordered[i].x + (rnd() * 2 - 1) * 1.4, y: ordered[i].y + 2.5 + rnd() * 1.5, rot: (rnd() * 2 - 1) * 14 });
+      out.push({ x: ordered[i].x + (rnd() * 2 - 1) * 1.6, y: ordered[i].y + 4 + rnd() * 2, rot: (rnd() * 2 - 1) * 13 });
     }
     ring = 1;
     while (out.length < n && ordered.length && ring <= 10) {
       for (i = 0; i < ordered.length && out.length < n; i++) {
-        var a = rnd() * Math.PI * 2, rr = 6 + ring * 3.6;
+        var a = rnd() * Math.PI * 2, rr = 9 + ring * 5.2;
         out.push({ x: ordered[i].x + Math.cos(a) * rr, y: ordered[i].y + Math.sin(a) * rr * 0.7 + 2, rot: (rnd() * 2 - 1) * 20 });
       }
       ring++;
@@ -579,10 +617,10 @@
   }
 
   function fruitSize(count) {
-    if (count <= 45) return 1;
-    if (count <= 80) return 0.86;
-    if (count <= 120) return 0.76;
-    return 0.66;
+    if (count <= 24) return 1;
+    if (count <= 45) return 0.84;
+    if (count <= 80) return 0.7;
+    return 0.58;
   }
 
   function treeSvg(treeId, count, opts) {
@@ -592,8 +630,7 @@
     var size = fruitSize(n);
     var fruits = [];
     for (var i = 0; i < n; i++) fruits.push(fruitMarkup(treeId, i, size));
-    var grain = opts.texture === false ? '' : ' filter="url(#printGrain)"';
-    return '<g class="tree-body" data-stage="' + stageOf(n) + '" data-fruit="' + (n ? 1 : 0) + '"' + grain + '>' +
+    return '<g class="tree-body" data-stage="' + stageOf(n) + '" data-fruit="' + (n ? 1 : 0) + '">' +
       t.body + '<g class="fruit-layer">' + fruits.join('') + '</g></g>';
   }
 
@@ -613,13 +650,7 @@
     '.tree-body .bunch{transition:opacity .4s ease}' +
     '.tree-body[data-fruit="0"] .bunch{opacity:0}';
 
-  function defs() {
-    return '<defs><filter id="printGrain" x="-12%" y="-12%" width="124%" height="124%">' +
-      '<feTurbulence type="fractalNoise" baseFrequency="1.05" numOctaves="2" seed="9" result="noise"/>' +
-      '<feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.98  0 0 0 0 0.95  0 0 0 0 0.84  0 0 0 0.42 0" result="grain"/>' +
-      '<feComposite in="grain" in2="SourceGraphic" operator="in" result="gin"/>' +
-      '<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gin"/></feMerge></filter></defs>';
-  }
+  function defs() { return ''; }
 
   global.Trees = {
     LIST: LIST, byId: byId, COLORS: C, VIEWBOX: VIEWBOX,

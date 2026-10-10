@@ -5,7 +5,7 @@
   'use strict';
 
   var T = window.Trees, Sound = window.Sound, Store = window.Store, Exporter = window.Exporter;
-  var timer = null, wheel = null;
+  var timer = null, wheel = null, groups = null;
   var SVGNS = 'http://www.w3.org/2000/svg';
   var state = Store.load();
 
@@ -225,6 +225,7 @@
     closeSheet();
     if (timer) timer.closeBig();
     if (wheel) wheel.close();
+    if (groups) groups.close();
     lastFocus = document.activeElement;
     var ov = document.createElement('div');
     ov.className = 'overlay';
@@ -243,7 +244,7 @@
   function escClose(e) { if (e.key === 'Escape') closeSheet(); }
 
   function closeSheet() {
-    var ov = $('#modal-root .overlay:not(.timer-overlay):not(.wheel-overlay)');
+    var ov = $('#modal-root .overlay:not(.timer-overlay):not(.wheel-overlay):not(.qg-overlay)');
     if (ov) ov.remove();
     document.removeEventListener('keydown', escClose);
     if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
@@ -427,7 +428,7 @@
       '</fieldset>' +
       '<fieldset class="block"><legend>المجموعات وأشجارها</legend>' + groupsHtml + '</fieldset>' +
       '<fieldset class="block"><legend>أسماء عجلة الحظ</legend>' +
-        '<p class="note" style="margin:0 0 8px">اسم في كل سطر. الأسماء المحذوفة تخرج من العجلة.</p>' +
+        '<p class="note" style="margin:0 0 8px">اسم في كل سطر. تُستخدم في عجلة الحظ وفي المجموعات السريعة.</p>' +
         '<textarea id="set-names" class="names-box" rows="7" aria-label="أسماء الطلاب" ' +
           'placeholder="أحمد&#10;مريم&#10;سالم">' + esc(state.wheel.list.join('\n')) + '</textarea>' +
         (Store.STUDENTS.length
@@ -436,7 +437,7 @@
       '</fieldset>' +
       '<fieldset class="block"><legend>المظهر والصوت</legend>' +
         '<label class="switch"><input type="checkbox" id="set-sound"' + (state.sound ? ' checked' : '') + '> الأصوات اللطيفة</label>' +
-        '<label class="switch"><input type="checkbox" id="set-texture"' + (state.texture ? ' checked' : '') + '> ملمس الطباعة على الأشجار</label>' +
+        '<label class="switch"><input type="checkbox" id="set-texture"' + (state.texture ? ' checked' : '') + '> ملمس الورق الخفيف في الخلفية</label>' +
       '</fieldset>' +
       '<fieldset class="block"><legend>بيانات الدخول</legend>' +
         '<div class="row"><label for="set-user">اسم المستخدم</label><input type="text" id="set-user" value="' + esc(state.auth.user) + '" spellcheck="false"></div>' +
@@ -466,8 +467,10 @@
           var names = $('#set-names', ov).value.split('\n')
             .map(function (x) { return x.trim(); })
             .filter(Boolean).slice(0, 120);
+          var changed = state.wheel.list.join('\n') !== names.join('\n');
           state.wheel.list = names;
           state.wheel.picked = state.wheel.picked.filter(function (x) { return names.indexOf(x) !== -1; });
+          if (changed && state.wheel.quick) state.wheel.quick.last = null;
           state.sound = $('#set-sound', ov).checked;
           state.texture = $('#set-texture', ov).checked;
           var u = $('#set-user', ov).value.trim();
@@ -509,6 +512,7 @@
 
     $('#btn-celebrate').addEventListener('click', celebrate);
     $('#btn-wheel').addEventListener('click', function () { if (wheel) wheel.open(); });
+    $('#btn-groups').addEventListener('click', function () { if (groups) groups.open(); });
     $('#btn-history').addEventListener('click', historySheet);
     $('#btn-settings').addEventListener('click', settingsSheet);
     $('#btn-reset').addEventListener('click', confirmReset);
@@ -517,7 +521,7 @@
     });
 
     $('#modal-root').addEventListener('click', function (e) {
-      if (e.target.closest('.timer-overlay') || e.target.closest('.wheel-overlay')) return;
+      if (e.target.closest('.timer-overlay') || e.target.closest('.wheel-overlay') || e.target.closest('.qg-overlay')) return;
       if (e.target.closest('[data-close]')) closeSheet();
     });
 
@@ -553,7 +557,15 @@
       wheel = window.BustanWheel.create({
         get: function () { return state.wheel; },
         save: persist,
-        beforeOpen: function () { closeSheet(); if (timer) timer.closeBig(); },
+        beforeOpen: function () { closeSheet(); if (timer) timer.closeBig(); if (groups) groups.close(); },
+        openSettings: settingsSheet
+      });
+    }
+    if (!groups) {
+      groups = window.BustanGroups.create({
+        get: function () { return state.wheel; },
+        save: persist,
+        beforeOpen: function () { closeSheet(); if (timer) timer.closeBig(); if (wheel) wheel.close(); },
         openSettings: settingsSheet
       });
     }

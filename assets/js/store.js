@@ -27,7 +27,8 @@
       sound: true,
       texture: true,
       timer: { duration: 120, remaining: 120 },
-      wheel: { list: STUDENTS.slice(), picked: [], skipPicked: true },
+      wheel: { list: STUDENTS.slice(), picked: [], skipPicked: true,
+               quick: { mode: 'size', size: 5, count: 4, last: null } },
       groups: global.Trees.LIST.map(function (t, i) {
         return { id: 'g' + (i + 1), name: 'المجموعة ' + (ORD[i] || (i + 1)), treeId: t.id, count: 0 };
       }),
@@ -77,7 +78,24 @@
         var picked = Array.isArray(s.wheel.picked)
           ? s.wheel.picked.map(String).filter(function (x) { return list.indexOf(x) !== -1; })
           : [];
-        d.wheel = { list: list, picked: picked, skipPicked: s.wheel.skipPicked !== false };
+        var q = d.wheel.quick, sq = s.wheel.quick;
+        if (sq && typeof sq === 'object') {
+          var last = null;
+          if (Array.isArray(sq.last)) {
+            last = sq.last
+              .filter(Array.isArray)
+              .map(function (g) { return g.map(String).filter(function (x) { return list.indexOf(x) !== -1; }); })
+              .filter(function (g) { return g.length; });
+            if (!last.length) last = null;
+          }
+          q = {
+            mode: sq.mode === 'count' ? 'count' : 'size',
+            size: Math.max(2, Math.min(12, parseInt(sq.size, 10) || 5)),
+            count: Math.max(2, Math.min(12, parseInt(sq.count, 10) || 4)),
+            last: last
+          };
+        }
+        d.wheel = { list: list, picked: picked, skipPicked: s.wheel.skipPicked !== false, quick: q };
       }
       if (Array.isArray(s.history)) d.history = s.history.slice(0, 60);
       return d;

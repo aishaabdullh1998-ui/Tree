@@ -7,13 +7,14 @@
 
   /* ألوان القطاعات: سبعة ألوان لا يتجاور منها لونان متشابهان */
   var SEG = [
-    { fill: '#4F7C33', text: '#FBF6DC' },
-    { fill: '#EFCE4B', text: '#3B4A2A' },
-    { fill: '#D9482F', text: '#FFF3E2' },
-    { fill: '#A9BE47', text: '#2F4019' },
-    { fill: '#EE9A3C', text: '#4A2D08' },
-    { fill: '#3B6026', text: '#F3EAC4' },
-    { fill: '#C6AA82', text: '#3B2E18' }
+    { fill: '#657652', text: '#F6F2E6' },   /* PALM     */
+    { fill: '#F4D892', text: '#4A4420' },   /* BUTTER   */
+    { fill: '#E36559', text: '#FFF2EE' },   /* SANGRIA  */
+    { fill: '#94BEBB', text: '#20413F' },   /* LAGOON   */
+    { fill: '#E89C73', text: '#4C2B16' },   /* SUNSET   */
+    { fill: '#23617E', text: '#E8F1F5' },   /* ODYSSEY  */
+    { fill: '#C0B05B', text: '#403A16' },   /* MOSS     */
+    { fill: '#F2B6A3', text: '#5A3024' }    /* GUAVA    */
   ];
 
   var CX = 200, CY = 200, R = 178, LABEL_R = 164, HUB = 46;
@@ -78,8 +79,8 @@
       var big = a > 180 ? 1 : 0;
       var done = d.picked.indexOf(list[i]) !== -1;
       var tone = SEG[i % SEG.length];
-      var fill = done ? '#EBE2C2' : tone.fill;
-      var col = done ? '#9BA886' : tone.text;
+      var fill = done ? '#E7DCCB' : tone.fill;
+      var col = done ? '#A6AE97' : tone.text;
 
       parts.push('<path class="seg' + (done ? ' done' : '') + '" data-i="' + i + '" d="M' + f(CX) + ' ' + f(CY) +
         ' L' + f(p0.x) + ' ' + f(p0.y) + ' A' + R + ' ' + R + ' 0 ' + big + ' 1 ' + f(p1.x) + ' ' + f(p1.y) + ' Z" fill="' + fill + '"/>');
@@ -96,17 +97,17 @@
     }
 
     return '<svg class="wheel-svg" viewBox="0 0 400 400" aria-hidden="true">' +
-      '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 10) + '" fill="#C6AA82"/>' +
-      '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 4) + '" fill="#FAF4D8"/>' +
+      '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 10) + '" fill="#D8C5AE"/>' +
+      '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 4) + '" fill="#F3E7DA"/>' +
       '<g class="wheel-rotor">' + parts.join('') + labels.join('') + '</g>' +
-      '<circle cx="' + CX + '" cy="' + CY + '" r="' + R + '" fill="none" stroke="#A98A61" stroke-width="3"/>' +
-      '<circle class="hub" cx="' + CX + '" cy="' + CY + '" r="' + HUB + '" fill="#FFFBEC" stroke="#A98A61" stroke-width="4"/>' +
+      '<circle cx="' + CX + '" cy="' + CY + '" r="' + R + '" fill="none" stroke="#C3AE94" stroke-width="3"/>' +
+      '<circle class="hub" cx="' + CX + '" cy="' + CY + '" r="' + HUB + '" fill="#FCF6EE" stroke="#C3AE94" stroke-width="4"/>' +
       '<text class="hub-text" x="' + CX + '" y="' + CY + '" text-anchor="middle" dominant-baseline="middle" ' +
-        'font-size="19" font-weight="800" fill="#4F7C33">أدِر</text>' +
+        'font-size="19" font-weight="800" fill="#657652">أدِر</text>' +
       '<g class="wheel-pointer">' +
-        '<path d="M200 48 l16 -26 h-32 Z" fill="#D9482F"/>' +
-        '<path d="M200 26 m-18 -4 a18 14 0 1 1 36 0 Z" fill="#A98A61"/>' +
-        '<circle cx="200" cy="18" r="7" fill="#EFCE4B" stroke="#A98A61" stroke-width="2.5"/>' +
+        '<path d="M200 48 l16 -26 h-32 Z" fill="#E36559"/>' +
+        '<path d="M200 26 m-18 -4 a18 14 0 1 1 36 0 Z" fill="#C3AE94"/>' +
+        '<circle cx="200" cy="18" r="7" fill="#EFCE4B" stroke="#C3AE94" stroke-width="2.5"/>' +
       '</g></svg>';
   };
 

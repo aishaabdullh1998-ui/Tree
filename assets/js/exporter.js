@@ -157,25 +157,25 @@
       ctx.textAlign = 'center';
 
       /* الخلفية */
-      ctx.fillStyle = '#FAF4D8'; ctx.fillRect(0, 0, W, H);
-      ctx.strokeStyle = '#C6AA82'; ctx.lineWidth = 8;
+      ctx.fillStyle = '#F3E7DA'; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = '#D8C5AE'; ctx.lineWidth = 8;
       roundRect(ctx, 22, 22, W - 44, H - 44, 40); ctx.stroke();
-      ctx.strokeStyle = '#E7B23C'; ctx.lineWidth = 3;
+      ctx.strokeStyle = '#C0B05B'; ctx.lineWidth = 3;
       roundRect(ctx, 40, 40, W - 80, H - 80, 28); ctx.stroke();
 
       /* العنوان */
       var fam = '"Baloo Bhaijaan 2","Tajawal","Noto Kufi Arabic",sans-serif';
-      ctx.fillStyle = '#3B4A2A';
+      ctx.fillStyle = '#35402E';
       ctx.font = '800 54px ' + fam;
       ctx.fillText(record.title || 'بستان المجموعات', W / 2, 128);
-      ctx.fillStyle = '#74855D';
+      ctx.fillStyle = '#7E8A72';
       ctx.font = '700 26px ' + fam;
       ctx.fillText(arabicDate(record.date), W / 2, 172);
 
       /* الفائزة */
       if (top > 0) {
         var winners = sorted.filter(function (r) { return r.count === top; });
-        ctx.fillStyle = '#C9902A';
+        ctx.fillStyle = '#A2923F';
         ctx.font = '800 32px ' + fam;
         var label = winners.length > 1
           ? 'تعادل في الصدارة: ' + winners.map(function (w) { return w.name; }).join(' و ')
@@ -188,27 +188,27 @@
         var c = cols - 1 - (i % cols), rw = Math.floor(i / cols);
         var x = pad + c * cellW, y = 250 + rw * cellH;
         var isWin = r.count === top && top > 0;
-        ctx.fillStyle = isWin ? '#FFFDF2' : '#FFFBEC';
-        ctx.strokeStyle = isWin ? '#E7B23C' : '#DDCCA6';
+        ctx.fillStyle = isWin ? '#FFFCF4' : '#FCF6EE';
+        ctx.strokeStyle = isWin ? '#C0B05B' : '#DFCDB4';
         ctx.lineWidth = isWin ? 6 : 3;
         roundRect(ctx, x + 12, y + 8, cellW - 24, cellH - 26, 30);
         ctx.fill(); ctx.stroke();
 
         if (imgs[i]) ctx.drawImage(imgs[i], x + cellW / 2 - 110, y + 24, 220, 250);
 
-        ctx.fillStyle = '#3B4A2A';
+        ctx.fillStyle = '#35402E';
         ctx.font = '800 30px ' + fam;
         ctx.fillText(r.name, x + cellW / 2, y + 312);
 
         var t = T.byId[r.treeId];
-        ctx.fillStyle = isWin ? '#C9902A' : '#74855D';
+        ctx.fillStyle = isWin ? '#A2923F' : '#7E8A72';
         ctx.font = '800 34px ' + fam;
         ctx.fillText(r.count + ' ' + (t ? T.unitFor(r.treeId, r.count) : ''), x + cellW / 2, y + 356);
 
         if (isWin) { ctx.font = '40px ' + fam; ctx.fillText('👑', x + cellW / 2, y + 14); }
       });
 
-      ctx.fillStyle = '#9BA886';
+      ctx.fillStyle = '#A6AE97';
       ctx.font = '600 22px ' + fam;
       ctx.fillText('بستان المجموعات · أشجار عُمان المثمرة', W / 2, H - 56);
 
