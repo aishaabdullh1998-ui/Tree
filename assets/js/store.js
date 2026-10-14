@@ -12,7 +12,7 @@
   var LINKED = !!global.BUSTAN_SYNC;
   /* يُرفع هذا الرقم عند تغيير الرمز الافتراضي، لتحديث الأجهزة التي تحمل الرمز القديم */
   var DEFAULTS_VERSION = 2;
-  var DEFAULT_PIN = (global.Theme && global.Theme.auth && global.Theme.auth.pin) || '19961998';
+  var DEFAULT_PIN = (global.Theme && global.Theme.auth && global.Theme.auth.pin) || '1234';
   var OLD_PINS = ['2030'];
 
   var ORD = [L('الأولى'), L('الثانية'), L('الثالثة'), L('الرابعة'), L('الخامسة'), L('السادسة')];

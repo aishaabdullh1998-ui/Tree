@@ -6,7 +6,7 @@
      غيّري الاسم والرمز بين علامتي التنصيص، ثم احفظي الملف.
      ==================================================================== -->
 <script>
-window.BUSTAN_AUTH = { user: "coinjar", pin: "1111" };
+window.BUSTAN_AUTH = { user: "moalema", pin: "1234" };
 </script>
 
 <style>
@@ -1165,7 +1165,7 @@ document.documentElement.setAttribute('lang', "en");
         empty: 'البستان في انتظار أول ثمرة — اضغطي على أي شجرة!',
         notStarted: 'أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
       },
-      auth: { user: 'aisha', pin: '19961998' },
+      auth: { user: 'moalema', pin: '1234' },
       items: 'trees',
       exportColors: {
         bg: '#F3E7DA', frame: '#D8C5AE', inner: '#C0B05B',
@@ -1190,7 +1190,7 @@ document.documentElement.setAttribute('lang', "en");
         empty: 'المجرّة في انتظار أول نجمة — اضغطي على أي كوكب!',
         notStarted: 'أضيفي نجمة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
       },
-      auth: { user: 'Nama', pin: '94443673' },
+      auth: { user: 'moalema', pin: '1234' },
       items: 'planets',
       exportColors: {
         bg: '#E9F0F2', frame: '#B9CBD3', inner: '#94BEBB',
@@ -1214,7 +1214,7 @@ document.documentElement.setAttribute('lang', "en");
         empty: 'الرفوف في انتظار أول كتاب — اضغطي على أي رفّ!',
         notStarted: 'أضيفي كتابًا واحدًا على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
       },
-      auth: { user: 'shelves', pin: '1111' },
+      auth: { user: 'moalema', pin: '1234' },
       items: 'shelves',
       exportColors: {
         bg: '#FBF1E2', frame: '#E0C49B', inner: '#C08F4E',
@@ -1234,7 +1234,7 @@ document.documentElement.setAttribute('lang', "en");
       favicon: '⚓',
       footer: 'Treasure Voyage · every answer is one step closer',
       boardHint: 'Tap a ship to add a coin · or press number keys 1 to 6',
-      auth: { user: 'voyage', pin: '1111' },
+      auth: { user: 'moalema', pin: '1234' },
       items: 'voyage',
       words: {
         item: 'coin', itemAl: 'Coin', holder: 'ship', holderAl: 'Ships', icon: '⛵',
@@ -1259,7 +1259,7 @@ document.documentElement.setAttribute('lang', "en");
       favicon: '🫙',
       footer: 'Coin Jar · the team that saves the most, wins',
       boardHint: 'Tap a jar to drop a coin · or press number keys 1 to 6',
-      auth: { user: 'coinjar', pin: '1111' },
+      auth: { user: 'moalema', pin: '1234' },
       items: 'jars',
       words: {
         item: 'coin', itemAl: 'Coin', holder: 'jar', holderAl: 'Jars', icon: '🫙',
@@ -1280,7 +1280,11 @@ document.documentElement.setAttribute('lang', "en");
   global.Theme = THEMES[id];
   global.Theme.registry = THEMES;
 
-  /* نسخة المشترية: سطر واحد في أعلى الملف يحمل اسمها ورمزها، فيُغيَّر
+  /* بيانات الدخول أعلاه تجريبية لا غير، وتخصّ النسخة غير المربوطة بحساب
+     (ملفًا يُفتح بلا إنترنت). المستودع عامّ، فلا يوضع فيه رمز حقيقي قطّ.
+     أمّا الصفحات المنشورة فالتحقّق فيها من الحساب على السيرفر.
+
+     نسخة الملف: سطر واحد في أعلاه يحمل الاسم والرمز، فيُغيَّر
      بمحرّر نصوص بلا دخول إلى الشيفرة */
   var a = global.BUSTAN_AUTH;
   if (a && a.user && a.pin) {
@@ -1390,6 +1394,8 @@ document.documentElement.setAttribute('lang', "en");
     'عنوان اللوحة': 'Board title',
     'فتعود اللوحة كما هي على أي جهاز.': 'so the board comes back just as it was, on any device.',
     'كل التغييرات تُحفظ في هذا الجهاز.': 'Everything here is saved on this device.',
+    'عنوان اللوحة والمجموعات تُحفظ في حسابك، وأسماء الطالبات في هذا الجهاز وحده.':
+      'The board title and groups are saved to your account; student names stay on this device only.',
     'كل مجموعة': 'each group has',
     'كم طالبًا في كل مجموعة؟': 'How many students per group?',
     'كم مجموعة تريدين؟': 'How many groups?',
@@ -2201,7 +2207,7 @@ document.documentElement.setAttribute('lang', "en");
   var LINKED = !!global.BUSTAN_SYNC;
   /* يُرفع هذا الرقم عند تغيير الرمز الافتراضي، لتحديث الأجهزة التي تحمل الرمز القديم */
   var DEFAULTS_VERSION = 2;
-  var DEFAULT_PIN = (global.Theme && global.Theme.auth && global.Theme.auth.pin) || '19961998';
+  var DEFAULT_PIN = (global.Theme && global.Theme.auth && global.Theme.auth.pin) || '1234';
   var OLD_PINS = ['2030'];
 
   var ORD = [L('الأولى'), L('الثانية'), L('الثالثة'), L('الرابعة'), L('الخامسة'), L('السادسة')];
@@ -4210,7 +4216,9 @@ document.documentElement.setAttribute('lang', "en");
     }).join('');
 
     openSheet(
-      '<h2>⚙️ ' + L('الإعدادات') + '</h2><p class="note">' + L('كل التغييرات تُحفظ في هذا الجهاز.') + '</p>' +
+      '<h2>⚙️ ' + L('الإعدادات') + '</h2><p class="note">' + (Store.linked
+        ? L('عنوان اللوحة والمجموعات تُحفظ في حسابك، وأسماء الطالبات في هذا الجهاز وحده.')
+        : L('كل التغييرات تُحفظ في هذا الجهاز.')) + '</p>' +
       '<fieldset class="block"><legend>' + L('المسابقة') + '</legend>' +
         '<div class="row"><label for="set-title">' + L('عنوان اللوحة') + '</label><input type="text" id="set-title" maxlength="40" value="' + esc(state.title) + '"></div>' +
       '</fieldset>' +

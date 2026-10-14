@@ -22,7 +22,7 @@
         empty: 'البستان في انتظار أول ثمرة — اضغطي على أي شجرة!',
         notStarted: 'أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
       },
-      auth: { user: 'aisha', pin: '19961998' },
+      auth: { user: 'moalema', pin: '1234' },
       items: 'trees',
       exportColors: {
         bg: '#F3E7DA', frame: '#D8C5AE', inner: '#C0B05B',
@@ -47,7 +47,7 @@
         empty: 'المجرّة في انتظار أول نجمة — اضغطي على أي كوكب!',
         notStarted: 'أضيفي نجمة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
       },
-      auth: { user: 'Nama', pin: '94443673' },
+      auth: { user: 'moalema', pin: '1234' },
       items: 'planets',
       exportColors: {
         bg: '#E9F0F2', frame: '#B9CBD3', inner: '#94BEBB',
@@ -71,7 +71,7 @@
         empty: 'الرفوف في انتظار أول كتاب — اضغطي على أي رفّ!',
         notStarted: 'أضيفي كتابًا واحدًا على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
       },
-      auth: { user: 'shelves', pin: '1111' },
+      auth: { user: 'moalema', pin: '1234' },
       items: 'shelves',
       exportColors: {
         bg: '#FBF1E2', frame: '#E0C49B', inner: '#C08F4E',
@@ -91,7 +91,7 @@
       favicon: '⚓',
       footer: 'Treasure Voyage · every answer is one step closer',
       boardHint: 'Tap a ship to add a coin · or press number keys 1 to 6',
-      auth: { user: 'voyage', pin: '1111' },
+      auth: { user: 'moalema', pin: '1234' },
       items: 'voyage',
       words: {
         item: 'coin', itemAl: 'Coin', holder: 'ship', holderAl: 'Ships', icon: '⛵',
@@ -116,7 +116,7 @@
       favicon: '🫙',
       footer: 'Coin Jar · the team that saves the most, wins',
       boardHint: 'Tap a jar to drop a coin · or press number keys 1 to 6',
-      auth: { user: 'coinjar', pin: '1111' },
+      auth: { user: 'moalema', pin: '1234' },
       items: 'jars',
       words: {
         item: 'coin', itemAl: 'Coin', holder: 'jar', holderAl: 'Jars', icon: '🫙',
@@ -137,7 +137,11 @@
   global.Theme = THEMES[id];
   global.Theme.registry = THEMES;
 
-  /* نسخة المشترية: سطر واحد في أعلى الملف يحمل اسمها ورمزها، فيُغيَّر
+  /* بيانات الدخول أعلاه تجريبية لا غير، وتخصّ النسخة غير المربوطة بحساب
+     (ملفًا يُفتح بلا إنترنت). المستودع عامّ، فلا يوضع فيه رمز حقيقي قطّ.
+     أمّا الصفحات المنشورة فالتحقّق فيها من الحساب على السيرفر.
+
+     نسخة الملف: سطر واحد في أعلاه يحمل الاسم والرمز، فيُغيَّر
      بمحرّر نصوص بلا دخول إلى الشيفرة */
   var a = global.BUSTAN_AUTH;
   if (a && a.user && a.pin) {

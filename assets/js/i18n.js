@@ -98,6 +98,8 @@
     'عنوان اللوحة': 'Board title',
     'فتعود اللوحة كما هي على أي جهاز.': 'so the board comes back just as it was, on any device.',
     'كل التغييرات تُحفظ في هذا الجهاز.': 'Everything here is saved on this device.',
+    'عنوان اللوحة والمجموعات تُحفظ في حسابك، وأسماء الطالبات في هذا الجهاز وحده.':
+      'The board title and groups are saved to your account; student names stay on this device only.',
     'كل مجموعة': 'each group has',
     'كم طالبًا في كل مجموعة؟': 'How many students per group?',
     'كم مجموعة تريدين؟': 'How many groups?',

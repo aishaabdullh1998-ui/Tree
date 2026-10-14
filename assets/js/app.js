@@ -711,7 +711,9 @@
     }).join('');
 
     openSheet(
-      '<h2>⚙️ ' + L('الإعدادات') + '</h2><p class="note">' + L('كل التغييرات تُحفظ في هذا الجهاز.') + '</p>' +
+      '<h2>⚙️ ' + L('الإعدادات') + '</h2><p class="note">' + (Store.linked
+        ? L('عنوان اللوحة والمجموعات تُحفظ في حسابك، وأسماء الطالبات في هذا الجهاز وحده.')
+        : L('كل التغييرات تُحفظ في هذا الجهاز.')) + '</p>' +
       '<fieldset class="block"><legend>' + L('المسابقة') + '</legend>' +
         '<div class="row"><label for="set-title">' + L('عنوان اللوحة') + '</label><input type="text" id="set-title" maxlength="40" value="' + esc(state.title) + '"></div>' +
       '</fieldset>' +
