@@ -748,3 +748,17 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 :root[data-theme="galaxy"] .card.leader { background: #FFFDF5; }
 :root[data-theme="galaxy"] .btn--danger { background: #FBE4DC; border-color: #E09A89; color: #8E3528; }
 :root[data-theme="galaxy"] .wheel-svg .seg { stroke: #E9F0F2; }
+
+/* مدارات تتّسع وكوكب يدور بعد عشر نجوم */
+.tree-body .orbit-system {
+  transform-origin: 100px 100px;
+  transition: transform .7s cubic-bezier(.3,1.25,.5,1);
+}
+.tree-body[data-stage="1"] .orbit-system { transform: scale(1.05); }
+.tree-body[data-stage="2"] .orbit-system { transform: scale(1.10); }
+.tree-body[data-stage="3"] .orbit-system { transform: scale(1.15); }
+
+.tree-body .spin { transform-origin: 100px 100px; }
+@keyframes planetSpin { to { transform: rotate(360deg); } }
+.tree-body[data-stage="2"] .spin,
+.tree-body[data-stage="3"] .spin { animation: planetSpin 26s linear infinite; }

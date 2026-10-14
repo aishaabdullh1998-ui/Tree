@@ -761,6 +761,20 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 :root[data-theme="galaxy"] .btn--danger { background: #FBE4DC; border-color: #E09A89; color: #8E3528; }
 :root[data-theme="galaxy"] .wheel-svg .seg { stroke: #E9F0F2; }
 
+/* مدارات تتّسع وكوكب يدور بعد عشر نجوم */
+.tree-body .orbit-system {
+  transform-origin: 100px 100px;
+  transition: transform .7s cubic-bezier(.3,1.25,.5,1);
+}
+.tree-body[data-stage="1"] .orbit-system { transform: scale(1.05); }
+.tree-body[data-stage="2"] .orbit-system { transform: scale(1.10); }
+.tree-body[data-stage="3"] .orbit-system { transform: scale(1.15); }
+
+.tree-body .spin { transform-origin: 100px 100px; }
+@keyframes planetSpin { to { transform: rotate(360deg); } }
+.tree-body[data-stage="2"] .spin,
+.tree-body[data-stage="3"] .spin { animation: planetSpin 26s linear infinite; }
+
 </style>
 
 <!-- تعريفات الرسم المشتركة -->
@@ -899,12 +913,16 @@ document.documentElement.setAttribute('lang', 'ar');
   };
 
   var CX = 100, CY = 100;
-  var VIEWBOX = '0 38 200 124';   /* إطار عريض يملأ البطاقة */
+  var VIEWBOX = '-18 16 236 168';   /* إطار يتّسع للمدارات بعد اتّساعها */
+  /* مدارات أقلّ تسطّحًا تبدأ خارج قرص الكوكب */
+  var PLANET_R = 30;
+  var STAR_R = 9.2;
+  var CLEAR = PLANET_R + STAR_R + 2;   /* أقلّ بُعد تُسمح عنده النجمة */
   var RINGS = [
-    { rx: 50, ry: 17, n: 8  },
-    { rx: 66, ry: 23, n: 10 },
-    { rx: 82, ry: 28, n: 12 },
-    { rx: 95, ry: 33, n: 14 }
+    { rx: 62, ry: 36, n: 8  },
+    { rx: 76, ry: 44, n: 10 },
+    { rx: 88, ry: 51, n: 12 },
+    { rx: 98, ry: 57, n: 14 }
   ];
 
   function f(n) { return Math.round(n * 100) / 100; }
@@ -984,7 +1002,8 @@ document.documentElement.setAttribute('lang', 'ar');
 
     return '<clipPath id="' + clip + '"><circle cx="' + CX + '" cy="' + CY + '" r="' + f(r) + '"/></clipPath>' +
       '<circle cx="' + CX + '" cy="' + CY + '" r="' + f(r) + '" fill="' + p.body + '"/>' +
-      '<g clip-path="url(#' + clip + ')">' + inner + shade(r, p.dark) + '</g>' +
+      '<g clip-path="url(#' + clip + ')"><g class="spin" style="transform-origin:' + CX + 'px ' + CY + 'px">' +
+      inner + '</g>' + shade(r, p.dark) + '</g>' +
       '<circle cx="' + CX + '" cy="' + CY + '" r="' + f(r) + '" fill="none" stroke="' + C.starEdge + '" stroke-width="1.6" opacity=".7"/>';
   }
 
@@ -1006,19 +1025,19 @@ document.documentElement.setAttribute('lang', 'ar');
   }
 
   function build(p) {
-    var r = 27, o = [];
-    o.push('<ellipse class="lf s3" cx="' + CX + '" cy="' + CY + '" rx="104" ry="46" fill="none" stroke="' + C.glow +
-      '" stroke-width="7" stroke-dasharray="2 9" stroke-linecap="round" transform="rotate(' + p.tilt + ')"' +
+    var r = PLANET_R, back = [], front = [];
+    back.push('<ellipse class="lf s3" cx="' + CX + '" cy="' + CY + '" rx="104" ry="60" fill="none" stroke="' + C.glow +
+      '" stroke-width="3.5" stroke-dasharray="2 12" stroke-linecap="round" transform="rotate(' + p.tilt + ')"' +
       ' style="transform-origin:' + CX + 'px ' + CY + 'px"/>');
-    o.push(orbitEllipse(RINGS[0], p.tilt, 0));
-    o.push(orbitEllipse(RINGS[1], p.tilt, 1));
-    o.push(orbitEllipse(RINGS[2], p.tilt, 2, true));
-    o.push(orbitEllipse(RINGS[3], p.tilt, 3, true));
-    o.push(planetRing(p, r));
-    o.push(planetBody(p, r));
-    o.push(moonAt(p.tilt + 200, 44, 5.5, 2));
-    o.push(moonAt(p.tilt + 40, 58, 4, 3));
-    return o.join('');
+    back.push(orbitEllipse(RINGS[0], p.tilt, 0));
+    back.push(orbitEllipse(RINGS[1], p.tilt, 1));
+    back.push(orbitEllipse(RINGS[2], p.tilt, 2, true));
+    back.push(orbitEllipse(RINGS[3], p.tilt, 3, true));
+    front.push(moonAt(p.tilt + 196, 56, 5.5, 2));
+    front.push(moonAt(p.tilt + 44, 70, 4.4, 3));
+    return '<g class="orbit-system">' + back.join('') + '</g>' +
+      planetRing(p, r) + planetBody(p, r) +
+      '<g class="orbit-system">' + front.join('') + '</g>';
   }
 
   /* ============================== رسم النجوم ============================= */
@@ -1026,7 +1045,7 @@ document.documentElement.setAttribute('lang', 'ar');
     var pts = [], i, a, rr;
     for (i = 0; i < 10; i++) {
       a = rad(-90 + i * 36);
-      rr = i % 2 ? 3.4 : 8.2;
+      rr = i % 2 ? 3.8 : 9;
       pts.push(f(Math.cos(a) * rr) + ' ' + f(Math.sin(a) * rr));
     }
     return '<polygon points="' + pts.join(' ') + '" fill="' + C.star + '" stroke="' + C.starEdge +
@@ -1052,17 +1071,32 @@ document.documentElement.setAttribute('lang', 'ar');
     p.emoji = '🪐'; p.tone = p.body; p.shape = 'star';
   });
 
-  /* مواضع النجوم: تملأ المدار الأول ثم الذي يليه، فتتمدّد المجرّة للخارج */
+  /* نصف الزاوية المسموحة حول المحور الأفقي للمدار، بحيث لا تقع نجمة على الكوكب */
+  function allowedHalf(rx, ry, m) {
+    if (ry >= m) return 90;
+    if (rx <= m) return 0;
+    var k = (m * m - ry * ry) / (rx * rx - ry * ry);
+    k = Math.max(0, Math.min(1, k));
+    return Math.acos(Math.sqrt(k)) * 180 / Math.PI;
+  }
+
+  /* مواضع النجوم: تملأ المدار الأول ثم الذي يليه، وتتجنّب قرص الكوكب تمامًا */
   var MAX_VISIBLE = 150;
   function buildPositions(p) {
     var out = [], rnd = mulberry32(p.seed * 7 + 3), ring, i, lap = 0;
     while (out.length < MAX_VISIBLE) {
       for (ring = 0; ring < RINGS.length && out.length < MAX_VISIBLE; ring++) {
         var R = RINGS[ring];
+        var pull = 1 + lap * 0.06;
+        var rx = R.rx * pull, ry = R.ry * pull;
+        var A = allowedHalf(rx, ry, CLEAR);
+        if (A <= 2) continue;
         for (i = 0; i < R.n && out.length < MAX_VISIBLE; i++) {
-          var deg = (i / R.n) * 360 + (ring * 13) + lap * 9 + (rnd() * 2 - 1) * 5;
-          var pull = 1 + lap * 0.045;
-          var q = orbitPoint(R.rx * pull, R.ry * pull, p.tilt, deg);
+          /* توزيع متساوٍ على القوسين المسموحين يمينًا ويسارًا */
+          var t = ((i + 0.5) / R.n) * 4 * A;
+          var deg = (t < 2 * A) ? (-A + t) : (180 - A + (t - 2 * A));
+          deg += ring * 7 + lap * 11 + (rnd() * 2 - 1) * Math.min(5, A * 0.12);
+          var q = orbitPoint(rx, ry, p.tilt, deg);
           out.push({ x: q.x, y: q.y, rot: (rnd() * 2 - 1) * 26 });
         }
       }
@@ -1080,18 +1114,19 @@ document.documentElement.setAttribute('lang', 'ar');
   });
 
   /* ============================ حالة وحسابات ============================= */
-  var THRESHOLDS = [0, 3, 8, 16];
+  var THRESHOLDS = [0, 4, 9, 18];   /* المرحلة ٢ تبدأ عند ١٠ نجوم */
   function stageOf(count) {
     var s = 0, i;
     for (i = 0; i < THRESHOLDS.length; i++) if (count > THRESHOLDS[i]) s = i;
     return Math.min(s, 3);
   }
-  function scaleOf(count) { return 0.82 + Math.min(count, 30) / 30 * 0.18; }
+  var ZOOM = [1.30, 1.16, 1.04, 0.95];
+  function scaleOf(count) { return ZOOM[stageOf(count)]; }
   function fruitSize(count) {
-    if (count <= 24) return 1;
-    if (count <= 45) return 0.85;
-    if (count <= 80) return 0.72;
-    return 0.6;
+    if (count <= 30) return 1;
+    if (count <= 55) return 0.88;
+    if (count <= 90) return 0.76;
+    return 0.64;
   }
 
   function unitFor(id, n) { var p = byId[id]; return (n >= 3 && n <= 10) ? p.few : p.many; }
@@ -1118,7 +1153,15 @@ document.documentElement.setAttribute('lang', 'ar');
     '.tree-body .lf{transition:transform .55s cubic-bezier(.34,1.5,.5,1),opacity .4s ease}' +
     '.tree-body[data-stage="0"] .s1,.tree-body[data-stage="0"] .s2,.tree-body[data-stage="0"] .s3,' +
     '.tree-body[data-stage="1"] .s2,.tree-body[data-stage="1"] .s3,' +
-    '.tree-body[data-stage="2"] .s3{opacity:0;transform:scale(.15)}';
+    '.tree-body[data-stage="2"] .s3{opacity:0;transform:scale(.15)}' +
+    '.tree-body .orbit-system{transform-origin:' + CX + 'px ' + CY + 'px;' +
+      'transition:transform .7s cubic-bezier(.3,1.25,.5,1)}' +
+    '.tree-body[data-stage="1"] .orbit-system{transform:scale(1.05)}' +
+    '.tree-body[data-stage="2"] .orbit-system{transform:scale(1.10)}' +
+    '.tree-body[data-stage="3"] .orbit-system{transform:scale(1.15)}' +
+    '@keyframes planetSpin{to{transform:rotate(360deg)}}' +
+    '.tree-body[data-stage="2"] .spin,.tree-body[data-stage="3"] .spin' +
+      '{animation:planetSpin 26s linear infinite}';
 
   function treeSvg(id, count, opts) {
     var p = byId[id];
@@ -1126,7 +1169,7 @@ document.documentElement.setAttribute('lang', 'ar');
     var size = fruitSize(n), fruits = [], i;
     for (i = 0; i < n; i++) fruits.push(fruitMarkup(id, i, size));
     return '<g class="tree-body" data-stage="' + stageOf(n) + '" data-fruit="' + (n ? 1 : 0) + '">' +
-      p.body_svg + '<g class="fruit-layer">' + fruits.join('') + '</g></g>';
+      p.body_svg + '<g class="orbit-system"><g class="fruit-layer">' + fruits.join('') + '</g></g></g>';
   }
 
   function defs() { return ''; }
