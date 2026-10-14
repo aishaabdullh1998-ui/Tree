@@ -129,6 +129,8 @@
 
     /* المزامنة مع الحساب */
     'محفوظ في حسابك': 'Saved to your account',
+    'نقاطك محفوظة في حسابك على أي جهاز، وأسماء الطالبات في هذا الجهاز وحده.':
+      'Your points are saved to your account on any device; student names stay on this device only.',
     'جارٍ الحفظ في حسابك…': 'Saving to your account…',
     'بلا إنترنت — سيُحفظ عند عودة الاتصال': 'Offline — will save when you reconnect',
     'تعذّر الحفظ في الحساب — النقاط محفوظة على الجهاز': 'Could not reach your account — points are safe on this device',

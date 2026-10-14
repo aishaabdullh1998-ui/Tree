@@ -133,7 +133,10 @@
       ? window.BustanLogo.svg({ word: false, tag: false })
       : T.standalone(T.LIST[0].id, 6);
 
-    $('#login-hint').textContent = L('تُحفظ بيانات المسابقة في هذا الجهاز ولا تُرسل إلى أي مكان.');
+    /* لا نقول لها «لا تُرسل إلى أي مكان» وهي نسخة تحفظ نقاطها في حسابها */
+    $('#login-hint').textContent = (window.Sync && window.Sync.on)
+      ? L('نقاطك محفوظة في حسابك على أي جهاز، وأسماء الطالبات في هذا الجهاز وحده.')
+      : L('تُحفظ بيانات المسابقة في هذا الجهاز ولا تُرسل إلى أي مكان.');
 
     /* الدخول يعمل بالضغط وبمفتاح Enter معًا، حتى داخل الصفحات المضمّنة
        التي يُمنع فيها إرسال النماذج */
@@ -865,6 +868,10 @@
     }
     if (TH.tagline) {
       var sub = $('.login-card .sub'); if (sub) sub.textContent = TH.tagline;
+    }
+    /* الإطار صار ملاصقًا للرسم، فنعوّض الحجم بنسبة محفوظة في متغيّر واحد */
+    if (window.BustanLogo && window.BustanLogo.markScale) {
+      r.style.setProperty('--mark-k', String(window.BustanLogo.markScale(TH.id || 'garden')));
     }
     var ic = $('#board-title span[aria-hidden]');
     if (ic && window.BustanLogo) ic.innerHTML = window.BustanLogo.svg({ word: false, tag: false });

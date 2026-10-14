@@ -88,11 +88,14 @@
   function markJar() {
     var coins = '';
     [[150, 118, 0], [166, 116, -14], [136, 115, 12], [158, 110, 8], [143, 108, -8]].forEach(function (c, i) {
-      coins += '<g class="jc jc' + i + '" transform="translate(' + c[0] + ',' + c[1] + ') rotate(' + c[2] + ')">' +
+      /* مجموعة خارجية للموضع، وداخلية للحركة: حركة CSS تُلغي سمة transform
+         لو اجتمعتا على عنصر واحد، فتتكوّم القطع في زاوية الرسمة. */
+      coins += '<g transform="translate(' + c[0] + ',' + c[1] + ') rotate(' + c[2] + ')">' +
+        '<g class="jc jc' + i + '">' +
         '<ellipse cx="0" cy="0" rx="9" ry="8.4" fill="#A9B3BA"/>' +
         '<ellipse cx="0" cy="-0.7" rx="8" ry="7.4" fill="#D2D9DE"/>' +
         '<ellipse cx="0" cy="-0.7" rx="5" ry="4.6" fill="none" stroke="#8C98A1" stroke-width="1"/>' +
-        '</g>';
+        '</g></g>';
     });
     return '<path class="jar" d="M126 60 C120 102 124 124 140 124 H162 C178 124 182 102 176 60 Z" ' +
         'fill="rgba(206,230,240,.55)" stroke="#9DBDCB" stroke-width="3.6"/>' +
@@ -171,7 +174,8 @@
         '#' + id + ' .jar{opacity:0;animation:' + id + '-fadeup .6s cubic-bezier(.22,1,.3,1) .15s both}' +
         '#' + id + ' .lid{opacity:0;animation:' + id + '-fadeup .5s cubic-bezier(.3,1.4,.5,1) .4s both}' +
         '#' + id + ' .shine{opacity:0;animation:' + id + '-fade .5s ease .9s both}' +
-        '#' + id + ' .jc{opacity:0;animation:' + id + '-pop .45s cubic-bezier(.3,1.5,.5,1) both}' +
+        '#' + id + ' .jc{opacity:0;transform-box:fill-box;transform-origin:center;' +
+          'animation:' + id + '-pop .45s cubic-bezier(.3,1.5,.5,1) both}' +
         '#' + id + ' .jc0{animation-delay:.55s}#' + id + ' .jc1{animation-delay:.63s}' +
         '#' + id + ' .jc2{animation-delay:.71s}#' + id + ' .jc3{animation-delay:.79s}' +
         '#' + id + ' .jc4{animation-delay:.87s}' +
@@ -209,12 +213,35 @@
     return base;
   }
 
-  /* opts: word (الكلمة)، tag (العنوان الصغير)، height
-     العلامة مرسومة في مربّع صغير، فتُكبَّر داخل التركيبة الكاملة وتُقصّ وحدها */
-  var MARK_BOX = '98 28 124 112';
-  /* الحصّالة أضيق من بقيّة العلامات، فلها إطارها */
-  var MARK_BOXES = { coinjar: '114 12 74 126' };
+  /* إطار كل علامة ملاصق لرسمها تمامًا (مقيس من المتصفّح، لا مقدَّر)،
+     فلا يبقى فراغ أعلى الرسم يُنزل الشعار عن منتصف الشاشة.
+     و«k» يعوّض الحجم: الإطار صار أضيق، فتُصغَّر الرسمة بنسبته لتبقى
+     كما كانت. أربعة أرقام: x y العرض الارتفاع. */
+  var MARK_INK = {
+    garden:  [104,   36,   112, 94],
+    galaxy:  [ 98,   56,   124, 84.4],
+    shelves: [104,   62,   112, 72],
+    voyage:  [104,   57,   126, 72.5],
+    coinjar: [123.4, 40,    55.3, 86.4]
+  };
+  var REF_W = { coinjar: 74 };   /* عرض الإطار القديم، أساس حساب k */
+  var MARK_BOX = MARK_INK.garden.join(' ');
+  var MARK_BOXES = {};
+  Object.keys(MARK_INK).forEach(function (k) {
+    MARK_BOXES[k] = MARK_INK[k].join(' ');
+  });
 
+  /* الحصّالة ضيّقة وطويلة، فلو ساويناها بالبقيّة في العرض طالت عليها */
+  var MARK_K = { coinjar: 0.53 };
+
+  /* نسبة تصغير العلامة كي يبقى حجمها المرسوم كما كان قبل تضييق الإطار */
+  function markScale(k) {
+    if (MARK_K[k]) return MARK_K[k];
+    var ink = MARK_INK[k] || MARK_INK.garden;
+    return ink[2] / (REF_W[k] || 124);
+  }
+
+  /* opts: word (الكلمة)، tag (العنوان الصغير)، height */
   function svg(opts) {
     opts = opts || {};
     var k = (global.Theme && global.Theme.id) || 'garden';
@@ -245,11 +272,33 @@
   }
 
   /* شاشة الافتتاح: تظهر مرّة عند فتح الصفحة وتُغلق باللمس أو بعد ثانيتين ونصف */
+  function esc(str) {
+    return String(str).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
   function splash(done) {
     var el = document.getElementById('splash');
     var reduced = global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!el || reduced) { if (done) done(); return; }
-    el.innerHTML = svg({ word: true, tag: true });
+    var k = (global.Theme && global.Theme.id) || 'garden';
+    var s = SKIN[k] || SKIN.garden;
+    var word = WORD[k] || '';
+    var tag = (global.Theme && global.Theme.title) || '';
+    if (tag === word) tag = '';   /* لا نكرّر الاسم نفسه تحته */
+    /* الكلمة نصّ HTML لا نصّ SVG: تشكيل العربية داخل SVG يختلف بين
+       المتصفّحات، وقد تنفصل الحروف أو ينقلب ترتيبها على بعض الأجهزة. */
+    el.innerHTML =
+      '<div class="splash-logo">' +
+        '<div class="splash-mark">' + svg({ word: false, tag: false }) + '</div>' +
+        '<div class="splash-word">' + esc(word) + '</div>' +
+        '<div class="splash-rule"></div>' +
+        (tag ? '<div class="splash-tag">' + esc(tag) + '</div>' : '') +
+      '</div>';
+    el.style.setProperty('--logo-ink', s.ink);
+    el.style.setProperty('--logo-line', s.line);
+    el.style.setProperty('--logo-soft', s.soft);
     el.classList.add('show');
     var closed = false;
     function finish() {
@@ -267,7 +316,7 @@
     document.addEventListener('keydown', finish, { once: true });
   }
 
-  global.BustanLogo = { svg: svg, splash: splash, word: function () {
+  global.BustanLogo = { svg: svg, splash: splash, markScale: markScale, word: function () {
     return WORD[(global.Theme && global.Theme.id) || 'garden'] || '';
   } };
 })(window);

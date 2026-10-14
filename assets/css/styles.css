@@ -944,7 +944,7 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 
 /* ============================= اللوجو والافتتاح ========================== */
 .logo-svg { display: block; width: 100%; height: auto; overflow: visible; }
-#login-mark { width: min(260px, 72%); height: auto; margin: 0 auto 6px; display: block; }
+#login-mark { width: calc(min(260px, 72%) * var(--mark-k, 1)); height: auto; margin: 0 auto 6px; display: block; }
 #login-mark .logo-svg { width: 100%; height: auto; }
 #board-title span[aria-hidden] { display: inline-flex; width: 34px; flex: none; }
 #board-title span[aria-hidden] .logo-svg { width: 34px; height: 34px; }
@@ -958,9 +958,34 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
   cursor: pointer;
 }
 .splash.show { display: grid; }
-.splash .logo-svg { width: min(460px, 86vw); }
 .splash.out { animation: splashOut .42s ease forwards; }
 @keyframes splashOut { to { opacity: 0; transform: scale(1.04); } }
+
+/* الكلمة والسطر والوصف نصوص HTML، لا نصوص داخل SVG:
+   العربية تُشكَّل وتُرتَّب هنا كما في بقيّة الصفحة، في كل متصفّح. */
+.splash-logo { display: flex; flex-direction: column; align-items: center; }
+.splash-mark { width: calc(min(290px, 58vw) * var(--mark-k, 1)); }
+.splash-mark .logo-svg { width: 100%; height: auto; }
+.splash-word {
+  font-family: var(--font-head), system-ui, sans-serif;
+  font-weight: 800; font-size: clamp(32px, 9vw, 54px); line-height: 1.2;
+  color: var(--logo-ink, var(--ink)); margin-top: 16px; text-align: center;
+  opacity: 0; animation: logoUp .7s cubic-bezier(.22, 1, .3, 1) 1s both;
+}
+:root[lang="en"] .splash-word { letter-spacing: 1px; }
+.splash-rule {
+  width: 104px; height: 2.6px; border-radius: 2px;
+  background: var(--logo-line, var(--gold)); margin-top: 13px;
+  transform: scaleX(0); animation: logoRule .6s cubic-bezier(.22, 1, .3, 1) 1.25s both;
+}
+.splash-tag {
+  font-family: var(--font), system-ui, sans-serif; font-weight: 500;
+  font-size: clamp(13px, 3.6vw, 17px); color: var(--logo-soft, var(--soft));
+  margin-top: 13px; text-align: center;
+  opacity: 0; animation: logoUp .6s ease 1.45s both;
+}
+@keyframes logoUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes logoRule { to { transform: scaleX(1); } }
 @media (prefers-reduced-motion: reduce) { .splash { display: none !important; } }
 
 /* ============================ Treasure Voyage =========================== */
