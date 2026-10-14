@@ -34,8 +34,8 @@ const lang = (/lang:\s*'([a-z]+)'/.exec(block[0]) || [, 'ar'])[1];
 const dir = (/dir:\s*'([a-z]+)'/.exec(block[0]) || [, 'rtl'])[1];
 const themeScript = '<script>window.BUSTAN_THEME_ID = ' + JSON.stringify(themeId) + ';</script>\n';
 /* بيانات الدخول في أعلى الملف، في سطر واضح تُغيّره صاحبة النسخة بنفسها */
-const authUser = (/user:\s*'([^']*)'/.exec(block[0]) || [, 'aisha'])[1];
-const authPin = (/pin:\s*'([^']*)'/.exec(block[0]) || [, '1111'])[1];
+const authUser = process.env.BUSTAN_USER || (/user:\s*'([^']*)'/.exec(block[0]) || [, 'aisha'])[1];
+const authPin = process.env.BUSTAN_PIN || (/pin:\s*'([^']*)'/.exec(block[0]) || [, '1111'])[1];
 const authBlock = [
   '<!-- ====================================================================',
   '     بيانات الدخول لهذه النسخة',
@@ -48,7 +48,21 @@ const authBlock = [
 ].join('\n');
 console.log('theme:', themeId, '-', pageTitle, '| engine:', engine, '| lang:', lang, dir);
 
-const scripts = ['theme', 'i18n', 'icons', 'logo', engine, 'items', 'sound', 'store', 'exporter', 'timer', 'wheel', 'groups', 'app']
+/* ربط النسخة بحساب على السيرفر: BUSTAN_SYNC_FILE=<ملف JSON فيه {url, key}>.
+   الملف خارج المستودع، فلا عنوان السيرفر ولا مفتاحه يُنشران مع الكود.
+   بدونه لا تُضمَّن وحدة المزامنة أصلًا، وتبقى اللوحة محلّية بالكامل. */
+let syncScript = '';
+const syncFile = process.env.BUSTAN_SYNC_FILE;
+if (syncFile) {
+  const cfg = JSON.parse(fs.readFileSync(syncFile, 'utf8'));
+  if (!cfg || !cfg.url || !cfg.key) throw new Error('BUSTAN_SYNC_FILE must hold {url, key}');
+  syncScript = '<script>window.BUSTAN_SYNC = ' + JSON.stringify({ url: cfg.url, key: cfg.key }) + ';</script>\n';
+  console.log('sync: on');
+}
+
+const scripts = ['theme', 'i18n', 'icons', 'logo', engine, 'items', 'sound', 'store']
+  .concat(syncFile ? ['sync'] : [])
+  .concat(['exporter', 'timer', 'wheel', 'groups', 'app'])
   .map(n => read('assets/js/' + n + '.js'));
 
 let namesScript = '';
@@ -87,7 +101,7 @@ ${body}
 document.documentElement.setAttribute('dir', ${JSON.stringify(dir)});
 document.documentElement.setAttribute('lang', ${JSON.stringify(lang)});
 </script>
-${themeScript}${namesScript}${scripts.map(s => '<script>\n' + s + '\n</script>').join('\n')}
+${themeScript}${namesScript}${syncScript}${scripts.map(s => '<script>\n' + s + '\n</script>').join('\n')}
 `;
 
 /* المخرَج الافتراضي هو صفحة الموقع نفسها؛ BUSTAN_OUT يوجّهه إلى مكان آخر */

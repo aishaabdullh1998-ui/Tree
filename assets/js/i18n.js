@@ -125,7 +125,23 @@
     'وضع العرض': 'Presentation mode',
     'المزيد': 'More',
     'السجل والتصدير': 'Log & export',
-    'خروج': 'Sign out'
+    'خروج': 'Sign out',
+
+    /* المزامنة مع الحساب */
+    'محفوظ في حسابك': 'Saved to your account',
+    'جارٍ الحفظ في حسابك…': 'Saving to your account…',
+    'بلا إنترنت — سيُحفظ عند عودة الاتصال': 'Offline — will save when you reconnect',
+    'تعذّر الحفظ في الحساب — النقاط محفوظة على الجهاز': 'Could not reach your account — points are safe on this device',
+    'نسختان مختلفتان': 'Two different copies',
+    'اللوحة تغيّرت على هذا الجهاز وعلى جهاز آخر معًا. أيّهما تعتمدين؟':
+      'This board changed on this device and on another device. Which one do you want to keep?',
+    'نسخة الحساب': 'Account copy',
+    'نسخة هذا الجهاز': 'This device',
+    'نقطة': 'points',
+    'ما لا تختارينه يُستبدل، فاختاري النسخة الأحدث عندك.':
+      'The copy you do not pick will be replaced, so choose the one that is up to date.',
+    'النقاط محفوظة في حسابك وتتبعك على أي جهاز. أسماء الطالبات تبقى في هذا المتصفّح وحده، والنسخة الاحتياطية تحفظها كذلك.':
+      'Points are saved to your account and follow you to any device. Student names stay in this browser only — the backup file keeps them too.'
   };
 
   var lang = (global.Theme && global.Theme.lang) || 'ar';

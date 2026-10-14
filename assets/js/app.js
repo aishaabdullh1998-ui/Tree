@@ -30,7 +30,66 @@
     return first ? document.importNode(first, true) : null;
   }
 
-  function persist() { Store.save(state); }
+  function persist() {
+    /* نعلّم التغيير أولًا ثم نحفظ، فيبقى أثره لو أُغلقت الصفحة قبل الرفع */
+    if (window.Sync && window.Sync.on) window.Sync.touch();
+    Store.save(state);
+  }
+
+  /* ----------------------------- حالة المزامنة --------------------------- */
+  var SYNC_TEXT = {
+    syncing: 'جارٍ الحفظ في حسابك…',
+    saved:   'محفوظ في حسابك',
+    offline: 'بلا إنترنت — سيُحفظ عند عودة الاتصال',
+    error:   'تعذّر الحفظ في الحساب — النقاط محفوظة على الجهاز'
+  };
+  function paintSync(s) {
+    var chip = $('#sync-chip');
+    if (!chip) return;
+    if (s === 'off' || !SYNC_TEXT[s]) { chip.hidden = true; return; }
+    chip.hidden = false;
+    chip.dataset.state = s;
+    $('#sync-text').textContent = L(SYNC_TEXT[s]);
+  }
+
+  /* يبدأ المزامنة بعد دخول صحيح، إن كانت هذه نسخة مربوطة بحساب */
+  function startSync(user, pin) {
+    if (!(window.Sync && window.Sync.on)) return;
+    window.Sync.start(user, pin, state, {
+      state: function () { return state; },
+      status: paintSync,
+      refresh: function () {
+        Sound.setEnabled(state.sound);
+        document.body.classList.toggle('no-texture', !state.texture);
+        renderBoard();
+      },
+      conflict: conflictSheet
+    });
+  }
+
+  /* اللوحة تغيّرت على جهازين معًا: القرار لها، ولا نمحو شيئًا دون إذنها */
+  function conflictSheet(c) {
+    var when = '';
+    try {
+      when = new Intl.DateTimeFormat(L.lang === 'en' ? 'en-GB' : 'ar',
+        { dateStyle: 'short', timeStyle: 'short' }).format(new Date(c.when));
+    } catch (e) {}
+    openSheet(
+      '<h2>' + Icon('load', 22) + ' ' + L('نسختان مختلفتان') + '</h2>' +
+      '<p class="note">' + L('اللوحة تغيّرت على هذا الجهاز وعلى جهاز آخر معًا. أيّهما تعتمدين؟') + '</p>' +
+      '<div class="sheet-actions" style="justify-content:flex-start">' +
+        '<button class="btn btn--primary" id="cf-remote" type="button">' +
+          L('نسخة الحساب') + ' · ' + c.remote + ' ' + L('نقطة') + (when ? ' · ' + when : '') + '</button>' +
+        '<button class="btn" id="cf-local" type="button">' +
+          L('نسخة هذا الجهاز') + ' · ' + c.local + ' ' + L('نقطة') + '</button>' +
+      '</div>' +
+      '<p class="note">' + L('ما لا تختارينه يُستبدل، فاختاري النسخة الأحدث عندك.') + '</p>',
+      function (ov) {
+        $('#cf-remote', ov).addEventListener('click', function () { c.useRemote(); closeSheet(); });
+        $('#cf-local', ov).addEventListener('click', function () { c.useLocal(); closeSheet(); });
+      }
+    );
+  }
 
 
   /* عدد المجموعات الذي اختارته المعلّمة: البقيّة تبقى محفوظة ولا تُعرض */
@@ -90,6 +149,7 @@
       var p = $('#in-pin').value.trim();
       if (u === String(state.auth.user).toLowerCase() && p === String(state.auth.pin)) {
         state.loggedIn = true; persist();
+        startSync(u, p);
         Sound.open();
         showBoard();
       } else {
@@ -387,6 +447,7 @@
   function doBackup() {
     var copy = JSON.parse(JSON.stringify(state));
     copy.loggedIn = false;
+    delete copy.sync;
     copy.theme = TH.id || 'garden';
     copy.savedAt = new Date().toISOString();
     var blob = new Blob([JSON.stringify(copy, null, 2)], { type: 'application/json' });
@@ -416,6 +477,8 @@
     go.hidden = false;
     go.onclick = function () {
       data.loggedIn = true;
+      /* المستعاد يصير هو الأحدث، فيُرفع للحساب بعد إعادة التحميل */
+      data.sync = { rev: (state.sync && state.sync.rev) || 0, at: null, dirty: true };
       try { localStorage.setItem(Store.KEY, JSON.stringify(data)); } catch (e) {}
       location.reload();
     };
@@ -424,8 +487,10 @@
   function backupSheet() {
     openSheet(
       '<h2>' + Icon('save', 22) + ' ' + L('نسخة احتياطية') + '</h2>' +
-      '<p class="note">' + L('النقاط والأسماء محفوظة في هذا المتصفّح وحده. احفظي نسخة بين حين وآخر،') + ' ' +
-      L('فتعود اللوحة كما هي على أي جهاز.') + '</p>' +
+      '<p class="note">' + (window.Sync && window.Sync.on
+        ? L('النقاط محفوظة في حسابك وتتبعك على أي جهاز. أسماء الطالبات تبقى في هذا المتصفّح وحده، والنسخة الاحتياطية تحفظها كذلك.')
+        : L('النقاط والأسماء محفوظة في هذا المتصفّح وحده. احفظي نسخة بين حين وآخر،') + ' ' +
+          L('فتعود اللوحة كما هي على أي جهاز.')) + '</p>' +
       '<div class="sheet-actions" style="justify-content:flex-start">' +
         '<button class="btn btn--primary" id="bk-save" type="button">' + Icon('save', 17) + ' ' + L('حفظ نسخة الآن') + '</button>' +
         '<button class="btn" id="bk-pick" type="button">' + Icon('load', 17) + ' ' + L('استعادة من ملف') + '</button>' +
@@ -699,7 +764,9 @@
     on('#btn-settings', settingsSheet);
     on('#btn-reset', confirmReset);
     on('#btn-logout', function () {
-      state.loggedIn = false; persist(); showLogin();
+      if (window.Sync && window.Sync.on) { window.Sync.flush(); window.Sync.stop(); }
+      paintSync('off');
+      state.loggedIn = false; Store.save(state); showLogin();
     });
     $('#present-exit').addEventListener('click', function () { setPresent(false); });
 
@@ -816,7 +883,10 @@
     document.body.classList.toggle('no-texture', !state.texture);
     initLogin();
     bindBoard();
-    if (state.loggedIn) showBoard(); else showLogin();
+    if (state.loggedIn) {
+      showBoard();
+      startSync(state.auth.user, state.auth.pin);
+    } else showLogin();
     if (window.BustanLogo) window.BustanLogo.splash();
   }
 

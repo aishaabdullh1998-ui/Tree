@@ -32,6 +32,8 @@
       texture: true,
       visible: 6,
       timer: { duration: 120, remaining: 120 },
+      /* حالة المزامنة مع الحساب (في النسخ المربوطة بحساب فقط) */
+      sync: { rev: 0, at: null, dirty: false },
       wheel: { list: STUDENTS.slice(), picked: [], skipPicked: true,
                quick: { mode: 'size', size: 5, count: 4, last: null } },
       groups: global.Trees.LIST.map(function (t, i) {
@@ -102,6 +104,13 @@
           };
         }
         d.wheel = { list: list, picked: picked, skipPicked: s.wheel.skipPicked !== false, quick: q };
+      }
+      if (s.sync && typeof s.sync === 'object') {
+        d.sync = {
+          rev: Math.max(0, parseInt(s.sync.rev, 10) || 0),
+          at: typeof s.sync.at === 'string' ? s.sync.at : null,
+          dirty: !!s.sync.dirty
+        };
       }
       if (Array.isArray(s.history)) d.history = s.history.slice(0, 60);
       return d;

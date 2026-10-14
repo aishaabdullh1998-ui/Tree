@@ -1,4 +1,6 @@
-/* يبني صفحة كل ثيم: index.html للبستان، galaxy.html للمجرّة، shelves.html للرفوف */
+/* يبني صفحات الموقع العامّة: صفحة لكل ثيم.
+   هذه الصفحات تُرفع إلى المستودع العام، فنقطع عنها قسرًا كل ما هو خاص:
+   لا أسماء طالبات، ولا عنوان خادم، ولا مفتاح حساب — مهما كانت البيئة. */
 const { execFileSync } = require('child_process');
 const path = require('path');
 const root = path.join(__dirname, '..');
@@ -15,7 +17,11 @@ TARGETS.forEach(function (t) {
   execFileSync(process.execPath, [path.join(__dirname, 'build-single.js')], {
     env: Object.assign({}, process.env, {
       BUSTAN_THEME: t.theme,
-      BUSTAN_OUT: path.join(root, t.out)
+      BUSTAN_OUT: path.join(root, t.out),
+      BUSTAN_NAMES_FILE: '',
+      BUSTAN_SYNC_FILE: '',
+      BUSTAN_USER: '',
+      BUSTAN_PIN: ''
     }),
     stdio: 'inherit'
   });
