@@ -19,6 +19,13 @@
 
   var CX = 200, CY = 200, R = 178, LABEL_R = 164, HUB = 46;
   var LABEL_X = CX + LABEL_R;   /* الطرف الخارجي للنص عند الحافة */
+
+  /* دلالة start/end تنقلب بانقلاب اتجاه الصفحة، فيُحسب طرف تثبيت الاسم باللغة */
+  function anchorOf(flip) {
+    var ltr = (window.L && window.L.lang === 'en');
+    if (ltr) return flip ? 'start' : 'end';
+    return flip ? 'end' : 'start';
+  }
   var TURNS = 6, DUR = 5200;
 
   function f(n) { return Math.round(n * 100) / 100; }
@@ -64,10 +71,10 @@
     if (!n) {
       return '<div class="wheel-empty">' +
         '<span class="wheel-empty-ico" aria-hidden="true">🎡</span>' +
-        '<p>لا توجد أسماء في العجلة بعد.</p>' +
-        '<p class="wheel-empty-hint">أضيفي أسماء طلابك من صفحة الإعدادات، اسمًا في كل سطر. ' +
-        'تبقى الأسماء محفوظة في هذا الجهاز وحده.</p>' +
-        '<button class="btn btn--primary" id="wheel-add-names" type="button">⚙️ أضيفي الأسماء</button>' +
+        '<p>' + L('لا توجد أسماء في العجلة بعد.') + '</p>' +
+        '<p class="wheel-empty-hint">' + L('أضيفي أسماء طلابك من صفحة الإعدادات، اسمًا في كل سطر.') + ' ' +
+        L('تبقى الأسماء محفوظة في هذا الجهاز وحده.') + '</p>' +
+        '<button class="btn btn--primary" id="wheel-add-names" type="button">⚙️ ' + L('أضيفي الأسماء') + '</button>' +
       '</div>';
     }
     var a = 360 / n, i, parts = [], labels = [];
@@ -91,7 +98,7 @@
       var flip = rot > 90 && rot < 270;
       labels.push('<g transform="rotate(' + f(c - 90) + ' ' + CX + ' ' + CY + ')">' +
         '<text class="seg-label" data-i="' + i + '" transform="translate(' + LABEL_X + ' ' + CY + ')' +
-        (flip ? ' rotate(180)' : '') + '" text-anchor="' + (flip ? 'end' : 'start') +
+        (flip ? ' rotate(180)' : '') + '" text-anchor="' + anchorOf(flip) +
         '" dominant-baseline="middle" font-size="' + fs + '" fill="' + col + '">' +
         (done ? '✓ ' : '') + esc(list[i]) + '</text></g>');
     }
@@ -103,7 +110,7 @@
       '<circle cx="' + CX + '" cy="' + CY + '" r="' + R + '" fill="none" stroke="#C3AE94" stroke-width="3"/>' +
       '<circle class="hub" cx="' + CX + '" cy="' + CY + '" r="' + HUB + '" fill="#FCF6EE" stroke="#C3AE94" stroke-width="4"/>' +
       '<text class="hub-text" x="' + CX + '" y="' + CY + '" text-anchor="middle" dominant-baseline="middle" ' +
-        'font-size="19" font-weight="800" fill="#657652">أدِر</text>' +
+        'font-size="19" font-weight="800" fill="#657652">' + L('أدِر') + '</text>' +
       '<g class="wheel-pointer">' +
         '<path d="M200 48 l16 -26 h-32 Z" fill="#E36559"/>' +
         '<path d="M200 26 m-18 -4 a18 14 0 1 1 36 0 Z" fill="#C3AE94"/>' +
@@ -122,20 +129,20 @@
     ov.className = 'overlay wheel-overlay';
     ov.setAttribute('role', 'dialog');
     ov.setAttribute('aria-modal', 'true');
-    ov.setAttribute('aria-label', 'عجلة الحظ');
+    ov.setAttribute('aria-label', L('عجلة الحظ'));
     ov.innerHTML =
       '<div class="sheet wheel-sheet">' +
-        '<h2 style="justify-content:center">🎡 عجلة الحظ</h2>' +
+        '<h2 style="justify-content:center">🎡 ' + L('عجلة الحظ') + '</h2>' +
         '<p class="wheel-result" id="wheel-result" role="status" aria-live="polite">' +
-          (d.list.length ? 'اضغطي على العجلة لاختيار اسم' : '') + '</p>' +
+          (d.list.length ? L('اضغطي على العجلة لاختيار اسم') : '') + '</p>' +
         '<div class="wheel-stage">' + this.wheelSvg() + '</div>' +
         '<p class="wheel-count" id="wheel-count"></p>' +
         '<label class="switch wheel-skip"><input type="checkbox" id="wheel-skip"' + (d.skipPicked ? ' checked' : '') +
-          '> عدم تكرار الاسم المختار</label>' +
+          '> ' + L('عدم تكرار الاسم المختار') + '</label>' +
         '<div class="sheet-actions" style="justify-content:center">' +
-          '<button class="btn btn--primary" id="wheel-spin" type="button">🎡 أدِر العجلة</button>' +
-          '<button class="btn" id="wheel-reset" type="button">↺ إعادة الجميع</button>' +
-          '<button class="btn" id="wheel-close" type="button">إغلاق</button>' +
+          '<button class="btn btn--primary" id="wheel-spin" type="button">🎡 ' + L('أدِر العجلة') + '</button>' +
+          '<button class="btn" id="wheel-reset" type="button">↺ ' + L('إعادة الجميع') + '</button>' +
+          '<button class="btn" id="wheel-close" type="button">' + L('إغلاق') + '</button>' +
         '</div>' +
       '</div>';
 
@@ -190,10 +197,10 @@
     }
     this.ov.querySelector('#wheel-reset').disabled = false;
     if (d.skipPicked) {
-      cnt.textContent = left ? 'بقي ' + left + ' من ' + d.list.length + ' اسمًا'
-                             : 'اكتملت القائمة — اضغطي «إعادة الجميع» للبدء من جديد';
+      cnt.textContent = left ? L('بقي') + ' ' + left + ' ' + L('من') + ' ' + d.list.length + ' ' + L('اسمًا')
+                             : L('اكتملت القائمة — اضغطي «إعادة الجميع» للبدء من جديد');
     } else {
-      cnt.textContent = d.list.length + ' اسمًا في العجلة';
+      cnt.textContent = d.list.length + ' ' + L('اسمًا في العجلة');
     }
     this.ov.querySelector('#wheel-spin').disabled = this.spinning || left === 0;
   };
@@ -225,7 +232,7 @@
     this.data().picked = [];
     this.save();
     this.redraw();
-    this.ov.querySelector('#wheel-result').textContent = 'عادت كل الأسماء إلى العجلة';
+    this.ov.querySelector('#wheel-result').textContent = L('عادت كل الأسماء إلى العجلة');
     this.ov.querySelector('#wheel-result').classList.remove('win');
     Sound.sparkle();
   };
@@ -241,7 +248,7 @@
       if (!d.skipPicked || d.picked.indexOf(d.list[i]) === -1) pool.push(i);
     }
     if (!pool.length) {
-      this.ov.querySelector('#wheel-result').textContent = 'لم يبقَ اسم — اضغطي «إعادة الجميع»';
+      this.ov.querySelector('#wheel-result').textContent = L('لم يبقَ اسم — اضغطي «إعادة الجميع»');
       return;
     }
 
@@ -249,7 +256,7 @@
     this.spinning = true;
     this.refresh();
     var res = this.ov.querySelector('#wheel-result');
-    res.textContent = 'تدور…';
+    res.textContent = L('تدور') + '…';
     res.classList.remove('win');
     var old = this.ov.querySelector('.seg.win');
     if (old) old.classList.remove('win');

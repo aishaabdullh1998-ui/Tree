@@ -15,10 +15,12 @@ const block = new RegExp("\\b" + themeId + ":\\s*\\{[\\s\\S]*?\\n    \\}").exec(
 if (!block) throw new Error('unknown theme: ' + themeId);
 const pageTitle = /title:\s*'([^']+)'/.exec(block[0])[1];
 const engine = (/items:\s*'([a-z]+)'/.exec(block[0]) || [, 'trees'])[1];
+const lang = (/lang:\s*'([a-z]+)'/.exec(block[0]) || [, 'ar'])[1];
+const dir = (/dir:\s*'([a-z]+)'/.exec(block[0]) || [, 'rtl'])[1];
 const themeScript = '<script>window.BUSTAN_THEME_ID = ' + JSON.stringify(themeId) + ';</script>\n';
-console.log('theme:', themeId, '-', pageTitle, '| engine:', engine);
+console.log('theme:', themeId, '-', pageTitle, '| engine:', engine, '| lang:', lang, dir);
 
-const scripts = ['theme', 'icons', 'logo', engine, 'items', 'sound', 'store', 'exporter', 'timer', 'wheel', 'groups', 'app']
+const scripts = ['theme', 'i18n', 'icons', 'logo', engine, 'items', 'sound', 'store', 'exporter', 'timer', 'wheel', 'groups', 'app']
   .map(n => read('assets/js/' + n + '.js'));
 
 let namesScript = '';
@@ -45,8 +47,8 @@ const out = `<meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="${FONTS}">
 <style>
-/* اتجاه الصفحة من اليمين لليسار حتى بلا وسم html */
-:root { direction: rtl; }
+/* اتجاه الصفحة حتى بلا وسم html */
+:root { direction: ${dir}; }
 html, body { height: 100%; }
 #login { min-height: 100%; }
 
@@ -56,8 +58,8 @@ ${css}
 ${body}
 
 <script>
-document.documentElement.setAttribute('dir', 'rtl');
-document.documentElement.setAttribute('lang', 'ar');
+document.documentElement.setAttribute('dir', ${JSON.stringify(dir)});
+document.documentElement.setAttribute('lang', ${JSON.stringify(lang)});
 </script>
 ${themeScript}${namesScript}${scripts.map(s => '<script>\n' + s + '\n</script>').join('\n')}
 `;

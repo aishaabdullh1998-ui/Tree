@@ -6,7 +6,8 @@ const root = path.join(__dirname, '..');
 const TARGETS = [
   { theme: 'garden', out: 'index.html'  },
   { theme: 'galaxy', out: 'galaxy.html' },
-  { theme: 'shelves', out: 'shelves.html' }
+  { theme: 'shelves', out: 'shelves.html' },
+  { theme: 'voyage',  out: 'voyage.html'  }
 ];
 
 TARGETS.forEach(function (t) {

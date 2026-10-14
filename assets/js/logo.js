@@ -8,12 +8,13 @@
 
   var seq = 0;
 
-  var WORD = { garden: 'بُستان', galaxy: 'مجرّة', shelves: 'مكتبة' };
+  var WORD = { garden: 'بُستان', galaxy: 'مجرّة', shelves: 'مكتبة', voyage: 'Voyage' };
 
   var SKIN = {
     garden:  { ink: '#35402E', soft: '#7E8A72', line: '#C0B05B', bg: '#F3E7DA' },
     galaxy:  { ink: '#1E3A48', soft: '#6D8795', line: '#94BEBB', bg: '#E9F0F2' },
-    shelves: { ink: '#4A3A22', soft: '#8A6E4B', line: '#C9A227', bg: '#FBF1E2' }
+    shelves: { ink: '#4A3A22', soft: '#8A6E4B', line: '#C9A227', bg: '#FBF1E2' },
+    voyage:  { ink: '#2A3F4D', soft: '#7A8B96', line: '#C9954E', bg: '#EFE3C8' }
   };
 
   /* ------------------------------ العلامات -------------------------------- */
@@ -81,7 +82,25 @@
     return out;
   }
 
-  var MARKS = { garden: markGarden, galaxy: markGalaxy, shelves: markShelves };
+  /* سفينة تُبحر على موجة نحو جزيرة عليها علم */
+  function markVoyage() {
+    return '<g class="isle">' +
+        '<path d="M190 122 q8 -16 20 -16 q12 0 20 16 z" fill="#E8D49B"/>' +
+        '<rect x="208" y="92" width="2.6" height="16" rx="1.3" fill="#7B4630"/>' +
+        '<path d="M210.6 92 l9 3.4 l-9 3.4 z" fill="#F0C23C"/>' +
+      '</g>' +
+      '<g class="boat" transform="translate(150,104)">' +
+        '<path class="hull" d="M-26 6 h52 l-10 18 h-32 z" fill="#9C5B3C" stroke="#FFF8EC" stroke-width="2.4" stroke-linejoin="round"/>' +
+        '<rect x="-1.6" y="-38" width="3.4" height="44" rx="1.7" fill="#7B4630"/>' +
+        '<path class="sail1" d="M3 -36 l22 30 h-22 z" fill="#FFF8EC" stroke="#C7AE74" stroke-width="2" stroke-linejoin="round"/>' +
+        '<path class="sail2" d="M-2.6 -28 l-20 22 h20 z" fill="#E36559" stroke="#FFF8EC" stroke-width="2" stroke-linejoin="round"/>' +
+        '<path class="pennant" d="M3 -38 v-9 l15 4.6 z" fill="#F0C23C"/>' +
+      '</g>' +
+      '<path class="wave" d="M104 126 q10 -7 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" ' +
+        'stroke="#7FB0C6" stroke-width="3.4" stroke-linecap="round"/>';
+  }
+
+  var MARKS = { garden: markGarden, galaxy: markGalaxy, shelves: markShelves, voyage: markVoyage };
 
   /* ------------------------------ التنسيقات ------------------------------- */
   function css(id, k) {
@@ -122,6 +141,19 @@
         '@keyframes ' + id + '-plank{to{transform:scaleX(1)}}' +
         '@keyframes ' + id + '-book{from{opacity:0;transform:translateY(16px) scaleY(.5)}' +
           'to{opacity:1;transform:none}}';
+    } else if (k === 'voyage') {
+      base +=
+        '#' + id + ' .wave{stroke-dasharray:132;stroke-dashoffset:132;' +
+          'animation:' + id + '-draw .9s ease .1s both}' +
+        '#' + id + ' .boat{animation:' + id + '-sail 1s cubic-bezier(.22,1,.3,1) .25s both,' +
+          id + '-bob 3.2s ease-in-out 1.3s infinite}' +
+        '#' + id + ' .sail1{transform-origin:3px -6px;animation:' + id + '-pop .55s cubic-bezier(.3,1.5,.5,1) .7s both}' +
+        '#' + id + ' .sail2{transform-origin:-3px -6px;animation:' + id + '-pop .55s cubic-bezier(.3,1.5,.5,1) .82s both}' +
+        '#' + id + ' .isle{opacity:0;animation:' + id + '-fadeup .6s ease .5s both}' +
+        '@keyframes ' + id + '-draw{to{stroke-dashoffset:0}}' +
+        '@keyframes ' + id + '-sail{from{transform:translate(104px,104px)}to{transform:translate(150px,104px)}}' +
+        '@keyframes ' + id + '-bob{50%{transform:translate(150px,100px) rotate(-3deg)}}' +
+        '@keyframes ' + id + '-fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}';
     } else {
       base +=
         '#' + id + ' .trunk{fill:none;stroke:#9C7B4C;stroke-width:9;stroke-linecap:round;' +

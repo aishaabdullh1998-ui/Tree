@@ -8,7 +8,7 @@
   var DEFAULT_PIN = (global.Theme && global.Theme.auth && global.Theme.auth.pin) || '19961998';
   var OLD_PINS = ['2030'];
 
-  var ORD = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة'];
+  var ORD = [L('الأولى'), L('الثانية'), L('الثالثة'), L('الرابعة'), L('الخامسة'), L('السادسة')];
 
   /* أسماء الطلاب في عجلة الحظ.
      القائمة فارغة في هذه النسخة حفاظًا على خصوصية الطلاب؛ تُضاف الأسماء من
@@ -22,7 +22,7 @@
     return {
       v: 1,
       defaultsVersion: DEFAULTS_VERSION,
-      title: T.title || 'بستان المجموعات',
+      title: T.title || L('بستان المجموعات'),
       auth: {
         user: (T.auth && T.auth.user) || 'aisha',
         pin: (T.auth && T.auth.pin) || DEFAULT_PIN
@@ -35,7 +35,7 @@
       wheel: { list: STUDENTS.slice(), picked: [], skipPicked: true,
                quick: { mode: 'size', size: 5, count: 4, last: null } },
       groups: global.Trees.LIST.map(function (t, i) {
-        return { id: 'g' + (i + 1), name: 'المجموعة ' + (ORD[i] || (i + 1)), treeId: t.id, count: 0 };
+        return { id: 'g' + (i + 1), name: L('المجموعة') + ' ' + (ORD[i] || (i + 1)), treeId: t.id, count: 0 };
       }),
       history: []
     };
@@ -65,7 +65,7 @@
         d.groups = s.groups.map(function (g, i) {
           return {
             id: g.id || 'g' + (i + 1),
-            name: typeof g.name === 'string' && g.name.trim() ? g.name : 'المجموعة ' + (ORD[i] || (i + 1)),
+            name: typeof g.name === 'string' && g.name.trim() ? g.name : L('المجموعة') + ' ' + (ORD[i] || (i + 1)),
             treeId: global.Trees.byId[g.treeId] ? g.treeId : global.Trees.LIST[i % 6].id,
             count: Math.max(0, parseInt(g.count, 10) || 0)
           };

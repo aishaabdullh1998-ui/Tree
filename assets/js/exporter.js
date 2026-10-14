@@ -2,7 +2,7 @@
 (function (global) {
   'use strict';
   var T = global.Trees;
-  var W = (global.Theme && global.Theme.words) || { itemAl: 'الثمرة', holderAl: 'الشجرة' };
+  var W = (global.Theme && global.Theme.words) || { itemAl: L('الثمرة'), holderAl: L('الشجرة') };
 
   /* داخل إطار مضمّن (مثل صفحة المعاينة) يُمنع التنزيل المباشر،
      فنعرض النتيجة لتُحفظ بالضغط المطوّل أو بالزر الأيمن. */
@@ -33,7 +33,7 @@
     ov.setAttribute('aria-modal', 'true');
     ov.innerHTML = '<div class="sheet">' + inner +
       '<div class="sheet-actions" style="justify-content:center">' +
-      '<button class="btn" type="button" data-peek-close>إغلاق</button></div></div>';
+      '<button class="btn" type="button" data-peek-close>' + L('إغلاق') + '</button></div></div>';
     document.getElementById('modal-root').appendChild(ov);
     ov.addEventListener('mousedown', function (e) { if (e.target === ov) closePeek(); });
     ov.querySelector('[data-peek-close]').addEventListener('click', closePeek);
@@ -64,23 +64,23 @@
     var url = saveAs(blob, filename);
     if (!EMBEDDED) return;
     if (/\.png$/.test(filename)) {
-      peek('<h2 style="justify-content:center">🖼️ صورة النتائج</h2>' +
-        '<p class="note" style="text-align:center">اضغطي مطوّلًا على الصورة لحفظها، أو بالزر الأيمن ثم «حفظ الصورة».</p>' +
-        '<img class="peek-img" src="' + url + '" alt="صورة نتائج المسابقة">');
+      peek('<h2 style="justify-content:center">🖼️ ' + L('صورة النتائج') + '</h2>' +
+        '<p class="note" style="text-align:center">' + L('اضغطي مطوّلًا على الصورة لحفظها، أو بالزر الأيمن ثم «حفظ الصورة».') + '</p>' +
+        '<img class="peek-img" src="' + url + '" alt="' + L('صورة نتائج المسابقة') + '">');
     } else {
       var reader = new FileReader();
       reader.onload = function () {
         var text = String(reader.result).replace(/^\ufeff/, '');
-        var ov = peek('<h2 style="justify-content:center">📄 جدول النتائج</h2>' +
-          '<p class="note" style="text-align:center">انسخي النص والصقيه في أي جدول بيانات.</p>' +
+        var ov = peek('<h2 style="justify-content:center">📄 ' + L('جدول النتائج') + '</h2>' +
+          '<p class="note" style="text-align:center">' + L('انسخي النص والصقيه في أي جدول بيانات.') + '</p>' +
           '<textarea class="peek-text" readonly rows="9"></textarea>' +
-          '<div style="text-align:center"><button class="btn btn--sm" type="button" data-copy>📋 نسخ</button></div>');
+          '<div style="text-align:center"><button class="btn btn--sm" type="button" data-copy>📋 ' + L('نسخ') + '</button></div>');
         var ta = ov.querySelector('.peek-text');
         ta.value = text;
         ov.querySelector('[data-copy]').addEventListener('click', function (e) {
           ta.select();
           try { document.execCommand('copy'); } catch (err) {}
-          e.target.textContent = '✓ تم النسخ';
+          e.target.textContent = '✓ ' + L('تم النسخ');
         });
       };
       reader.readAsText(blob);
@@ -97,13 +97,13 @@
     var d = dateStr ? new Date(dateStr) : new Date();
     if (isNaN(d.getTime())) d = new Date();
     try {
-      return new Intl.DateTimeFormat('ar', { dateStyle: 'full' }).format(d);
+      return new Intl.DateTimeFormat(L.lang === 'en' ? 'en-GB' : 'ar', { dateStyle: 'full' }).format(d);
     } catch (e) { return stamp(dateStr); }
   }
 
   /* --------------------------------- CSV --------------------------------- */
   function toCsv(record) {
-    var rows = [['الترتيب', 'المجموعة', W.holderAl, W.itemAl, 'العدد']];
+    var rows = [[L('الترتيب'), L('المجموعة'), W.holderAl, W.itemAl, L('العدد')]];
     var sorted = record.results.slice().sort(function (a, b) { return b.count - a.count; });
     sorted.forEach(function (r, i) {
       var t = T.byId[r.treeId];
@@ -113,7 +113,7 @@
       return r.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(',');
     }).join('\r\n');
     download(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }),
-      'نتائج-' + stamp(record.date) + '.csv');
+      L('نتائج') + '-' + stamp(record.date) + '.csv');
   }
 
   /* --------------------------------- PNG --------------------------------- */
@@ -154,7 +154,7 @@
       var cv = document.createElement('canvas');
       cv.width = W; cv.height = H;
       var ctx = cv.getContext('2d');
-      ctx.direction = 'rtl';
+      ctx.direction = (L.lang === 'en') ? 'ltr' : 'rtl';
       ctx.textAlign = 'center';
       var K = (window.Theme && window.Theme.exportColors) || {
         bg: '#F3E7DA', frame: '#D8C5AE', inner: '#C0B05B',
@@ -173,7 +173,7 @@
       var fam = '"Baloo Bhaijaan 2","Tajawal","Noto Kufi Arabic",sans-serif';
       ctx.fillStyle = K.ink;
       ctx.font = '800 54px ' + fam;
-      ctx.fillText(record.title || (window.Theme && window.Theme.title) || 'بستان المجموعات', W / 2, 128);
+      ctx.fillText(record.title || (window.Theme && window.Theme.title) || L('بستان المجموعات'), W / 2, 128);
       ctx.fillStyle = K.soft;
       ctx.font = '700 26px ' + fam;
       ctx.fillText(arabicDate(record.date), W / 2, 172);
@@ -184,14 +184,16 @@
         ctx.fillStyle = K.gold;
         ctx.font = '800 32px ' + fam;
         var label = winners.length > 1
-          ? 'تعادل في الصدارة: ' + winners.map(function (w) { return w.name; }).join(' و ')
-          : 'المجموعة الفائزة: ' + winners[0].name;
+          ? L('تعادل في الصدارة') + ': ' + winners.map(function (w) { return w.name; }).join(' ' + L('و') + ' ')
+          : L('المجموعة الفائزة') + ': ' + winners[0].name;
         ctx.fillText(label, W / 2, 218);
       }
 
       /* البطاقات */
       sorted.forEach(function (r, i) {
-        var c = cols - 1 - (i % cols), rw = Math.floor(i / cols);
+        /* الترتيب يبدأ من جهة القراءة: اليمين في العربية واليسار في الإنجليزية */
+        var c = (L.lang === 'en') ? (i % cols) : (cols - 1 - (i % cols));
+        var rw = Math.floor(i / cols);
         var x = pad + c * cellW, y = 250 + rw * cellH;
         var isWin = r.count === top && top > 0;
         ctx.fillStyle = isWin ? K.cardWin : K.card;
@@ -221,7 +223,7 @@
 
       ctx.fillStyle = K.soft;
       ctx.font = '600 22px ' + fam;
-      ctx.fillText((window.Theme && window.Theme.footer) || 'بستان المجموعات', W / 2, H - 56);
+      ctx.fillText((window.Theme && window.Theme.footer) || L('بستان المجموعات'), W / 2, H - 56);
 
       return new Promise(function (resolve) {
         cv.toBlob(function (b) {

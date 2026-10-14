@@ -6,12 +6,12 @@
   var T = global.Trees, Sound = global.Sound;
 
   var PRESETS = [
-    { s: 30,   label: '٣٠ ثانية' },
-    { s: 60,   label: 'دقيقة' },
-    { s: 120,  label: 'دقيقتان' },
-    { s: 180,  label: '٣ دقائق' },
-    { s: 300,  label: '٥ دقائق' },
-    { s: 600,  label: '١٠ دقائق' }
+    { s: 30,   label: L('٣٠ ثانية') },
+    { s: 60,   label: L('دقيقة واحدة') },
+    { s: 120,  label: L('دقيقتان') },
+    { s: 180,  label: L('٣ دقائق') },
+    { s: 300,  label: L('٥ دقائق') },
+    { s: 600,  label: L('١٠ دقائق') }
   ];
 
   var MIN = 5, MAX = 3600;
@@ -73,14 +73,14 @@
         '<span class="timer-time" id="t-time">00:00</span>' +
       '</div>' +
       '<div class="t-quick">' +
-        '<button type="button" data-sec="30" aria-label="٣٠ ثانية">٣٠ث</button>' +
-        '<button type="button" data-sec="60" aria-label="دقيقة واحدة">١د</button>' +
-        '<button type="button" data-sec="180" aria-label="٣ دقائق">٣د</button>' +
+        '<button type="button" data-sec="30" aria-label="' + L('٣٠ ثانية') + '">' + L('٣٠ث') + '</button>' +
+        '<button type="button" data-sec="60" aria-label="' + L('دقيقة واحدة') + '">' + L('١د') + '</button>' +
+        '<button type="button" data-sec="180" aria-label="' + L('٣ دقائق') + '">' + L('٣د') + '</button>' +
       '</div>' +
       '<div class="timer-ctrl">' +
-        '<button class="tbtn t-toggle" type="button" aria-label="تشغيل المؤقّت">▶</button>' +
-        '<button class="tbtn t-reset" type="button" aria-label="إعادة ضبط المؤقّت">↺</button>' +
-        '<button class="tbtn t-open" type="button" aria-label="تكبير المؤقّت">⤢</button>' +
+        '<button class="tbtn t-toggle" type="button" aria-label="' + L('تشغيل المؤقّت') + '">▶</button>' +
+        '<button class="tbtn t-reset" type="button" aria-label="' + L('إعادة ضبط المؤقّت') + '">↺</button>' +
+        '<button class="tbtn t-open" type="button" aria-label="' + L('تكبير المؤقّت') + '">⤢</button>' +
       '</div>';
 
     var self = this;
@@ -201,11 +201,11 @@
     var running = this.isRunning();
     var tog = this.mount.querySelector('.t-toggle');
     tog.textContent = running ? '⏸' : '▶';
-    tog.setAttribute('aria-label', running ? 'إيقاف المؤقّت مؤقتًا' : 'تشغيل المؤقّت');
+    tog.setAttribute('aria-label', running ? L('إيقاف المؤقّت مؤقتًا') : L('تشغيل المؤقّت'));
     this.mount.classList.toggle('running', running);
     if (this.big) {
       var bt = this.big.querySelector('.t-toggle');
-      if (bt) { bt.textContent = running ? '⏸ إيقاف مؤقّت' : '▶ ابدأ'; }
+      if (bt) { bt.textContent = running ? '⏸ ' + L('إيقاف مؤقّت') : '▶ ' + L('ابدأ'); }
       this.big.classList.toggle('running', running);
     }
   };
@@ -236,7 +236,7 @@
     var el = document.createElement('div');
     el.className = 'time-toast';
     el.setAttribute('role', 'status');
-    el.innerHTML = '<span aria-hidden="true">⏳</span> انتهى الوقت!';
+    el.innerHTML = '<span aria-hidden="true">⏳</span> ' + L('انتهى الوقت!');
     document.body.appendChild(el);
     setTimeout(function () { el.classList.add('out'); }, 3400);
     setTimeout(function () { el.remove(); }, 4000);
@@ -255,21 +255,21 @@
     ov.className = 'overlay timer-overlay';
     ov.setAttribute('role', 'dialog');
     ov.setAttribute('aria-modal', 'true');
-    ov.setAttribute('aria-label', 'مؤقّت النشاط');
+    ov.setAttribute('aria-label', L('مؤقّت النشاط'));
     ov.innerHTML =
       '<div class="sheet timer-big">' +
-        '<h2 style="justify-content:center">⏳ مؤقّت النشاط</h2>' +
+        '<h2 style="justify-content:center">⏳ ' + L('مؤقّت النشاط') + '</h2>' +
         '<div class="timer-face big">' +
           '<span class="timer-ring-wrap">' + ringSvg('timer-ring', 84, 1.5, true) + '</span>' +
           '<span class="timer-time">00:00</span>' +
         '</div>' +
         '<div class="chips">' + chips +
-          '<label class="chip custom"><input type="number" min="1" max="60" step="1" id="t-custom" placeholder="؟" aria-label="دقائق مخصّصة"> دقيقة</label>' +
+          '<label class="chip custom"><input type="number" min="1" max="60" step="1" id="t-custom" placeholder="' + L('؟') + '" aria-label="' + L('دقائق مخصّصة') + '"> ' + L('دقيقة') + '</label>' +
         '</div>' +
         '<div class="sheet-actions" style="justify-content:center">' +
-          '<button class="btn btn--primary t-toggle" type="button">▶ ابدأ</button>' +
-          '<button class="btn t-reset" type="button">↺ إعادة</button>' +
-          '<button class="btn" data-close type="button">إغلاق</button>' +
+          '<button class="btn btn--primary t-toggle" type="button">▶ ' + L('ابدأ') + '</button>' +
+          '<button class="btn t-reset" type="button">↺ ' + L('إعادة') + '</button>' +
+          '<button class="btn" data-close type="button">' + L('إغلاق') + '</button>' +
         '</div>' +
       '</div>';
 

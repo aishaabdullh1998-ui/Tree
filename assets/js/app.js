@@ -8,9 +8,9 @@
   var timer = null, wheel = null, groups = null;
   var TH = window.Theme || {};
   /* كلمات الثيم: ثمرة/شجرة في البستان، نجمة/كوكب في المجرّة، كتاب/رفّ في الرفوف */
-  var W = TH.words || { item: 'ثمرة', itemAl: 'الثمرة', holder: 'شجرة', holderAl: 'الشجرة', icon: '🌱',
-    empty: 'البستان في انتظار أول ثمرة — اضغطي على أي شجرة!',
-    notStarted: 'أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.' };
+  var W = TH.words || { item: L('ثمرة'), itemAl: L('الثمرة'), holder: L('شجرة'), holderAl: L('الشجرة'), icon: '🌱',
+    empty: L('البستان في انتظار أول ثمرة — اضغطي على أي شجرة!'),
+    notStarted: L('أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.') };
   var SVGNS = 'http://www.w3.org/2000/svg';
   var state = Store.load();
 
@@ -74,7 +74,7 @@
       ? window.BustanLogo.svg({ word: false, tag: false })
       : T.standalone(T.LIST[0].id, 6);
 
-    $('#login-hint').textContent = 'تُحفظ بيانات المسابقة في هذا الجهاز ولا تُرسل إلى أي مكان.';
+    $('#login-hint').textContent = L('تُحفظ بيانات المسابقة في هذا الجهاز ولا تُرسل إلى أي مكان.');
 
     /* الدخول يعمل بالضغط وبمفتاح Enter معًا، حتى داخل الصفحات المضمّنة
        التي يُمنع فيها إرسال النماذج */
@@ -94,7 +94,7 @@
         showBoard();
       } else {
         var card = $('.login-card');
-        $('#login-msg').textContent = 'اسم المستخدم أو رمز الدخول غير صحيح';
+        $('#login-msg').textContent = L('اسم المستخدم أو رمز الدخول غير صحيح');
         card.classList.remove('shake');
         void card.offsetWidth;
         card.classList.add('shake');
@@ -125,10 +125,10 @@
     var t = T.byId[g.treeId];
     return '<article class="card" data-gid="' + esc(g.id) + '" style="--tone:' + t.tone + '">' +
       '<div class="card-head">' +
-        '<input class="gname" type="text" maxlength="30" value="' + esc(g.name) + '" aria-label="اسم المجموعة">' +
+        '<input class="gname" type="text" maxlength="30" value="' + esc(g.name) + '" aria-label="' + L('اسم المجموعة') + '">' +
         '<span class="tree-tag">' + esc(t.name) + '</span>' +
       '</div>' +
-      '<button class="tree-btn" type="button" aria-label="أضف ' + esc(t.fruit) + ' إلى ' + esc(g.name) + '">' +
+      '<button class="tree-btn" type="button" aria-label="' + L('أضف') + ' ' + esc(t.fruit) + ' ' + L('إلى') + ' ' + esc(g.name) + '">' +
         '<span class="tree-stage">' +
           '<svg viewBox="' + T.VIEWBOX + '" aria-hidden="true">' + T.defs() +
             '<g class="tree-scale" style="transform:scale(' + T.scaleOf(g.count) + ')">' +
@@ -136,12 +136,12 @@
             '</g>' +
           '</svg>' +
         '</span>' +
-        '<span class="tap-hint">اضغطي لإضافة ' + esc(t.fruit) + '</span>' +
+        '<span class="tap-hint">' + L('اضغطي لإضافة') + ' ' + esc(t.fruit) + '</span>' +
       '</button>' +
       '<div class="card-foot">' +
         '<div class="score"><svg viewBox="' + (T.CHIP_VIEWBOX || '-10 -11 20 22') + '" aria-hidden="true">' + T.fruitShape(g.treeId) + '</svg>' +
         '<span class="num">' + g.count + '</span><span class="unit">' + esc(T.unitFor(g.treeId, g.count)) + '</span></div>' +
-        '<button class="btn btn--sm undo" type="button" aria-label="تراجع عن آخر ' + esc(W.item) + ' في ' + esc(g.name) + '">↩︎ تراجع</button>' +
+        '<button class="btn btn--sm undo" type="button" aria-label="' + L('تراجع عن آخر') + ' ' + esc(W.item) + ' ' + L('في') + ' ' + esc(g.name) + '">↩︎ ' + L('تراجع') + '</button>' +
       '</div>' +
     '</article>';
   }
@@ -177,8 +177,12 @@
 
   function rebuildFruitLayer(card, g) {
     var layer = $('.fruit-layer', card);
-    var size = T.fruitSize(g.count), html = '';
-    for (var i = 0; i < g.count; i++) html += T.fruitMarkup(g.treeId, i, size);
+    var size = T.fruitSize(g.count), html = '', i;
+    if (T.layerMarkup) {
+      html = T.layerMarkup(g.treeId, g.count);
+    } else {
+      for (i = 0; i < g.count; i++) html += T.fruitMarkup(g.treeId, i, size);
+    }
     var holder = svgNode('<g>' + html + '</g>');
     layer.textContent = '';
     while (holder && holder.firstChild) layer.appendChild(holder.firstChild);
@@ -191,7 +195,14 @@
     g.count += 1;
     var size = T.fruitSize(g.count);
 
-    if (size !== prevSize) {
+    if (T.layerMarkup) {
+      rebuildFruitLayer(card, g);
+      var fresh = $$('.fruit-layer .fruit', card).pop();
+      if (fresh) {
+        fresh.setAttribute('class', 'fruit pop');
+        setTimeout(function () { fresh.setAttribute('class', 'fruit'); }, 560);
+      }
+    } else if (size !== prevSize) {
       rebuildFruitLayer(card, g);
     } else {
       var node = svgNode(T.fruitMarkup(g.treeId, g.count - 1, size));
@@ -219,7 +230,7 @@
     var card = cardOf(gid);
     var prevSize = T.fruitSize(g.count);
     g.count -= 1;
-    if (T.fruitSize(g.count) !== prevSize) {
+    if (T.layerMarkup || T.fruitSize(g.count) !== prevSize) {
       rebuildFruitLayer(card, g);
     } else {
       var layer = $('.fruit-layer', card);
@@ -246,11 +257,11 @@
       b.innerHTML = '<span class="crown" aria-hidden="true">' + esc(W.icon) + '</span> ' + esc(W.empty);
     } else if (w.list.length === 1) {
       var t = T.byId[w.list[0].treeId];
-      b.innerHTML = '<span class="crown" aria-hidden="true">👑</span> المتصدّرة الآن: <strong>' +
-        esc(w.list[0].name) + '</strong> بـ ' + esc(T.countLabel(w.list[0].treeId, w.top));
+      b.innerHTML = '<span class="crown" aria-hidden="true">👑</span> ' + L('المتصدّرة الآن') + ': <strong>' +
+        esc(w.list[0].name) + '</strong> ' + L('بـ') + ' ' + esc(T.countLabel(w.list[0].treeId, w.top));
     } else {
-      b.innerHTML = '<span class="crown" aria-hidden="true">🤝</span> تعادل في الصدارة بـ ' + w.top + ' — ' +
-        w.list.map(function (g) { return '<strong>' + esc(g.name) + '</strong>'; }).join(' و ');
+      b.innerHTML = '<span class="crown" aria-hidden="true">🤝</span> ' + L('تعادل في الصدارة بـ') + ' ' + w.top + ' — ' +
+        w.list.map(function (g) { return '<strong>' + esc(g.name) + '</strong>'; }).join(' ' + L('و') + ' ');
     }
   }
 
@@ -315,24 +326,24 @@
   function celebrate() {
     var w = leaders();
     if (w.top === 0) {
-      openSheet('<h2>' + esc(W.icon) + ' لم تبدأ المسابقة بعد</h2><p class="note">' + esc(W.notStarted) + '</p>' +
-        '<div class="sheet-actions"><button class="btn" data-close type="button">حسنًا</button></div>');
+      openSheet('<h2>' + esc(W.icon) + ' ' + L('لم تبدأ المسابقة بعد') + '</h2><p class="note">' + esc(W.notStarted) + '</p>' +
+        '<div class="sheet-actions"><button class="btn" data-close type="button">' + L('حسنًا') + '</button></div>');
       return;
     }
     var first = w.list[0], t = T.byId[first.treeId];
-    var head = w.list.length === 1 ? '🏆 المجموعة الفائزة' : '🤝 تعادل في الصدارة';
+    var head = w.list.length === 1 ? '🏆 ' + L('المجموعة الفائزة') : '🤝 ' + L('تعادل في الصدارة');
     var extra = w.list.length > 1
-      ? '<p class="win-tie">تشاركت في الصدارة: ' + w.list.map(function (g) { return esc(g.name); }).join(' و ') + '</p>'
+      ? '<p class="win-tie">' + L('تشاركت في الصدارة') + ': ' + w.list.map(function (g) { return esc(g.name); }).join(' ' + L('و') + ' ') + '</p>'
       : '';
     openSheet(
       '<h2 style="justify-content:center">' + head + '</h2>' +
       '<div class="win-tree">' + T.standalone(first.treeId, first.count) + '</div>' +
       '<p class="win-name">' + esc(first.name) + '</p>' +
-      '<p class="win-count">' + esc(T.countLabel(first.treeId, first.count)) + ' على ' + esc(t.name) + '</p>' +
+      '<p class="win-count">' + esc(T.countLabel(first.treeId, first.count)) + ' ' + L('على') + ' ' + esc(t.name) + '</p>' +
       extra +
       '<div class="sheet-actions" style="justify-content:center">' +
-        '<button class="btn btn--gold" id="cel-png" type="button">🖼️ حفظ صورة النتائج</button>' +
-        '<button class="btn" data-close type="button">إغلاق</button>' +
+        '<button class="btn btn--gold" id="cel-png" type="button">🖼️ ' + L('حفظ صورة النتائج') + '</button>' +
+        '<button class="btn" data-close type="button">' + L('إغلاق') + '</button>' +
       '</div>',
       function (ov) {
         $('#cel-png', ov).addEventListener('click', function () { Exporter.toPng(snapshot()); });
@@ -350,7 +361,7 @@
       setTimeout(function () { addFruit(g.id, true); }, i * 80);
     });
     Sound.sparkle();
-    toast('أُضيفت نقطة لكل المجموعات', 'تراجع', function () {
+    toast(L('أُضيفت نقطة لكل المجموعات'), L('تراجع'), function () {
       gs.forEach(function (g) { undoFruit(g.id); });
     });
   }
@@ -391,7 +402,7 @@
     try { data = JSON.parse(text); } catch (e) { data = null; }
     var msg = $('#bk-msg', ov);
     if (!data || typeof data !== 'object' || !Array.isArray(data.groups) || !data.groups.length) {
-      msg.textContent = 'هذا الملف ليس نسخة احتياطية صالحة لهذه اللوحة.';
+      msg.textContent = L('هذا الملف ليس نسخة احتياطية صالحة لهذه اللوحة.');
       msg.className = 'login-msg show';
       return;
     }
@@ -399,8 +410,8 @@
     var total = data.groups.reduce(function (a, g) { return a + (parseInt(g.count, 10) || 0); }, 0);
     msg.innerHTML = '';
     msg.className = 'note';
-    msg.textContent = 'الملف يحمل ' + data.groups.length + ' مجموعات، ومجموع نقاطها ' + total + '.' +
-      (other ? ' تنبيه: النسخة من لوحة أخرى، وستُستبدل أسماء ' + W.holderAl + ' بما يناسب هذه اللوحة.' : '');
+    msg.textContent = L('الملف يحمل') + ' ' + data.groups.length + ' ' + L('مجموعات، ومجموع نقاطها') + ' ' + total + '.' +
+      (other ? ' ' + L('تنبيه: النسخة من لوحة أخرى، وستُستبدل أسماء') + ' ' + W.holderAl + ' ' + L('بما يناسب هذه اللوحة.') : '');
     var go = $('#bk-apply', ov);
     go.hidden = false;
     go.onclick = function () {
@@ -412,23 +423,23 @@
 
   function backupSheet() {
     openSheet(
-      '<h2>' + Icon('save', 22) + ' نسخة احتياطية</h2>' +
-      '<p class="note">النقاط والأسماء محفوظة في هذا المتصفّح وحده. احفظي نسخة بين حين وآخر، ' +
-      'فتعود اللوحة كما هي على أي جهاز.</p>' +
+      '<h2>' + Icon('save', 22) + ' ' + L('نسخة احتياطية') + '</h2>' +
+      '<p class="note">' + L('النقاط والأسماء محفوظة في هذا المتصفّح وحده. احفظي نسخة بين حين وآخر،') + ' ' +
+      L('فتعود اللوحة كما هي على أي جهاز.') + '</p>' +
       '<div class="sheet-actions" style="justify-content:flex-start">' +
-        '<button class="btn btn--primary" id="bk-save" type="button">' + Icon('save', 17) + ' حفظ نسخة الآن</button>' +
-        '<button class="btn" id="bk-pick" type="button">' + Icon('load', 17) + ' استعادة من ملف</button>' +
+        '<button class="btn btn--primary" id="bk-save" type="button">' + Icon('save', 17) + ' ' + L('حفظ نسخة الآن') + '</button>' +
+        '<button class="btn" id="bk-pick" type="button">' + Icon('load', 17) + ' ' + L('استعادة من ملف') + '</button>' +
       '</div>' +
       '<input type="file" id="bk-file" accept=".json,application/json" hidden>' +
       '<p id="bk-msg" class="note"></p>' +
       '<div class="sheet-actions">' +
-        '<button class="btn" data-close type="button">إغلاق</button>' +
-        '<button class="btn btn--danger" id="bk-apply" type="button" hidden>استبدال بيانات اللوحة الآن</button>' +
+        '<button class="btn" data-close type="button">' + L('إغلاق') + '</button>' +
+        '<button class="btn btn--danger" id="bk-apply" type="button" hidden>' + L('استبدال بيانات اللوحة الآن') + '</button>' +
       '</div>',
       function (ov) {
         $('#bk-save', ov).addEventListener('click', function () {
           doBackup();
-          $('#bk-msg', ov).textContent = 'حُفظ الملف في مجلّد التنزيلات. احتفظي به في مكان تجدينه.';
+          $('#bk-msg', ov).textContent = L('حُفظ الملف في مجلّد التنزيلات. احتفظي به في مكان تجدينه.');
         });
         $('#bk-pick', ov).addEventListener('click', function () { $('#bk-file', ov).click(); });
         $('#bk-file', ov).addEventListener('change', function () {
@@ -454,14 +465,14 @@
   function confirmReset() {
     var total = visibleGroups().reduce(function (s, g) { return s + g.count; }, 0);
     openSheet(
-      '<h2>🔄 إعادة المسابقة</h2>' +
-      '<p class="note">سيعود عدّاد كل مجموعة إلى صفر وتبدأ الأشجار من جديد.' +
-      (total > 0 ? ' تُحفظ النتيجة الحالية في السجل قبل المسح.' : '') + '</p>' +
-      '<label class="switch"><input type="checkbox" id="keep-names" checked> الاحتفاظ بأسماء المجموعات</label>' +
-      (total > 0 ? '<label class="switch"><input type="checkbox" id="archive" checked> حفظ النتيجة الحالية في السجل</label>' : '') +
+      '<h2>🔄 ' + L('إعادة المسابقة') + '</h2>' +
+      '<p class="note">' + L('سيعود عدّاد كل مجموعة إلى صفر وتبدأ الأشجار من جديد.') +
+      (total > 0 ? ' ' + L('تُحفظ النتيجة الحالية في السجل قبل المسح.') : '') + '</p>' +
+      '<label class="switch"><input type="checkbox" id="keep-names" checked> ' + L('الاحتفاظ بأسماء المجموعات') + '</label>' +
+      (total > 0 ? '<label class="switch"><input type="checkbox" id="archive" checked> ' + L('حفظ النتيجة الحالية في السجل') + '</label>' : '') +
       '<div class="sheet-actions">' +
-        '<button class="btn" data-close type="button">إلغاء</button>' +
-        '<button class="btn btn--danger" id="do-reset" type="button">نعم، ابدئي من جديد</button>' +
+        '<button class="btn" data-close type="button">' + L('إلغاء') + '</button>' +
+        '<button class="btn btn--danger" id="do-reset" type="button">' + L('نعم، ابدئي من جديد') + '</button>' +
       '</div>',
       function (ov) {
         $('#do-reset', ov).addEventListener('click', function () {
@@ -471,7 +482,7 @@
           var keep = $('#keep-names', ov).checked;
           state.groups.forEach(function (g, i) {
             g.count = 0;
-            if (!keep) g.name = 'المجموعة ' + (Store.ORD[i] || (i + 1));
+            if (!keep) g.name = L('المجموعة') + ' ' + (Store.ORD[i] || (i + 1));
           });
           persist();
           closeSheet();
@@ -486,27 +497,27 @@
   function historySheet() {
     var cur = snapshot();
     var curTotal = cur.results.reduce(function (s, r) { return s + r.count; }, 0);
-    var html = '<h2>📜 سجل المسابقات</h2><p class="note">النتيجة الحالية والنتائج المحفوظة سابقًا.</p>';
+    var html = '<h2>📜 ' + L('سجل المسابقات') + '</h2><p class="note">' + L('النتيجة الحالية والنتائج المحفوظة سابقًا.') + '</p>';
 
-    html += '<div class="hist-item"><h3>النتيجة الحالية</h3><div class="meta">' + esc(Exporter.arabicDate(cur.date)) + '</div>' +
+    html += '<div class="hist-item"><h3>' + L('النتيجة الحالية') + '</h3><div class="meta">' + esc(Exporter.arabicDate(cur.date)) + '</div>' +
       histList(cur) +
       '<div class="sheet-actions" style="justify-content:flex-start;margin-top:4px">' +
-      '<button class="btn btn--sm" data-png="now" type="button">🖼️ صورة</button>' +
-      '<button class="btn btn--sm" data-csv="now" type="button">📄 جدول</button></div></div>';
+      '<button class="btn btn--sm" data-png="now" type="button">🖼️ ' + L('صورة') + '</button>' +
+      '<button class="btn btn--sm" data-csv="now" type="button">📄 ' + L('جدول') + '</button></div></div>';
 
     if (!state.history.length) {
-      html += '<p class="empty">لا توجد مسابقات محفوظة بعد. تُحفظ النتيجة تلقائيًا عند الضغط على «إعادة المسابقة».</p>';
+      html += '<p class="empty">' + L('لا توجد مسابقات محفوظة بعد. تُحفظ النتيجة تلقائيًا عند الضغط على «إعادة المسابقة».') + '</p>';
     } else {
       state.history.forEach(function (rec, i) {
-        html += '<div class="hist-item"><h3>' + esc(rec.title || 'مسابقة') + '</h3>' +
+        html += '<div class="hist-item"><h3>' + esc(rec.title || L('مسابقة')) + '</h3>' +
           '<div class="meta">' + esc(Exporter.arabicDate(rec.date)) + '</div>' + histList(rec) +
           '<div class="sheet-actions" style="justify-content:flex-start;margin-top:4px">' +
-          '<button class="btn btn--sm" data-png="' + i + '" type="button">🖼️ صورة</button>' +
-          '<button class="btn btn--sm" data-csv="' + i + '" type="button">📄 جدول</button>' +
-          '<button class="btn btn--sm btn--danger" data-del="' + i + '" type="button">حذف</button></div></div>';
+          '<button class="btn btn--sm" data-png="' + i + '" type="button">🖼️ ' + L('صورة') + '</button>' +
+          '<button class="btn btn--sm" data-csv="' + i + '" type="button">📄 ' + L('جدول') + '</button>' +
+          '<button class="btn btn--sm btn--danger" data-del="' + i + '" type="button">' + L('حذف') + '</button></div></div>';
       });
     }
-    html += '<div class="sheet-actions"><button class="btn" data-close type="button">إغلاق</button></div>';
+    html += '<div class="sheet-actions"><button class="btn" data-close type="button">' + L('إغلاق') + '</button></div>';
 
     openSheet(html, function (ov) {
       if (curTotal === 0) $$('[data-png="now"],[data-csv="now"]', ov).forEach(function (b) { b.disabled = true; b.style.opacity = '.5'; });
@@ -552,18 +563,18 @@
     };
     var groupsHtml = state.groups.map(function (g, i) {
       return '<div class="group-row">' +
-        '<input type="text" maxlength="30" data-gname="' + i + '" value="' + esc(g.name) + '" aria-label="اسم المجموعة ' + (i + 1) + '">' +
-        '<select data-gtree="' + i + '" aria-label="' + esc(W.holder) + ' المجموعة ' + (i + 1) + '">' + treeOptions(g.treeId) + '</select>' +
+        '<input type="text" maxlength="30" data-gname="' + i + '" value="' + esc(g.name) + '" aria-label="' + L('اسم المجموعة') + ' ' + (i + 1) + '">' +
+        '<select data-gtree="' + i + '" aria-label="' + esc(W.holder) + ' ' + L('المجموعة') + ' ' + (i + 1) + '">' + treeOptions(g.treeId) + '</select>' +
       '</div>';
     }).join('');
 
     openSheet(
-      '<h2>⚙️ الإعدادات</h2><p class="note">كل التغييرات تُحفظ في هذا الجهاز.</p>' +
-      '<fieldset class="block"><legend>المسابقة</legend>' +
-        '<div class="row"><label for="set-title">عنوان اللوحة</label><input type="text" id="set-title" maxlength="40" value="' + esc(state.title) + '"></div>' +
+      '<h2>⚙️ ' + L('الإعدادات') + '</h2><p class="note">' + L('كل التغييرات تُحفظ في هذا الجهاز.') + '</p>' +
+      '<fieldset class="block"><legend>' + L('المسابقة') + '</legend>' +
+        '<div class="row"><label for="set-title">' + L('عنوان اللوحة') + '</label><input type="text" id="set-title" maxlength="40" value="' + esc(state.title) + '"></div>' +
       '</fieldset>' +
-      '<fieldset class="block"><legend>عدد المجموعات</legend>' +
-        '<p class="note" style="margin:0 0 8px">تبقى بيانات المجموعات المخفيّة محفوظة، وتعود متى زدتِ العدد.</p>' +
+      '<fieldset class="block"><legend>' + L('عدد المجموعات') + '</legend>' +
+        '<p class="note" style="margin:0 0 8px">' + L('تبقى بيانات المجموعات المخفيّة محفوظة، وتعود متى زدتِ العدد.') + '</p>' +
         '<div class="seg" id="set-count">' +
           [4, 5, 6].map(function (n) {
             return '<button type="button" data-n="' + n + '" aria-pressed="' +
@@ -571,26 +582,26 @@
           }).join('') +
         '</div>' +
       '</fieldset>' +
-      '<fieldset class="block"><legend>المجموعات و' + esc(W.holderAl) + '</legend>' + groupsHtml + '</fieldset>' +
-      '<fieldset class="block"><legend>أسماء عجلة الحظ</legend>' +
-        '<p class="note" style="margin:0 0 8px">اسم في كل سطر. تُستخدم في عجلة الحظ وفي المجموعات السريعة.</p>' +
-        '<textarea id="set-names" class="names-box" rows="7" aria-label="أسماء الطلاب" ' +
-          'placeholder="أحمد&#10;مريم&#10;سالم">' + esc(state.wheel.list.join('\n')) + '</textarea>' +
+      '<fieldset class="block"><legend>' + L('المجموعات و') + esc(W.holderAl) + '</legend>' + groupsHtml + '</fieldset>' +
+      '<fieldset class="block"><legend>' + L('أسماء عجلة الحظ') + '</legend>' +
+        '<p class="note" style="margin:0 0 8px">' + L('اسم في كل سطر. تُستخدم في عجلة الحظ وفي المجموعات السريعة.') + '</p>' +
+        '<textarea id="set-names" class="names-box" rows="7" aria-label="' + L('أسماء الطلاب') + '" ' +
+          'placeholder="' + L('أحمد') + '&#10;' + L('مريم') + '&#10;' + L('سالم') + '">' + esc(state.wheel.list.join('\n')) + '</textarea>' +
         (Store.STUDENTS.length
-          ? '<button class="btn btn--sm" id="set-names-restore" type="button">↺ استعادة القائمة الأصلية</button>'
+          ? '<button class="btn btn--sm" id="set-names-restore" type="button">↺ ' + L('استعادة القائمة الأصلية') + '</button>'
           : '') +
       '</fieldset>' +
-      '<fieldset class="block"><legend>المظهر والصوت</legend>' +
-        '<label class="switch"><input type="checkbox" id="set-sound"' + (state.sound ? ' checked' : '') + '> الأصوات اللطيفة</label>' +
-        '<label class="switch"><input type="checkbox" id="set-texture"' + (state.texture ? ' checked' : '') + '> ملمس الورق الخفيف في الخلفية</label>' +
+      '<fieldset class="block"><legend>' + L('المظهر والصوت') + '</legend>' +
+        '<label class="switch"><input type="checkbox" id="set-sound"' + (state.sound ? ' checked' : '') + '> ' + L('الأصوات اللطيفة') + '</label>' +
+        '<label class="switch"><input type="checkbox" id="set-texture"' + (state.texture ? ' checked' : '') + '> ' + L('ملمس الورق الخفيف في الخلفية') + '</label>' +
       '</fieldset>' +
-      '<fieldset class="block"><legend>بيانات الدخول</legend>' +
-        '<div class="row"><label for="set-user">اسم المستخدم</label><input type="text" id="set-user" value="' + esc(state.auth.user) + '" spellcheck="false"></div>' +
-        '<div class="row"><label for="set-pin">رمز الدخول</label><input type="text" id="set-pin" value="' + esc(state.auth.pin) + '" spellcheck="false"></div>' +
+      '<fieldset class="block"><legend>' + L('بيانات الدخول') + '</legend>' +
+        '<div class="row"><label for="set-user">' + L('اسم المستخدم') + '</label><input type="text" id="set-user" value="' + esc(state.auth.user) + '" spellcheck="false"></div>' +
+        '<div class="row"><label for="set-pin">' + L('رمز الدخول') + '</label><input type="text" id="set-pin" value="' + esc(state.auth.pin) + '" spellcheck="false"></div>' +
       '</fieldset>' +
       '<div class="sheet-actions">' +
-        '<button class="btn" data-close type="button">إلغاء</button>' +
-        '<button class="btn btn--primary" id="set-save" type="button">حفظ التغييرات</button>' +
+        '<button class="btn" data-close type="button">' + L('إلغاء') + '</button>' +
+        '<button class="btn btn--primary" id="set-save" type="button">' + L('حفظ التغييرات') + '</button>' +
       '</div>',
       function (ov) {
         var pickCount = visibleCount();
@@ -673,7 +684,7 @@
       if (!v) { e.target.value = g.name; return; }
       g.name = v;
       var t = T.byId[g.treeId];
-      $('.tree-btn', card).setAttribute('aria-label', 'أضف ' + t.fruit + ' إلى ' + v);
+      $('.tree-btn', card).setAttribute('aria-label', L('أضف') + ' ' + t.fruit + ' ' + L('إلى') + ' ' + v);
       persist();
       updateWinner();
     });
@@ -772,13 +783,16 @@
     });
     var ex = $('#present-exit');
     if (ex && !$('.ic', ex)) {
-      ex.innerHTML = I('small', 15) + ' خروج من وضع العرض';
+      ex.innerHTML = I('small', 15) + ' ' + L('خروج من وضع العرض');
     }
   }
 
   function applyTheme() {
     var r = document.documentElement;
     r.setAttribute('data-theme', TH.id || 'garden');
+    r.setAttribute('dir', TH.dir || 'rtl');
+    r.setAttribute('lang', TH.lang || 'ar');
+    if (window.L && window.L.translateStatic) window.L.translateStatic(document.body);
     if (TH.title) {
       var lt = $('#login-title'); if (lt) lt.textContent = TH.title;
     }

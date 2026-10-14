@@ -9,6 +9,7 @@
     /* ثيم المعلّمة عائشة - بستان الأشجار العمانية المثمرة */
     garden: {
       id: 'garden',
+      lang: 'ar', dir: 'rtl',
       key: 'bustan.groups.v1',
       title: 'بستان المجموعات',
       tagline: 'لوحة تحفيز الطلاب بأشجار عُمان المثمرة',
@@ -33,6 +34,7 @@
     /* ثيم معلّمة الرياضيات - مجرّة الأرقام */
     galaxy: {
       id: 'galaxy',
+      lang: 'ar', dir: 'rtl',
       key: 'majarrat.groups.v1',
       title: 'مجرّة الأرقام',
       tagline: 'لوحة تحفيز الطلاب بكواكب تجمع نجومها',
@@ -56,6 +58,7 @@
     /* ثيم الكتالوج - رفوف الإنجاز (بيانات دخول مؤقّتة تُغيَّر لكل مشترية) */
     shelves: {
       id: 'shelves',
+      lang: 'ar', dir: 'rtl',
       key: 'rufuf.groups.v1',
       title: 'رفوف الإنجاز',
       tagline: 'لوحة تحفيز الطلاب برفوف تمتلئ مع كل إجابة',
@@ -74,6 +77,31 @@
         bg: '#FBF1E2', frame: '#E0C49B', inner: '#C08F4E',
         ink: '#4A3A22', soft: '#8A6E4B', gold: '#C9A227',
         card: '#FFFAF1', cardWin: '#FFFDF4', line: '#E6D3B5'
+      }
+    },
+
+    /* ثيم معلّمات اللغة الإنجليزية - واجهة إنجليزية من اليسار إلى اليمين */
+    voyage: {
+      id: 'voyage',
+      lang: 'en', dir: 'ltr',
+      key: 'voyage.groups.v1',
+      title: 'Treasure Voyage',
+      tagline: 'A class board where every answer sails your team closer to treasure',
+      icon: '🧭',
+      favicon: '⚓',
+      footer: 'Treasure Voyage · every answer is one step closer',
+      boardHint: 'Tap a ship to add a coin · or press number keys 1 to 6',
+      auth: { user: 'voyage', pin: '1111' },
+      items: 'voyage',
+      words: {
+        item: 'coin', itemAl: 'Coin', holder: 'ship', holderAl: 'Ships', icon: '⛵',
+        empty: 'The sea is calm — tap any ship to set sail!',
+        notStarted: 'Give at least one coin to a team, then announce the winner.'
+      },
+      exportColors: {
+        bg: '#EFE3C8', frame: '#D9C49A', inner: '#9CC6D8',
+        ink: '#2A3F4D', soft: '#7A8B96', gold: '#C9954E',
+        card: '#FBF6EA', cardWin: '#FFFDF3', line: '#DFCDAE'
       }
     }
   };

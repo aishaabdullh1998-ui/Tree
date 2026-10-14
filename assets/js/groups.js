@@ -17,8 +17,8 @@
     { bg: '#F2B6A3', ink: '#5A3024', soft: 'rgba(90,48,36,.10)'     }   /* GUAVA   */
   ];
 
-  var ORD = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة',
-             'السابعة', 'الثامنة', 'التاسعة', 'العاشرة', 'الحادية عشرة', 'الثانية عشرة'];
+  var ORD = [L('الأولى'), L('الثانية'), L('الثالثة'), L('الرابعة'), L('الخامسة'), L('السادسة'),
+             L('السابعة'), L('الثامنة'), L('التاسعة'), L('العاشرة'), L('الحادية عشرة'), L('الثانية عشرة')];
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
@@ -26,7 +26,7 @@
     });
   }
 
-  function groupName(i) { return 'المجموعة ' + (ORD[i] || (i + 1)); }
+  function groupName(i) { return L('المجموعة') + ' ' + (ORD[i] || (i + 1)); }
 
   /* خلط فيشر-ييتس */
   function shuffle(arr) {
@@ -80,18 +80,18 @@
 
     var body = n
       ? '<div class="qg-controls">' +
-          '<div class="qg-modes" role="radiogroup" aria-label="طريقة التقسيم">' +
-            '<button class="chip' + (q.mode === 'size' ? ' on' : '') + '" type="button" data-mode="size" role="radio" aria-checked="' + (q.mode === 'size') + '">حسب عدد الأفراد</button>' +
-            '<button class="chip' + (q.mode === 'count' ? ' on' : '') + '" type="button" data-mode="count" role="radio" aria-checked="' + (q.mode === 'count') + '">حسب عدد المجموعات</button>' +
+          '<div class="qg-modes" role="radiogroup" aria-label="' + L('طريقة التقسيم') + '">' +
+            '<button class="chip' + (q.mode === 'size' ? ' on' : '') + '" type="button" data-mode="size" role="radio" aria-checked="' + (q.mode === 'size') + '">' + L('حسب عدد الأفراد') + '</button>' +
+            '<button class="chip' + (q.mode === 'count' ? ' on' : '') + '" type="button" data-mode="count" role="radio" aria-checked="' + (q.mode === 'count') + '">' + L('حسب عدد المجموعات') + '</button>' +
           '</div>' +
           '<div class="qg-row" id="qg-size"' + (q.mode === 'size' ? '' : ' hidden') + '>' +
-            '<span class="qg-label">كم طالبًا في كل مجموعة؟</span>' +
+            '<span class="qg-label">' + L('كم طالبًا في كل مجموعة؟') + '</span>' +
             '<div class="chips">' + [2, 3, 4, 5, 6, 7, 8].map(function (v) {
               return '<button class="chip num' + (v === q.size ? ' on' : '') + '" type="button" data-size="' + v + '">' + v + '</button>';
             }).join('') + '</div>' +
           '</div>' +
           '<div class="qg-row" id="qg-count"' + (q.mode === 'count' ? '' : ' hidden') + '>' +
-            '<span class="qg-label">كم مجموعة تريدين؟</span>' +
+            '<span class="qg-label">' + L('كم مجموعة تريدين؟') + '</span>' +
             '<div class="chips">' + [2, 3, 4, 5, 6, 7, 8].map(function (v) {
               return '<button class="chip num' + (v === q.count ? ' on' : '') + '" type="button" data-count="' + v + '">' + v + '</button>';
             }).join('') + '</div>' +
@@ -101,25 +101,25 @@
         '<div class="qg-result" id="qg-result"></div>'
       : '<div class="wheel-empty">' +
           '<span class="wheel-empty-ico" aria-hidden="true">👥</span>' +
-          '<p>لا توجد أسماء بعد.</p>' +
-          '<p class="wheel-empty-hint">أضيفي أسماء طلابك من صفحة الإعدادات، اسمًا في كل سطر، ' +
-          'ثم يوزّعهم الموقع على مجموعات بضغطة واحدة.</p>' +
-          '<button class="btn btn--primary" id="qg-add-names" type="button">⚙️ أضيفي الأسماء</button>' +
+          '<p>' + L('لا توجد أسماء بعد.') + '</p>' +
+          '<p class="wheel-empty-hint">' + L('أضيفي أسماء طلابك من صفحة الإعدادات، اسمًا في كل سطر،') + ' ' +
+          L('ثم يوزّعهم الموقع على مجموعات بضغطة واحدة.') + '</p>' +
+          '<button class="btn btn--primary" id="qg-add-names" type="button">⚙️ ' + L('أضيفي الأسماء') + '</button>' +
         '</div>';
 
     var ov = document.createElement('div');
     ov.className = 'overlay qg-overlay';
     ov.setAttribute('role', 'dialog');
     ov.setAttribute('aria-modal', 'true');
-    ov.setAttribute('aria-label', 'المجموعات السريعة');
+    ov.setAttribute('aria-label', L('المجموعات السريعة'));
     ov.innerHTML =
       '<div class="sheet qg-sheet">' +
-        '<h2 style="justify-content:center">👥 المجموعات السريعة</h2>' +
+        '<h2 style="justify-content:center">👥 ' + L('المجموعات السريعة') + '</h2>' +
         body +
         '<div class="sheet-actions" style="justify-content:center">' +
-          (n ? '<button class="btn btn--primary" id="qg-go" type="button">🎲 وزّعي المجموعات</button>' +
-               '<button class="btn" id="qg-copy" type="button" hidden>📋 نسخ</button>' : '') +
-          '<button class="btn" id="qg-close" type="button">إغلاق</button>' +
+          (n ? '<button class="btn btn--primary" id="qg-go" type="button">🎲 ' + L('وزّعي المجموعات') + '</button>' +
+               '<button class="btn" id="qg-copy" type="button" hidden>📋 ' + L('نسخ') + '</button>' : '') +
+          '<button class="btn" id="qg-close" type="button">' + L('إغلاق') + '</button>' +
         '</div>' +
       '</div>';
 
@@ -193,9 +193,9 @@
     var d = this.data(), q = d.quick, n = d.list.length;
     var g = groupsCount(n, q.mode, q.mode === 'size' ? q.size : q.count);
     var base = Math.floor(n / g), rem = n % g;
-    var txt = n + ' طالبًا على ' + g + (g === 1 ? ' مجموعة' : (g === 2 ? ' مجموعتين' : ' مجموعات')) + ': ';
-    if (rem === 0) txt += 'كل مجموعة ' + base;
-    else txt += rem + ' منها ' + (base + 1) + ' والباقي ' + base;
+    var txt = n + ' ' + L('طالبًا على') + ' ' + g + (g === 1 ? ' ' + L('مجموعة') : (g === 2 ? ' ' + L('مجموعتين') : ' ' + L('مجموعات'))) + ': ';
+    if (rem === 0) txt += L('كل مجموعة') + ' ' + base;
+    else txt += rem + ' ' + L('منها') + ' ' + (base + 1) + ' ' + L('والباقي') + ' ' + base;
     el.textContent = txt;
   };
 
@@ -227,9 +227,9 @@
       '</div>';
     }).join('');
     var go = this.ov.querySelector('#qg-go');
-    if (go) go.textContent = '🔄 وزّعي من جديد';
+    if (go) go.textContent = '🔄 ' + L('وزّعي من جديد');
     var copy = this.ov.querySelector('#qg-copy');
-    if (copy) { copy.hidden = false; copy.textContent = '📋 نسخ'; }
+    if (copy) { copy.hidden = false; copy.textContent = '📋 ' + L('نسخ'); }
   };
 
   Groups.prototype.asText = function () {
@@ -245,7 +245,7 @@
   Groups.prototype.copy = function (btn) {
     var text = this.asText();
     if (!text) return;
-    var done = function () { if (btn) btn.textContent = '✓ تم النسخ'; };
+    var done = function () { if (btn) btn.textContent = '✓ ' + L('تم النسخ'); };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done, function () { fallback(); });
     } else { fallback(); }

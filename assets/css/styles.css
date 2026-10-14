@@ -146,7 +146,7 @@ body.no-texture::before { display: none; }
 .login-card h1 { font-size: 1.6rem; margin: 2px 0 2px; letter-spacing: .5px; }
 .login-card .sub { margin: 0 0 20px; color: var(--ink-soft); font-size: .94rem; }
 
-.field { text-align: right; margin-bottom: 14px; }
+.field { text-align: start; margin-bottom: 14px; }
 .field label { display: block; font-size: .9rem; margin-bottom: 6px; font-weight: 700; color: var(--ink-soft); }
 .field input {
   width: 100%;
@@ -939,3 +939,51 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 .splash.out { animation: splashOut .42s ease forwards; }
 @keyframes splashOut { to { opacity: 0; transform: scale(1.04); } }
 @media (prefers-reduced-motion: reduce) { .splash { display: none !important; } }
+
+/* ============================ Treasure Voyage =========================== */
+:root[data-theme="voyage"] {
+  --palm:       #2A6076;
+  --palm-dp:    #1C4A5C;
+  --palm-lt:    #5E93A8;
+  --moss:       #9CC6D8;
+  --moss-dp:    #6E9FB5;
+  --butter:     #F0C23C;
+  --butter-dp:  #D9A227;
+  --sangria:    #E36559;
+  --sangria-dp: #C04A3F;
+
+  --cream:      #EFE3C8;
+  --cream-2:    #FBF6EA;
+  --cream-3:    #E3D3B2;
+  --ink:        #2A3F4D;
+  --ink-soft:   #7A8B96;
+  --line:       #D9C49A;
+
+  --bark:       var(--line);
+  --bark-dark:  #C7AE74;
+  --gold:       var(--butter-dp);
+  --gold-deep:  #A87B1C;
+
+  --shadow-sm:  0 4px 0 rgba(42,63,77,.12);
+  --shadow-md:  0 12px 28px rgba(42,63,77,.18);
+}
+
+:root[data-theme="voyage"] body {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(156,198,216,.34) 0 26%, transparent 26%),
+    radial-gradient(circle at 88% 74%, rgba(240,194,60,.26) 0 24%, transparent 24%),
+    radial-gradient(circle at 58% 2%, rgba(42,96,118,.08) 0 18%, transparent 18%);
+}
+:root[data-theme="voyage"] .tree-stage {
+  background: none;
+  overflow: hidden;
+  border-radius: 14px;
+}
+:root[data-theme="voyage"] .banner {
+  background: linear-gradient(180deg, #FBEBC4, #F0C23C);
+  border-color: var(--butter-dp);
+  color: #5A4512;
+}
+:root[data-theme="voyage"] .card.leader { background: #FFFCF0; }
+:root[data-theme="voyage"] .btn--danger { background: transparent; border-color: #E3A99B; color: #A8422F; }
+:root[data-theme="voyage"] .wheel-svg .seg { stroke: #EFE3C8; }
