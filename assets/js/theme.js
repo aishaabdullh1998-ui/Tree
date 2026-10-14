@@ -80,18 +80,43 @@
       }
     },
 
-    /* ثيم معلّمات اللغة الإنجليزية - حصّالة شفافة تمتلئ نقودًا */
+    /* معلّمات اللغة الإنجليزية (١) - سفينة تمضي نحو جزيرة الكنز */
     voyage: {
       id: 'voyage',
       lang: 'en', dir: 'ltr',
       key: 'voyage.groups.v1',
+      title: 'Treasure Voyage',
+      tagline: 'A class board where every answer sails your team closer to treasure',
+      icon: '🧭',
+      favicon: '⚓',
+      footer: 'Treasure Voyage · every answer is one step closer',
+      boardHint: 'Tap a ship to add a coin · or press number keys 1 to 6',
+      auth: { user: 'voyage', pin: '1111' },
+      items: 'voyage',
+      words: {
+        item: 'coin', itemAl: 'Coin', holder: 'ship', holderAl: 'Ships', icon: '⛵',
+        empty: 'The sea is calm — tap any ship to set sail!',
+        notStarted: 'Give at least one coin to a team, then announce the winner.'
+      },
+      exportColors: {
+        bg: '#EFE3C8', frame: '#D9C49A', inner: '#9CC6D8',
+        ink: '#2A3F4D', soft: '#7A8B96', gold: '#C9954E',
+        card: '#FBF6EA', cardWin: '#FFFDF3', line: '#DFCDAE'
+      }
+    },
+
+    /* معلّمات اللغة الإنجليزية (٢) - حصّالة شفافة تمتلئ نقودًا */
+    coinjar: {
+      id: 'coinjar',
+      lang: 'en', dir: 'ltr',
+      key: 'coinjar.groups.v1',
       title: 'Coin Jar',
       tagline: 'A class board where every correct answer drops a coin in the jar',
       icon: '🪙',
       favicon: '🫙',
       footer: 'Coin Jar · the team that saves the most, wins',
       boardHint: 'Tap a jar to drop a coin · or press number keys 1 to 6',
-      auth: { user: 'voyage', pin: '1111' },
+      auth: { user: 'coinjar', pin: '1111' },
       items: 'jars',
       words: {
         item: 'coin', itemAl: 'Coin', holder: 'jar', holderAl: 'Jars', icon: '🫙',

@@ -7,7 +7,8 @@ const TARGETS = [
   { theme: 'garden', out: 'index.html'  },
   { theme: 'galaxy', out: 'galaxy.html' },
   { theme: 'shelves', out: 'shelves.html' },
-  { theme: 'voyage',  out: 'voyage.html'  }
+  { theme: 'voyage',  out: 'voyage.html'  },
+  { theme: 'coinjar', out: 'coinjar.html' }
 ];
 
 TARGETS.forEach(function (t) {

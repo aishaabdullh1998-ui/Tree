@@ -964,7 +964,7 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 @media (prefers-reduced-motion: reduce) { .splash { display: none !important; } }
 
 /* ============================ Treasure Voyage =========================== */
-:root[data-theme="voyage"] {
+:root[data-theme="voyage"], :root[data-theme="coinjar"] {
   --palm:       #2A6076;
   --palm-dp:    #1C4A5C;
   --palm-lt:    #5E93A8;
@@ -991,25 +991,25 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
   --shadow-md:  0 12px 28px rgba(42,63,77,.18);
 }
 
-:root[data-theme="voyage"] body {
+:root[data-theme="voyage"], :root[data-theme="coinjar"] body {
   background-image:
     radial-gradient(circle at 12% 18%, rgba(156,198,216,.34) 0 26%, transparent 26%),
     radial-gradient(circle at 88% 74%, rgba(240,194,60,.26) 0 24%, transparent 24%),
     radial-gradient(circle at 58% 2%, rgba(42,96,118,.08) 0 18%, transparent 18%);
 }
-:root[data-theme="voyage"] .tree-stage {
+:root[data-theme="voyage"], :root[data-theme="coinjar"] .tree-stage {
   background: none;
   overflow: hidden;
   border-radius: 14px;
 }
-:root[data-theme="voyage"] .banner {
+:root[data-theme="voyage"], :root[data-theme="coinjar"] .banner {
   background: linear-gradient(180deg, #FBEBC4, #F0C23C);
   border-color: var(--butter-dp);
   color: #5A4512;
 }
-:root[data-theme="voyage"] .card.leader { background: #FFFCF0; }
-:root[data-theme="voyage"] .btn--danger { background: transparent; border-color: #E3A99B; color: #A8422F; }
-:root[data-theme="voyage"] .wheel-svg .seg { stroke: #EFE3C8; }
+:root[data-theme="voyage"], :root[data-theme="coinjar"] .card.leader { background: #FFFCF0; }
+:root[data-theme="voyage"], :root[data-theme="coinjar"] .btn--danger { background: transparent; border-color: #E3A99B; color: #A8422F; }
+:root[data-theme="voyage"], :root[data-theme="coinjar"] .wheel-svg .seg { stroke: #EFE3C8; }
 
 /* ===================== العناوين والأرقام بخطّ Readex Pro ================== */
 h1, h2, h3,
@@ -1175,18 +1175,43 @@ document.documentElement.setAttribute('lang', "ar");
       }
     },
 
-    /* ثيم معلّمات اللغة الإنجليزية - حصّالة شفافة تمتلئ نقودًا */
+    /* معلّمات اللغة الإنجليزية (١) - سفينة تمضي نحو جزيرة الكنز */
     voyage: {
       id: 'voyage',
       lang: 'en', dir: 'ltr',
       key: 'voyage.groups.v1',
+      title: 'Treasure Voyage',
+      tagline: 'A class board where every answer sails your team closer to treasure',
+      icon: '🧭',
+      favicon: '⚓',
+      footer: 'Treasure Voyage · every answer is one step closer',
+      boardHint: 'Tap a ship to add a coin · or press number keys 1 to 6',
+      auth: { user: 'voyage', pin: '1111' },
+      items: 'voyage',
+      words: {
+        item: 'coin', itemAl: 'Coin', holder: 'ship', holderAl: 'Ships', icon: '⛵',
+        empty: 'The sea is calm — tap any ship to set sail!',
+        notStarted: 'Give at least one coin to a team, then announce the winner.'
+      },
+      exportColors: {
+        bg: '#EFE3C8', frame: '#D9C49A', inner: '#9CC6D8',
+        ink: '#2A3F4D', soft: '#7A8B96', gold: '#C9954E',
+        card: '#FBF6EA', cardWin: '#FFFDF3', line: '#DFCDAE'
+      }
+    },
+
+    /* معلّمات اللغة الإنجليزية (٢) - حصّالة شفافة تمتلئ نقودًا */
+    coinjar: {
+      id: 'coinjar',
+      lang: 'en', dir: 'ltr',
+      key: 'coinjar.groups.v1',
       title: 'Coin Jar',
       tagline: 'A class board where every correct answer drops a coin in the jar',
       icon: '🪙',
       favicon: '🫙',
       footer: 'Coin Jar · the team that saves the most, wins',
       boardHint: 'Tap a jar to drop a coin · or press number keys 1 to 6',
-      auth: { user: 'voyage', pin: '1111' },
+      auth: { user: 'coinjar', pin: '1111' },
       items: 'jars',
       words: {
         item: 'coin', itemAl: 'Coin', holder: 'jar', holderAl: 'Jars', icon: '🫙',
@@ -1438,13 +1463,15 @@ document.documentElement.setAttribute('lang', "ar");
 
   var seq = 0;
 
-  var WORD = { garden: 'بُستان', galaxy: 'مجرّة', shelves: 'مكتبة', voyage: 'Coin Jar' };
+  var WORD = { garden: 'بُستان', galaxy: 'مجرّة', shelves: 'مكتبة',
+               voyage: 'Voyage', coinjar: 'Coin Jar' };
 
   var SKIN = {
     garden:  { ink: '#35402E', soft: '#7E8A72', line: '#C0B05B', bg: '#F3E7DA' },
     galaxy:  { ink: '#1E3A48', soft: '#6D8795', line: '#94BEBB', bg: '#E9F0F2' },
     shelves: { ink: '#4A3A22', soft: '#8A6E4B', line: '#C9A227', bg: '#FBF1E2' },
-    voyage:  { ink: '#2A3F4D', soft: '#7A8B96', line: '#C9954E', bg: '#EFE3C8' }
+    voyage:  { ink: '#2A3F4D', soft: '#7A8B96', line: '#C9954E', bg: '#EFE3C8' },
+    coinjar: { ink: '#2A3F4D', soft: '#7A8B96', line: '#9DBDCB', bg: '#EAF0F3' }
   };
 
   /* ------------------------------ العلامات -------------------------------- */
@@ -1552,7 +1579,8 @@ document.documentElement.setAttribute('lang', "ar");
         'stroke="#7FB0C6" stroke-width="3.4" stroke-linecap="round"/>';
   }
 
-  var MARKS = { garden: markGarden, galaxy: markGalaxy, shelves: markShelves, voyage: markJar };
+  var MARKS = { garden: markGarden, galaxy: markGalaxy, shelves: markShelves,
+                voyage: markVoyage, coinjar: markJar };
 
   /* ------------------------------ التنسيقات ------------------------------- */
   function css(id, k) {
@@ -1593,7 +1621,7 @@ document.documentElement.setAttribute('lang', "ar");
         '@keyframes ' + id + '-plank{to{transform:scaleX(1)}}' +
         '@keyframes ' + id + '-book{from{opacity:0;transform:translateY(16px) scaleY(.5)}' +
           'to{opacity:1;transform:none}}';
-    } else if (k === 'voyage') {
+    } else if (k === 'coinjar') {
       base +=
         '#' + id + ' .jar{opacity:0;animation:' + id + '-fadeup .6s cubic-bezier(.22,1,.3,1) .15s both}' +
         '#' + id + ' .lid{opacity:0;animation:' + id + '-fadeup .5s cubic-bezier(.3,1.4,.5,1) .4s both}' +
@@ -1607,6 +1635,19 @@ document.documentElement.setAttribute('lang', "ar");
         '@keyframes ' + id + '-fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}' +
         '@keyframes ' + id + '-drop{0%{opacity:0;transform:translateY(-22px)}' +
           '30%{opacity:1}70%{opacity:1;transform:translateY(16px)}100%{opacity:0;transform:translateY(30px)}}';
+    } else if (k === 'voyage') {
+      base +=
+        '#' + id + ' .wave{stroke-dasharray:132;stroke-dashoffset:132;' +
+          'animation:' + id + '-draw .9s ease .1s both}' +
+        '#' + id + ' .boat{animation:' + id + '-sail 1s cubic-bezier(.22,1,.3,1) .25s both,' +
+          id + '-bob 3.2s ease-in-out 1.3s infinite}' +
+        '#' + id + ' .sail1{transform-origin:3px -6px;animation:' + id + '-pop .55s cubic-bezier(.3,1.5,.5,1) .7s both}' +
+        '#' + id + ' .sail2{transform-origin:-3px -6px;animation:' + id + '-pop .55s cubic-bezier(.3,1.5,.5,1) .82s both}' +
+        '#' + id + ' .isle{opacity:0;animation:' + id + '-fadeup .6s ease .5s both}' +
+        '@keyframes ' + id + '-draw{to{stroke-dashoffset:0}}' +
+        '@keyframes ' + id + '-sail{from{transform:translate(104px,104px)}to{transform:translate(150px,104px)}}' +
+        '@keyframes ' + id + '-bob{50%{transform:translate(150px,100px) rotate(-3deg)}}' +
+        '@keyframes ' + id + '-fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}';
     } else {
       base +=
         '#' + id + ' .trunk{fill:none;stroke:#9C7B4C;stroke-width:9;stroke-linecap:round;' +
@@ -1627,7 +1668,7 @@ document.documentElement.setAttribute('lang', "ar");
      العلامة مرسومة في مربّع صغير، فتُكبَّر داخل التركيبة الكاملة وتُقصّ وحدها */
   var MARK_BOX = '98 28 124 112';
   /* الحصّالة أضيق من بقيّة العلامات، فلها إطارها */
-  var MARK_BOXES = { voyage: '114 12 74 126' };
+  var MARK_BOXES = { coinjar: '114 12 74 126' };
 
   function svg(opts) {
     opts = opts || {};

@@ -942,7 +942,7 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 @media (prefers-reduced-motion: reduce) { .splash { display: none !important; } }
 
 /* ============================ Treasure Voyage =========================== */
-:root[data-theme="voyage"] {
+:root[data-theme="voyage"], :root[data-theme="coinjar"] {
   --palm:       #2A6076;
   --palm-dp:    #1C4A5C;
   --palm-lt:    #5E93A8;
@@ -969,25 +969,25 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
   --shadow-md:  0 12px 28px rgba(42,63,77,.18);
 }
 
-:root[data-theme="voyage"] body {
+:root[data-theme="voyage"], :root[data-theme="coinjar"] body {
   background-image:
     radial-gradient(circle at 12% 18%, rgba(156,198,216,.34) 0 26%, transparent 26%),
     radial-gradient(circle at 88% 74%, rgba(240,194,60,.26) 0 24%, transparent 24%),
     radial-gradient(circle at 58% 2%, rgba(42,96,118,.08) 0 18%, transparent 18%);
 }
-:root[data-theme="voyage"] .tree-stage {
+:root[data-theme="voyage"], :root[data-theme="coinjar"] .tree-stage {
   background: none;
   overflow: hidden;
   border-radius: 14px;
 }
-:root[data-theme="voyage"] .banner {
+:root[data-theme="voyage"], :root[data-theme="coinjar"] .banner {
   background: linear-gradient(180deg, #FBEBC4, #F0C23C);
   border-color: var(--butter-dp);
   color: #5A4512;
 }
-:root[data-theme="voyage"] .card.leader { background: #FFFCF0; }
-:root[data-theme="voyage"] .btn--danger { background: transparent; border-color: #E3A99B; color: #A8422F; }
-:root[data-theme="voyage"] .wheel-svg .seg { stroke: #EFE3C8; }
+:root[data-theme="voyage"], :root[data-theme="coinjar"] .card.leader { background: #FFFCF0; }
+:root[data-theme="voyage"], :root[data-theme="coinjar"] .btn--danger { background: transparent; border-color: #E3A99B; color: #A8422F; }
+:root[data-theme="voyage"], :root[data-theme="coinjar"] .wheel-svg .seg { stroke: #EFE3C8; }
 
 /* ===================== العناوين والأرقام بخطّ Readex Pro ================== */
 h1, h2, h3,

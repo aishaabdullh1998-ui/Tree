@@ -8,13 +8,15 @@
 
   var seq = 0;
 
-  var WORD = { garden: 'بُستان', galaxy: 'مجرّة', shelves: 'مكتبة', voyage: 'Coin Jar' };
+  var WORD = { garden: 'بُستان', galaxy: 'مجرّة', shelves: 'مكتبة',
+               voyage: 'Voyage', coinjar: 'Coin Jar' };
 
   var SKIN = {
     garden:  { ink: '#35402E', soft: '#7E8A72', line: '#C0B05B', bg: '#F3E7DA' },
     galaxy:  { ink: '#1E3A48', soft: '#6D8795', line: '#94BEBB', bg: '#E9F0F2' },
     shelves: { ink: '#4A3A22', soft: '#8A6E4B', line: '#C9A227', bg: '#FBF1E2' },
-    voyage:  { ink: '#2A3F4D', soft: '#7A8B96', line: '#C9954E', bg: '#EFE3C8' }
+    voyage:  { ink: '#2A3F4D', soft: '#7A8B96', line: '#C9954E', bg: '#EFE3C8' },
+    coinjar: { ink: '#2A3F4D', soft: '#7A8B96', line: '#9DBDCB', bg: '#EAF0F3' }
   };
 
   /* ------------------------------ العلامات -------------------------------- */
@@ -122,7 +124,8 @@
         'stroke="#7FB0C6" stroke-width="3.4" stroke-linecap="round"/>';
   }
 
-  var MARKS = { garden: markGarden, galaxy: markGalaxy, shelves: markShelves, voyage: markJar };
+  var MARKS = { garden: markGarden, galaxy: markGalaxy, shelves: markShelves,
+                voyage: markVoyage, coinjar: markJar };
 
   /* ------------------------------ التنسيقات ------------------------------- */
   function css(id, k) {
@@ -163,7 +166,7 @@
         '@keyframes ' + id + '-plank{to{transform:scaleX(1)}}' +
         '@keyframes ' + id + '-book{from{opacity:0;transform:translateY(16px) scaleY(.5)}' +
           'to{opacity:1;transform:none}}';
-    } else if (k === 'voyage') {
+    } else if (k === 'coinjar') {
       base +=
         '#' + id + ' .jar{opacity:0;animation:' + id + '-fadeup .6s cubic-bezier(.22,1,.3,1) .15s both}' +
         '#' + id + ' .lid{opacity:0;animation:' + id + '-fadeup .5s cubic-bezier(.3,1.4,.5,1) .4s both}' +
@@ -177,6 +180,19 @@
         '@keyframes ' + id + '-fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}' +
         '@keyframes ' + id + '-drop{0%{opacity:0;transform:translateY(-22px)}' +
           '30%{opacity:1}70%{opacity:1;transform:translateY(16px)}100%{opacity:0;transform:translateY(30px)}}';
+    } else if (k === 'voyage') {
+      base +=
+        '#' + id + ' .wave{stroke-dasharray:132;stroke-dashoffset:132;' +
+          'animation:' + id + '-draw .9s ease .1s both}' +
+        '#' + id + ' .boat{animation:' + id + '-sail 1s cubic-bezier(.22,1,.3,1) .25s both,' +
+          id + '-bob 3.2s ease-in-out 1.3s infinite}' +
+        '#' + id + ' .sail1{transform-origin:3px -6px;animation:' + id + '-pop .55s cubic-bezier(.3,1.5,.5,1) .7s both}' +
+        '#' + id + ' .sail2{transform-origin:-3px -6px;animation:' + id + '-pop .55s cubic-bezier(.3,1.5,.5,1) .82s both}' +
+        '#' + id + ' .isle{opacity:0;animation:' + id + '-fadeup .6s ease .5s both}' +
+        '@keyframes ' + id + '-draw{to{stroke-dashoffset:0}}' +
+        '@keyframes ' + id + '-sail{from{transform:translate(104px,104px)}to{transform:translate(150px,104px)}}' +
+        '@keyframes ' + id + '-bob{50%{transform:translate(150px,100px) rotate(-3deg)}}' +
+        '@keyframes ' + id + '-fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}';
     } else {
       base +=
         '#' + id + ' .trunk{fill:none;stroke:#9C7B4C;stroke-width:9;stroke-linecap:round;' +
@@ -197,7 +213,7 @@
      العلامة مرسومة في مربّع صغير، فتُكبَّر داخل التركيبة الكاملة وتُقصّ وحدها */
   var MARK_BOX = '98 28 124 112';
   /* الحصّالة أضيق من بقيّة العلامات، فلها إطارها */
-  var MARK_BOXES = { voyage: '114 12 74 126' };
+  var MARK_BOXES = { coinjar: '114 12 74 126' };
 
   function svg(opts) {
     opts = opts || {};
