@@ -775,6 +775,66 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 .tree-body[data-stage="2"] .spin,
 .tree-body[data-stage="3"] .spin { animation: planetSpin 26s linear infinite; }
 
+/* ============================ ثيم رفوف الإنجاز ========================== */
+:root[data-theme="shelves"] {
+  --palm:       #8A5A24;   /* خشب غامق */
+  --palm-dp:    #6B4318;
+  --palm-lt:    #C08F4E;
+  --moss:       #D9A868;   /* خشب الرفّ */
+  --moss-dp:    #B5823F;
+  --butter:     #F0C23C;
+  --butter-dp:  #C9A227;
+  --sangria:    #E36559;
+  --sangria-dp: #C04A3F;
+
+  --cream:      #FBF1E2;
+  --cream-2:    #FFFAF1;
+  --cream-3:    #F2E2CA;
+  --ink:        #4A3A22;
+  --ink-soft:   #8A6E4B;
+  --line:       #E0C49B;
+
+  --bark:       var(--line);
+  --bark-dark:  #C7A878;
+  --gold:       var(--butter-dp);
+  --gold-deep:  #9C7C1C;
+
+  --shadow-sm:  0 4px 0 rgba(104,70,26,.14);
+  --shadow-md:  0 12px 28px rgba(104,70,26,.20);
+}
+
+:root[data-theme="shelves"] body {
+  background-image:
+    radial-gradient(circle at 10% 16%, rgba(217,168,104,.26) 0 26%, transparent 26%),
+    radial-gradient(circle at 90% 74%, rgba(240,194,60,.22) 0 24%, transparent 24%),
+    radial-gradient(circle at 58% 2%, rgba(138,90,36,.08) 0 18%, transparent 18%);
+}
+/* جدار دافئ خلف الخزانة وظلّ عند أرضيّتها */
+:root[data-theme="shelves"] .tree-stage {
+  background:
+    radial-gradient(ellipse 72% 54% at 50% 36%, rgba(255,248,236,.75), transparent 72%),
+    linear-gradient(180deg, rgba(217,168,104,.10), rgba(164,112,47,.20));
+}
+:root[data-theme="shelves"] .banner {
+  background: linear-gradient(180deg, #FDF3DE, #F0C23C);
+  border-color: var(--butter-dp);
+  color: #5A4512;
+}
+:root[data-theme="shelves"] .card.leader { background: #FFFCF2; }
+:root[data-theme="shelves"] .btn--danger { background: #FBE4DC; border-color: #E09A89; color: #8E3528; }
+:root[data-theme="shelves"] .wheel-svg .seg { stroke: #FBF1E2; }
+:root[data-theme="shelves"] .tree-scale { transform-origin: 120px 194px; }
+
+/* رفٌّ يظهر فوق رفّ، والصورة تتّسع مع كل رفّ جديد */
+.tree-body .shelf-view {
+  transform-origin: 120px 194px;
+  transition: transform .6s cubic-bezier(.3,1.25,.5,1);
+}
+.tree-body[data-stage="0"] .shelf-view { transform: translateY(-54px) scale(1.30); }
+.tree-body[data-stage="1"] .shelf-view { transform: translateY(-35px) scale(1.14); }
+.tree-body[data-stage="2"] .shelf-view { transform: translateY(-20px); }
+.tree-body[data-stage="3"] .shelf-view { transform: scale(.97); }
+
 </style>
 
 <!-- تعريفات الرسم المشتركة -->
@@ -853,6 +913,11 @@ document.documentElement.setAttribute('lang', 'ar');
       favicon: '🌴',
       footer: 'بستان المجموعات · أشجار عُمان المثمرة',
       boardHint: 'اضغطي على الشجرة لإضافة ثمرة · أو استعملي مفاتيح الأرقام من ١ إلى ٦',
+      words: {
+        item: 'ثمرة', itemAl: 'الثمرة', holder: 'شجرة', holderAl: 'الشجرة', icon: '🌱',
+        empty: 'البستان في انتظار أول ثمرة — اضغطي على أي شجرة!',
+        notStarted: 'أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
+      },
       auth: { user: 'aisha', pin: '19961998' },
       items: 'trees',
       exportColors: {
@@ -872,12 +937,40 @@ document.documentElement.setAttribute('lang', 'ar');
       favicon: '🪐',
       footer: 'مجرّة الأرقام · كواكب المجموعة الشمسية',
       boardHint: 'اضغطي على الكوكب لإضافة نجمة · أو استعملي مفاتيح الأرقام من ١ إلى ٦',
+      words: {
+        item: 'نجمة', itemAl: 'النجمة', holder: 'كوكب', holderAl: 'الكوكب', icon: '✨',
+        empty: 'المجرّة في انتظار أول نجمة — اضغطي على أي كوكب!',
+        notStarted: 'أضيفي نجمة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
+      },
       auth: { user: 'Nama', pin: '94443673' },
       items: 'planets',
       exportColors: {
         bg: '#E9F0F2', frame: '#B9CBD3', inner: '#94BEBB',
         ink: '#1E3A48', soft: '#6D8795', gold: '#B8912F',
         card: '#F9FCFD', cardWin: '#FFFDF5', line: '#CFE0E5'
+      }
+    },
+    /* ثيم الكتالوج - رفوف الإنجاز (بيانات دخول مؤقّتة تُغيَّر لكل مشترية) */
+    shelves: {
+      id: 'shelves',
+      key: 'rufuf.groups.v1',
+      title: 'رفوف الإنجاز',
+      tagline: 'لوحة تحفيز الطلاب برفوف تمتلئ مع كل إجابة',
+      icon: '📚',
+      favicon: '📚',
+      footer: 'رفوف الإنجاز · كل إجابة كتاب جديد على الرفّ',
+      boardHint: 'اضغطي على الرفّ لإضافة كتاب · أو استعملي مفاتيح الأرقام من ١ إلى ٦',
+      words: {
+        item: 'كتاب', itemAl: 'الكتاب', holder: 'رفّ', holderAl: 'الرفّ', icon: '📖',
+        empty: 'الرفوف في انتظار أول كتاب — اضغطي على أي رفّ!',
+        notStarted: 'أضيفي كتابًا واحدًا على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
+      },
+      auth: { user: 'shelves', pin: '1111' },
+      items: 'shelves',
+      exportColors: {
+        bg: '#FBF1E2', frame: '#E0C49B', inner: '#C08F4E',
+        ink: '#4A3A22', soft: '#8A6E4B', gold: '#C9A227',
+        card: '#FFFAF1', cardWin: '#FFFDF4', line: '#E6D3B5'
       }
     }
   };
@@ -1196,7 +1289,7 @@ document.documentElement.setAttribute('lang', 'ar');
 
 </script>
 <script>
-/* يختار محرّك الرسم حسب الثيم: أشجار البستان أو كواكب المجرّة */
+/* يختار محرّك الرسم حسب الثيم: أشجار البستان أو كواكب المجرّة أو رفوف الإنجاز */
 (function (global) {
   'use strict';
   var sets = global.ItemSets || {};
@@ -1437,6 +1530,7 @@ document.documentElement.setAttribute('lang', 'ar');
 (function (global) {
   'use strict';
   var T = global.Trees;
+  var W = (global.Theme && global.Theme.words) || { itemAl: 'الثمرة', holderAl: 'الشجرة' };
 
   /* داخل إطار مضمّن (مثل صفحة المعاينة) يُمنع التنزيل المباشر،
      فنعرض النتيجة لتُحفظ بالضغط المطوّل أو بالزر الأيمن. */
@@ -1537,7 +1631,7 @@ document.documentElement.setAttribute('lang', 'ar');
 
   /* --------------------------------- CSV --------------------------------- */
   function toCsv(record) {
-    var rows = [['الترتيب', 'المجموعة', 'الشجرة', 'الثمرة', 'العدد']];
+    var rows = [['الترتيب', 'المجموعة', W.holderAl, W.itemAl, 'العدد']];
     var sorted = record.results.slice().sort(function (a, b) { return b.count - a.count; });
     sorted.forEach(function (r, i) {
       var t = T.byId[r.treeId];
@@ -2572,6 +2666,10 @@ document.documentElement.setAttribute('lang', 'ar');
   var T = window.Trees, Sound = window.Sound, Store = window.Store, Exporter = window.Exporter;
   var timer = null, wheel = null, groups = null;
   var TH = window.Theme || {};
+  /* كلمات الثيم: ثمرة/شجرة في البستان، نجمة/كوكب في المجرّة، كتاب/رفّ في الرفوف */
+  var W = TH.words || { item: 'ثمرة', itemAl: 'الثمرة', holder: 'شجرة', holderAl: 'الشجرة', icon: '🌱',
+    empty: 'البستان في انتظار أول ثمرة — اضغطي على أي شجرة!',
+    notStarted: 'أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.' };
   var SVGNS = 'http://www.w3.org/2000/svg';
   var state = Store.load();
 
@@ -2671,9 +2769,9 @@ document.documentElement.setAttribute('lang', 'ar');
         '<span class="tap-hint">اضغطي لإضافة ' + esc(t.fruit) + '</span>' +
       '</button>' +
       '<div class="card-foot">' +
-        '<div class="score"><svg viewBox="-10 -11 20 22" aria-hidden="true">' + T.fruitShape(g.treeId) + '</svg>' +
+        '<div class="score"><svg viewBox="' + (T.CHIP_VIEWBOX || '-10 -11 20 22') + '" aria-hidden="true">' + T.fruitShape(g.treeId) + '</svg>' +
         '<span class="num">' + g.count + '</span><span class="unit">' + esc(T.unitFor(g.treeId, g.count)) + '</span></div>' +
-        '<button class="btn btn--sm undo" type="button" aria-label="تراجع عن آخر ثمرة في ' + esc(g.name) + '">↩︎ تراجع</button>' +
+        '<button class="btn btn--sm undo" type="button" aria-label="تراجع عن آخر ' + esc(W.item) + ' في ' + esc(g.name) + '">↩︎ تراجع</button>' +
       '</div>' +
     '</article>';
   }
@@ -2773,7 +2871,7 @@ document.documentElement.setAttribute('lang', 'ar');
     });
     var b = $('#banner');
     if (w.top === 0) {
-      b.innerHTML = '<span class="crown" aria-hidden="true">🌱</span> البستان في انتظار أول ثمرة — اضغطي على أي شجرة!';
+      b.innerHTML = '<span class="crown" aria-hidden="true">' + esc(W.icon) + '</span> ' + esc(W.empty);
     } else if (w.list.length === 1) {
       var t = T.byId[w.list[0].treeId];
       b.innerHTML = '<span class="crown" aria-hidden="true">👑</span> المتصدّرة الآن: <strong>' +
@@ -2845,7 +2943,7 @@ document.documentElement.setAttribute('lang', 'ar');
   function celebrate() {
     var w = leaders();
     if (w.top === 0) {
-      openSheet('<h2>🌱 لم تبدأ المسابقة بعد</h2><p class="note">أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.</p>' +
+      openSheet('<h2>' + esc(W.icon) + ' لم تبدأ المسابقة بعد</h2><p class="note">' + esc(W.notStarted) + '</p>' +
         '<div class="sheet-actions"><button class="btn" data-close type="button">حسنًا</button></div>');
       return;
     }
@@ -2983,7 +3081,7 @@ document.documentElement.setAttribute('lang', 'ar');
     var groupsHtml = state.groups.map(function (g, i) {
       return '<div class="group-row">' +
         '<input type="text" maxlength="30" data-gname="' + i + '" value="' + esc(g.name) + '" aria-label="اسم المجموعة ' + (i + 1) + '">' +
-        '<select data-gtree="' + i + '" aria-label="شجرة المجموعة ' + (i + 1) + '">' + treeOptions(g.treeId) + '</select>' +
+        '<select data-gtree="' + i + '" aria-label="' + esc(W.holder) + ' المجموعة ' + (i + 1) + '">' + treeOptions(g.treeId) + '</select>' +
       '</div>';
     }).join('');
 

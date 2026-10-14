@@ -2,6 +2,7 @@
 (function (global) {
   'use strict';
   var T = global.Trees;
+  var W = (global.Theme && global.Theme.words) || { itemAl: 'الثمرة', holderAl: 'الشجرة' };
 
   /* داخل إطار مضمّن (مثل صفحة المعاينة) يُمنع التنزيل المباشر،
      فنعرض النتيجة لتُحفظ بالضغط المطوّل أو بالزر الأيمن. */
@@ -102,7 +103,7 @@
 
   /* --------------------------------- CSV --------------------------------- */
   function toCsv(record) {
-    var rows = [['الترتيب', 'المجموعة', 'الشجرة', 'الثمرة', 'العدد']];
+    var rows = [['الترتيب', 'المجموعة', W.holderAl, W.itemAl, 'العدد']];
     var sorted = record.results.slice().sort(function (a, b) { return b.count - a.count; });
     sorted.forEach(function (r, i) {
       var t = T.byId[r.treeId];

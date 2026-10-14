@@ -7,6 +7,10 @@
   var T = window.Trees, Sound = window.Sound, Store = window.Store, Exporter = window.Exporter;
   var timer = null, wheel = null, groups = null;
   var TH = window.Theme || {};
+  /* كلمات الثيم: ثمرة/شجرة في البستان، نجمة/كوكب في المجرّة، كتاب/رفّ في الرفوف */
+  var W = TH.words || { item: 'ثمرة', itemAl: 'الثمرة', holder: 'شجرة', holderAl: 'الشجرة', icon: '🌱',
+    empty: 'البستان في انتظار أول ثمرة — اضغطي على أي شجرة!',
+    notStarted: 'أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.' };
   var SVGNS = 'http://www.w3.org/2000/svg';
   var state = Store.load();
 
@@ -106,9 +110,9 @@
         '<span class="tap-hint">اضغطي لإضافة ' + esc(t.fruit) + '</span>' +
       '</button>' +
       '<div class="card-foot">' +
-        '<div class="score"><svg viewBox="-10 -11 20 22" aria-hidden="true">' + T.fruitShape(g.treeId) + '</svg>' +
+        '<div class="score"><svg viewBox="' + (T.CHIP_VIEWBOX || '-10 -11 20 22') + '" aria-hidden="true">' + T.fruitShape(g.treeId) + '</svg>' +
         '<span class="num">' + g.count + '</span><span class="unit">' + esc(T.unitFor(g.treeId, g.count)) + '</span></div>' +
-        '<button class="btn btn--sm undo" type="button" aria-label="تراجع عن آخر ثمرة في ' + esc(g.name) + '">↩︎ تراجع</button>' +
+        '<button class="btn btn--sm undo" type="button" aria-label="تراجع عن آخر ' + esc(W.item) + ' في ' + esc(g.name) + '">↩︎ تراجع</button>' +
       '</div>' +
     '</article>';
   }
@@ -208,7 +212,7 @@
     });
     var b = $('#banner');
     if (w.top === 0) {
-      b.innerHTML = '<span class="crown" aria-hidden="true">🌱</span> البستان في انتظار أول ثمرة — اضغطي على أي شجرة!';
+      b.innerHTML = '<span class="crown" aria-hidden="true">' + esc(W.icon) + '</span> ' + esc(W.empty);
     } else if (w.list.length === 1) {
       var t = T.byId[w.list[0].treeId];
       b.innerHTML = '<span class="crown" aria-hidden="true">👑</span> المتصدّرة الآن: <strong>' +
@@ -280,7 +284,7 @@
   function celebrate() {
     var w = leaders();
     if (w.top === 0) {
-      openSheet('<h2>🌱 لم تبدأ المسابقة بعد</h2><p class="note">أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.</p>' +
+      openSheet('<h2>' + esc(W.icon) + ' لم تبدأ المسابقة بعد</h2><p class="note">' + esc(W.notStarted) + '</p>' +
         '<div class="sheet-actions"><button class="btn" data-close type="button">حسنًا</button></div>');
       return;
     }
@@ -418,7 +422,7 @@
     var groupsHtml = state.groups.map(function (g, i) {
       return '<div class="group-row">' +
         '<input type="text" maxlength="30" data-gname="' + i + '" value="' + esc(g.name) + '" aria-label="اسم المجموعة ' + (i + 1) + '">' +
-        '<select data-gtree="' + i + '" aria-label="شجرة المجموعة ' + (i + 1) + '">' + treeOptions(g.treeId) + '</select>' +
+        '<select data-gtree="' + i + '" aria-label="' + esc(W.holder) + ' المجموعة ' + (i + 1) + '">' + treeOptions(g.treeId) + '</select>' +
       '</div>';
     }).join('');
 

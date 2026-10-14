@@ -14,7 +14,7 @@ const themeSrc = read('assets/js/theme.js');
 const block = new RegExp("\\b" + themeId + ":\\s*\\{[\\s\\S]*?\\n    \\}").exec(themeSrc);
 if (!block) throw new Error('unknown theme: ' + themeId);
 const pageTitle = /title:\s*'([^']+)'/.exec(block[0])[1];
-const engine = /items:\s*'planets'/.test(block[0]) ? 'planets' : 'trees';
+const engine = (/items:\s*'([a-z]+)'/.exec(block[0]) || [, 'trees'])[1];
 const themeScript = '<script>window.BUSTAN_THEME_ID = ' + JSON.stringify(themeId) + ';</script>\n';
 console.log('theme:', themeId, '-', pageTitle, '| engine:', engine);
 

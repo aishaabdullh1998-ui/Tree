@@ -762,3 +762,63 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 @keyframes planetSpin { to { transform: rotate(360deg); } }
 .tree-body[data-stage="2"] .spin,
 .tree-body[data-stage="3"] .spin { animation: planetSpin 26s linear infinite; }
+
+/* ============================ ثيم رفوف الإنجاز ========================== */
+:root[data-theme="shelves"] {
+  --palm:       #8A5A24;   /* خشب غامق */
+  --palm-dp:    #6B4318;
+  --palm-lt:    #C08F4E;
+  --moss:       #D9A868;   /* خشب الرفّ */
+  --moss-dp:    #B5823F;
+  --butter:     #F0C23C;
+  --butter-dp:  #C9A227;
+  --sangria:    #E36559;
+  --sangria-dp: #C04A3F;
+
+  --cream:      #FBF1E2;
+  --cream-2:    #FFFAF1;
+  --cream-3:    #F2E2CA;
+  --ink:        #4A3A22;
+  --ink-soft:   #8A6E4B;
+  --line:       #E0C49B;
+
+  --bark:       var(--line);
+  --bark-dark:  #C7A878;
+  --gold:       var(--butter-dp);
+  --gold-deep:  #9C7C1C;
+
+  --shadow-sm:  0 4px 0 rgba(104,70,26,.14);
+  --shadow-md:  0 12px 28px rgba(104,70,26,.20);
+}
+
+:root[data-theme="shelves"] body {
+  background-image:
+    radial-gradient(circle at 10% 16%, rgba(217,168,104,.26) 0 26%, transparent 26%),
+    radial-gradient(circle at 90% 74%, rgba(240,194,60,.22) 0 24%, transparent 24%),
+    radial-gradient(circle at 58% 2%, rgba(138,90,36,.08) 0 18%, transparent 18%);
+}
+/* جدار دافئ خلف الخزانة وظلّ عند أرضيّتها */
+:root[data-theme="shelves"] .tree-stage {
+  background:
+    radial-gradient(ellipse 72% 54% at 50% 36%, rgba(255,248,236,.75), transparent 72%),
+    linear-gradient(180deg, rgba(217,168,104,.10), rgba(164,112,47,.20));
+}
+:root[data-theme="shelves"] .banner {
+  background: linear-gradient(180deg, #FDF3DE, #F0C23C);
+  border-color: var(--butter-dp);
+  color: #5A4512;
+}
+:root[data-theme="shelves"] .card.leader { background: #FFFCF2; }
+:root[data-theme="shelves"] .btn--danger { background: #FBE4DC; border-color: #E09A89; color: #8E3528; }
+:root[data-theme="shelves"] .wheel-svg .seg { stroke: #FBF1E2; }
+:root[data-theme="shelves"] .tree-scale { transform-origin: 120px 194px; }
+
+/* رفٌّ يظهر فوق رفّ، والصورة تتّسع مع كل رفّ جديد */
+.tree-body .shelf-view {
+  transform-origin: 120px 194px;
+  transition: transform .6s cubic-bezier(.3,1.25,.5,1);
+}
+.tree-body[data-stage="0"] .shelf-view { transform: translateY(-54px) scale(1.30); }
+.tree-body[data-stage="1"] .shelf-view { transform: translateY(-35px) scale(1.14); }
+.tree-body[data-stage="2"] .shelf-view { transform: translateY(-20px); }
+.tree-body[data-stage="3"] .shelf-view { transform: scale(.97); }

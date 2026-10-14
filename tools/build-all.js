@@ -1,11 +1,12 @@
-/* يبني صفحة كل ثيم: index.html للبستان و galaxy.html لمجرّة الأرقام */
+/* يبني صفحة كل ثيم: index.html للبستان، galaxy.html للمجرّة، shelves.html للرفوف */
 const { execFileSync } = require('child_process');
 const path = require('path');
 const root = path.join(__dirname, '..');
 
 const TARGETS = [
   { theme: 'garden', out: 'index.html'  },
-  { theme: 'galaxy', out: 'galaxy.html' }
+  { theme: 'galaxy', out: 'galaxy.html' },
+  { theme: 'shelves', out: 'shelves.html' }
 ];
 
 TARGETS.forEach(function (t) {

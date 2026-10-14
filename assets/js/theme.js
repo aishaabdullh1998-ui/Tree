@@ -16,6 +16,11 @@
       favicon: '🌴',
       footer: 'بستان المجموعات · أشجار عُمان المثمرة',
       boardHint: 'اضغطي على الشجرة لإضافة ثمرة · أو استعملي مفاتيح الأرقام من ١ إلى ٦',
+      words: {
+        item: 'ثمرة', itemAl: 'الثمرة', holder: 'شجرة', holderAl: 'الشجرة', icon: '🌱',
+        empty: 'البستان في انتظار أول ثمرة — اضغطي على أي شجرة!',
+        notStarted: 'أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
+      },
       auth: { user: 'aisha', pin: '19961998' },
       items: 'trees',
       exportColors: {
@@ -35,12 +40,40 @@
       favicon: '🪐',
       footer: 'مجرّة الأرقام · كواكب المجموعة الشمسية',
       boardHint: 'اضغطي على الكوكب لإضافة نجمة · أو استعملي مفاتيح الأرقام من ١ إلى ٦',
+      words: {
+        item: 'نجمة', itemAl: 'النجمة', holder: 'كوكب', holderAl: 'الكوكب', icon: '✨',
+        empty: 'المجرّة في انتظار أول نجمة — اضغطي على أي كوكب!',
+        notStarted: 'أضيفي نجمة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
+      },
       auth: { user: 'Nama', pin: '94443673' },
       items: 'planets',
       exportColors: {
         bg: '#E9F0F2', frame: '#B9CBD3', inner: '#94BEBB',
         ink: '#1E3A48', soft: '#6D8795', gold: '#B8912F',
         card: '#F9FCFD', cardWin: '#FFFDF5', line: '#CFE0E5'
+      }
+    },
+    /* ثيم الكتالوج - رفوف الإنجاز (بيانات دخول مؤقّتة تُغيَّر لكل مشترية) */
+    shelves: {
+      id: 'shelves',
+      key: 'rufuf.groups.v1',
+      title: 'رفوف الإنجاز',
+      tagline: 'لوحة تحفيز الطلاب برفوف تمتلئ مع كل إجابة',
+      icon: '📚',
+      favicon: '📚',
+      footer: 'رفوف الإنجاز · كل إجابة كتاب جديد على الرفّ',
+      boardHint: 'اضغطي على الرفّ لإضافة كتاب · أو استعملي مفاتيح الأرقام من ١ إلى ٦',
+      words: {
+        item: 'كتاب', itemAl: 'الكتاب', holder: 'رفّ', holderAl: 'الرفّ', icon: '📖',
+        empty: 'الرفوف في انتظار أول كتاب — اضغطي على أي رفّ!',
+        notStarted: 'أضيفي كتابًا واحدًا على الأقل لإحدى المجموعات ثم أعلني الفائزة.'
+      },
+      auth: { user: 'shelves', pin: '1111' },
+      items: 'shelves',
+      exportColors: {
+        bg: '#FBF1E2', frame: '#E0C49B', inner: '#C08F4E',
+        ink: '#4A3A22', soft: '#8A6E4B', gold: '#C9A227',
+        card: '#FFFAF1', cardWin: '#FFFDF4', line: '#E6D3B5'
       }
     }
   };
