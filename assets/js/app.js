@@ -33,17 +33,46 @@
   function persist() { Store.save(state); }
 
 
+  /* عدد المجموعات الذي اختارته المعلّمة: البقيّة تبقى محفوظة ولا تُعرض */
+  function visibleCount() { return Math.max(2, Math.min(6, parseInt(state.visible, 10) || 6)); }
+  function visibleGroups() { return state.groups.slice(0, visibleCount()); }
+
   function leaders() {
-    var top = 0, i;
-    for (i = 0; i < state.groups.length; i++) if (state.groups[i].count > top) top = state.groups[i].count;
+    var gs = visibleGroups(), top = 0, i;
+    for (i = 0; i < gs.length; i++) if (gs[i].count > top) top = gs[i].count;
     if (top === 0) return { top: 0, list: [] };
-    return { top: top, list: state.groups.filter(function (g) { return g.count === top; }) };
+    return { top: top, list: gs.filter(function (g) { return g.count === top; }) };
+  }
+
+  /* تنبيه صغير أسفل الشاشة، ومعه زرّ تراجع عند الحاجة */
+  var toastTimer = null;
+  function toast(msg, actionLabel, onAction) {
+    var old = $('.toast'); if (old) old.remove();
+    if (toastTimer) clearTimeout(toastTimer);
+    var el = document.createElement('div');
+    el.className = 'toast';
+    el.setAttribute('role', 'status');
+    el.innerHTML = '<span>' + esc(msg) + '</span>';
+    if (actionLabel) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = actionLabel;
+      b.addEventListener('click', function () { el.remove(); if (onAction) onAction(); });
+      el.appendChild(b);
+    }
+    document.body.appendChild(el);
+    toastTimer = setTimeout(function () {
+      el.classList.add('out');
+      setTimeout(function () { el.remove(); }, 500);
+    }, 5200);
   }
 
   /* ============================ شاشة الدخول ============================== */
   function initLogin() {
     var mark = $('#login-mark');
-    mark.innerHTML = T.standalone(T.LIST[0].id, 6);
+    mark.innerHTML = window.BustanLogo
+      ? window.BustanLogo.svg({ word: false, tag: false })
+      : T.standalone(T.LIST[0].id, 6);
 
     $('#login-hint').textContent = 'تُحفظ بيانات المسابقة في هذا الجهاز ولا تُرسل إلى أي مكان.';
 
@@ -120,7 +149,9 @@
   function renderBoard() {
     $('#board-heading').textContent = state.title;
     document.title = state.title;
-    $('#grid').innerHTML = state.groups.map(cardMarkup).join('');
+    var grid = $('#grid');
+    grid.setAttribute('data-n', visibleCount());
+    grid.innerHTML = visibleGroups().map(cardMarkup).join('');
     updateWinner();
   }
 
@@ -153,7 +184,7 @@
     while (holder && holder.firstChild) layer.appendChild(holder.firstChild);
   }
 
-  function addFruit(gid) {
+  function addFruit(gid, silent) {
     var g = groupOf(gid); if (!g) return;
     var card = cardOf(gid); if (!card) return;
     var prevSize = T.fruitSize(g.count);
@@ -178,7 +209,7 @@
     $('.tree-stage', card).appendChild(plus);
     setTimeout(function () { plus.remove(); }, 900);
 
-    Sound.pop(g.count);
+    if (!silent) Sound.pop(g.count);
     persist();
     updateWinner();
   }
@@ -311,17 +342,117 @@
     Sound.fanfare();
   }
 
+  /* --------------------------- نقطة لكل المجموعات ------------------------- */
+  function addAll() {
+    var gs = visibleGroups();
+    Sound.unlock();
+    gs.forEach(function (g, i) {
+      setTimeout(function () { addFruit(g.id, true); }, i * 80);
+    });
+    Sound.sparkle();
+    toast('أُضيفت نقطة لكل المجموعات', 'تراجع', function () {
+      gs.forEach(function (g) { undoFruit(g.id); });
+    });
+  }
+
+  /* ---------------------------- وضع العرض الكامل -------------------------- */
+  function setPresent(on) {
+    var r = document.documentElement;
+    r.classList.toggle('present', on);
+    var ex = $('#present-exit'); if (ex) ex.hidden = !on;
+    try {
+      if (on && r.requestFullscreen) r.requestFullscreen();
+      else if (!on && document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
+    } catch (e) {}
+  }
+  function presentOn() { return document.documentElement.classList.contains('present'); }
+
+  /* --------------------------- نسخة احتياطية واستعادة --------------------- */
+  function backupName() {
+    var d = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return (TH.id || 'bustan') + '-backup-' + d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + '.json';
+  }
+
+  function doBackup() {
+    var copy = JSON.parse(JSON.stringify(state));
+    copy.loggedIn = false;
+    copy.theme = TH.id || 'garden';
+    copy.savedAt = new Date().toISOString();
+    var blob = new Blob([JSON.stringify(copy, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = backupName();
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+  }
+
+  function restoreFrom(text, ov) {
+    var data;
+    try { data = JSON.parse(text); } catch (e) { data = null; }
+    var msg = $('#bk-msg', ov);
+    if (!data || typeof data !== 'object' || !Array.isArray(data.groups) || !data.groups.length) {
+      msg.textContent = 'هذا الملف ليس نسخة احتياطية صالحة لهذه اللوحة.';
+      msg.className = 'login-msg show';
+      return;
+    }
+    var other = data.theme && TH.id && data.theme !== TH.id;
+    var total = data.groups.reduce(function (a, g) { return a + (parseInt(g.count, 10) || 0); }, 0);
+    msg.innerHTML = '';
+    msg.className = 'note';
+    msg.textContent = 'الملف يحمل ' + data.groups.length + ' مجموعات، ومجموع نقاطها ' + total + '.' +
+      (other ? ' تنبيه: النسخة من لوحة أخرى، وستُستبدل أسماء ' + W.holderAl + ' بما يناسب هذه اللوحة.' : '');
+    var go = $('#bk-apply', ov);
+    go.hidden = false;
+    go.onclick = function () {
+      data.loggedIn = true;
+      try { localStorage.setItem(Store.KEY, JSON.stringify(data)); } catch (e) {}
+      location.reload();
+    };
+  }
+
+  function backupSheet() {
+    openSheet(
+      '<h2>' + Icon('save', 22) + ' نسخة احتياطية</h2>' +
+      '<p class="note">النقاط والأسماء محفوظة في هذا المتصفّح وحده. احفظي نسخة بين حين وآخر، ' +
+      'فتعود اللوحة كما هي على أي جهاز.</p>' +
+      '<div class="sheet-actions" style="justify-content:flex-start">' +
+        '<button class="btn btn--primary" id="bk-save" type="button">' + Icon('save', 17) + ' حفظ نسخة الآن</button>' +
+        '<button class="btn" id="bk-pick" type="button">' + Icon('load', 17) + ' استعادة من ملف</button>' +
+      '</div>' +
+      '<input type="file" id="bk-file" accept=".json,application/json" hidden>' +
+      '<p id="bk-msg" class="note"></p>' +
+      '<div class="sheet-actions">' +
+        '<button class="btn" data-close type="button">إغلاق</button>' +
+        '<button class="btn btn--danger" id="bk-apply" type="button" hidden>استبدال بيانات اللوحة الآن</button>' +
+      '</div>',
+      function (ov) {
+        $('#bk-save', ov).addEventListener('click', function () {
+          doBackup();
+          $('#bk-msg', ov).textContent = 'حُفظ الملف في مجلّد التنزيلات. احتفظي به في مكان تجدينه.';
+        });
+        $('#bk-pick', ov).addEventListener('click', function () { $('#bk-file', ov).click(); });
+        $('#bk-file', ov).addEventListener('change', function () {
+          var f = this.files && this.files[0];
+          if (!f) return;
+          var fr = new FileReader();
+          fr.onload = function () { restoreFrom(String(fr.result), ov); };
+          fr.readAsText(f);
+        });
+      }
+    );
+  }
+
   /* ------------------------------ إعادة المسابقة -------------------------- */
   function snapshot() {
     return {
       date: new Date().toISOString(),
       title: state.title,
-      results: state.groups.map(function (g) { return { name: g.name, treeId: g.treeId, count: g.count }; })
+      results: visibleGroups().map(function (g) { return { name: g.name, treeId: g.treeId, count: g.count }; })
     };
   }
 
   function confirmReset() {
-    var total = state.groups.reduce(function (s, g) { return s + g.count; }, 0);
+    var total = visibleGroups().reduce(function (s, g) { return s + g.count; }, 0);
     openSheet(
       '<h2>🔄 إعادة المسابقة</h2>' +
       '<p class="note">سيعود عدّاد كل مجموعة إلى صفر وتبدأ الأشجار من جديد.' +
@@ -431,7 +562,16 @@
       '<fieldset class="block"><legend>المسابقة</legend>' +
         '<div class="row"><label for="set-title">عنوان اللوحة</label><input type="text" id="set-title" maxlength="40" value="' + esc(state.title) + '"></div>' +
       '</fieldset>' +
-      '<fieldset class="block"><legend>المجموعات وأشجارها</legend>' + groupsHtml + '</fieldset>' +
+      '<fieldset class="block"><legend>عدد المجموعات</legend>' +
+        '<p class="note" style="margin:0 0 8px">تبقى بيانات المجموعات المخفيّة محفوظة، وتعود متى زدتِ العدد.</p>' +
+        '<div class="seg" id="set-count">' +
+          [4, 5, 6].map(function (n) {
+            return '<button type="button" data-n="' + n + '" aria-pressed="' +
+              (visibleCount() === n ? 'true' : 'false') + '">' + n + '</button>';
+          }).join('') +
+        '</div>' +
+      '</fieldset>' +
+      '<fieldset class="block"><legend>المجموعات و' + esc(W.holderAl) + '</legend>' + groupsHtml + '</fieldset>' +
       '<fieldset class="block"><legend>أسماء عجلة الحظ</legend>' +
         '<p class="note" style="margin:0 0 8px">اسم في كل سطر. تُستخدم في عجلة الحظ وفي المجموعات السريعة.</p>' +
         '<textarea id="set-names" class="names-box" rows="7" aria-label="أسماء الطلاب" ' +
@@ -453,6 +593,15 @@
         '<button class="btn btn--primary" id="set-save" type="button">حفظ التغييرات</button>' +
       '</div>',
       function (ov) {
+        var pickCount = visibleCount();
+        $$('#set-count button', ov).forEach(function (b) {
+          b.addEventListener('click', function () {
+            pickCount = +b.getAttribute('data-n');
+            $$('#set-count button', ov).forEach(function (x) {
+              x.setAttribute('aria-pressed', +x.getAttribute('data-n') === pickCount ? 'true' : 'false');
+            });
+          });
+        });
         var restore = $('#set-names-restore', ov);
         if (restore) restore.addEventListener('click', function () {
           $('#set-names', ov).value = Store.STUDENTS.join('\n');
@@ -460,6 +609,7 @@
         $('#set-save', ov).addEventListener('click', function () {
           var title = $('#set-title', ov).value.trim();
           if (title) state.title = title;
+          state.visible = pickCount;
           $$('[data-gname]', ov).forEach(function (inp) {
             var i = +inp.getAttribute('data-gname');
             var v = inp.value.trim();
@@ -494,6 +644,19 @@
   }
 
   /* ============================== ربط الأحداث ============================= */
+  function toggleMenu(open) {
+    var m = $('#more-menu'), b = $('#btn-more');
+    if (!m || !b) return;
+    m.hidden = !open;
+    b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  /* كل زرّ في القائمة يغلقها قبل أن يفتح نافذته */
+  function on(sel, fn) {
+    var el = $(sel); if (!el) return;
+    el.addEventListener('click', function () { toggleMenu(false); fn(); });
+  }
+
   function bindBoard() {
     $('#grid').addEventListener('click', function (e) {
       var tree = e.target.closest('.tree-btn');
@@ -515,14 +678,33 @@
       updateWinner();
     });
 
-    $('#btn-celebrate').addEventListener('click', celebrate);
-    $('#btn-wheel').addEventListener('click', function () { if (wheel) wheel.open(); });
-    $('#btn-groups').addEventListener('click', function () { if (groups) groups.open(); });
-    $('#btn-history').addEventListener('click', historySheet);
-    $('#btn-settings').addEventListener('click', settingsSheet);
-    $('#btn-reset').addEventListener('click', confirmReset);
-    $('#btn-logout').addEventListener('click', function () {
+    on('#btn-celebrate', celebrate);
+    on('#btn-wheel', function () { if (wheel) wheel.open(); });
+    on('#btn-groups', function () { if (groups) groups.open(); });
+    on('#btn-all', addAll);
+    on('#btn-present', function () { setPresent(!presentOn()); });
+    on('#btn-history', historySheet);
+    on('#btn-backup', backupSheet);
+    on('#btn-settings', settingsSheet);
+    on('#btn-reset', confirmReset);
+    on('#btn-logout', function () {
       state.loggedIn = false; persist(); showLogin();
+    });
+    $('#present-exit').addEventListener('click', function () { setPresent(false); });
+
+    /* قائمة «المزيد» */
+    $('#btn-more').addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleMenu($('#more-menu').hidden);
+    });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.menu-wrap')) toggleMenu(false);
+    });
+    document.addEventListener('fullscreenchange', function () {
+      if (!document.fullscreenElement && presentOn()) {
+        document.documentElement.classList.remove('present');
+        $('#present-exit').hidden = true;
+      }
     });
 
     $('#modal-root').addEventListener('click', function (e) {
@@ -538,7 +720,8 @@
       if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
       var map = { '1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5,
                   '١': 0, '٢': 1, '٣': 2, '٤': 3, '٥': 4, '٦': 5 };
-      if (map[e.key] != null && state.groups[map[e.key]]) {
+      if (e.key === 'Escape' && presentOn()) { e.preventDefault(); setPresent(false); return; }
+      if (map[e.key] != null && map[e.key] < visibleCount() && state.groups[map[e.key]]) {
         e.preventDefault();
         Sound.unlock();
         addFruit(state.groups[map[e.key]].id);
@@ -577,6 +760,22 @@
   }
 
   /* ================================= الإقلاع ============================== */
+  /* أيقونات الشريط والقائمة */
+  function paintIcons() {
+    var I = window.Icon || function () { return ''; };
+    [['#btn-celebrate', 'cup'], ['#btn-wheel', 'wheel'], ['#btn-groups', 'users'], ['#btn-all', 'plus'],
+     ['#btn-present', 'full'], ['#btn-more', 'more'], ['#btn-history', 'list'], ['#btn-backup', 'save'],
+     ['#btn-settings', 'gear'], ['#btn-reset', 'reset'], ['#btn-logout', 'exit']
+    ].forEach(function (m) {
+      var el = $(m[0]);
+      if (el && !$('.ic', el)) el.insertAdjacentHTML('afterbegin', I(m[1], 17));
+    });
+    var ex = $('#present-exit');
+    if (ex && !$('.ic', ex)) {
+      ex.innerHTML = I('small', 15) + ' خروج من وضع العرض';
+    }
+  }
+
   function applyTheme() {
     var r = document.documentElement;
     r.setAttribute('data-theme', TH.id || 'garden');
@@ -586,9 +785,9 @@
     if (TH.tagline) {
       var sub = $('.login-card .sub'); if (sub) sub.textContent = TH.tagline;
     }
-    if (TH.icon) {
-      var ic = $('#board-title span[aria-hidden]'); if (ic) ic.textContent = TH.icon;
-    }
+    var ic = $('#board-title span[aria-hidden]');
+    if (ic && window.BustanLogo) ic.innerHTML = window.BustanLogo.svg({ word: false, tag: false });
+    else if (ic && TH.icon) ic.textContent = TH.icon;
     if (TH.boardHint) {
       var fn = $('.foot-note'); if (fn) fn.textContent = TH.boardHint;
     }
@@ -596,6 +795,7 @@
 
   function init() {
     applyTheme();
+    paintIcons();
     /* يثبّت أي ترقية جرت أثناء التحميل، مثل تغيير الرمز الافتراضي */
     persist();
     Sound.setEnabled(state.sound);
@@ -603,6 +803,7 @@
     initLogin();
     bindBoard();
     if (state.loggedIn) showBoard(); else showLogin();
+    if (window.BustanLogo) window.BustanLogo.splash();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

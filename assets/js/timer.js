@@ -72,6 +72,11 @@
         '<span class="timer-ring-wrap">' + ringSvg('timer-ring', 20, 0.62) + '</span>' +
         '<span class="timer-time" id="t-time">00:00</span>' +
       '</div>' +
+      '<div class="t-quick">' +
+        '<button type="button" data-sec="30" aria-label="٣٠ ثانية">٣٠ث</button>' +
+        '<button type="button" data-sec="60" aria-label="دقيقة واحدة">١د</button>' +
+        '<button type="button" data-sec="180" aria-label="٣ دقائق">٣د</button>' +
+      '</div>' +
       '<div class="timer-ctrl">' +
         '<button class="tbtn t-toggle" type="button" aria-label="تشغيل المؤقّت">▶</button>' +
         '<button class="tbtn t-reset" type="button" aria-label="إعادة ضبط المؤقّت">↺</button>' +
@@ -82,6 +87,21 @@
     this.mount.querySelector('.t-toggle').addEventListener('click', function () { self.toggle(); });
     this.mount.querySelector('.t-reset').addEventListener('click', function () { self.reset(); });
     this.mount.querySelector('.t-open').addEventListener('click', function () { self.openBig(); });
+    Array.prototype.forEach.call(this.mount.querySelectorAll('.t-quick button'), function (b) {
+      b.addEventListener('click', function () {
+        self.setDuration(+b.getAttribute('data-sec'));
+        self.markQuick();
+      });
+    });
+    this.markQuick();
+  };
+
+  /* إبراز المدّة المختارة */
+  Timer.prototype.markQuick = function () {
+    var d = this.data();
+    Array.prototype.forEach.call(this.mount.querySelectorAll('.t-quick button'), function (b) {
+      b.setAttribute('aria-pressed', +b.getAttribute('data-sec') === d.duration ? 'true' : 'false');
+    });
   };
 
   /* -------------------------------- التشغيل ------------------------------- */
@@ -114,6 +134,7 @@
     this.tickId = null;
     this.save();
     this.refresh();
+    this.markQuick();
   };
 
   Timer.prototype.reset = function () {

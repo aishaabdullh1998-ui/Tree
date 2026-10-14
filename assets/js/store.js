@@ -30,6 +30,7 @@
       loggedIn: false,
       sound: true,
       texture: true,
+      visible: 6,
       timer: { duration: 120, remaining: 120 },
       wheel: { list: STUDENTS.slice(), picked: [], skipPicked: true,
                quick: { mode: 'size', size: 5, count: 4, last: null } },
@@ -59,6 +60,7 @@
       d.loggedIn = !!s.loggedIn;
       d.sound = s.sound !== false;
       d.texture = s.texture !== false;
+      d.visible = Math.max(2, Math.min(6, parseInt(s.visible, 10) || 6));
       if (Array.isArray(s.groups) && s.groups.length) {
         d.groups = s.groups.map(function (g, i) {
           return {

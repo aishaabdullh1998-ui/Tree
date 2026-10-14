@@ -18,7 +18,7 @@ const engine = (/items:\s*'([a-z]+)'/.exec(block[0]) || [, 'trees'])[1];
 const themeScript = '<script>window.BUSTAN_THEME_ID = ' + JSON.stringify(themeId) + ';</script>\n';
 console.log('theme:', themeId, '-', pageTitle, '| engine:', engine);
 
-const scripts = ['theme', engine, 'items', 'sound', 'store', 'exporter', 'timer', 'wheel', 'groups', 'app']
+const scripts = ['theme', 'icons', 'logo', engine, 'items', 'sound', 'store', 'exporter', 'timer', 'wheel', 'groups', 'app']
   .map(n => read('assets/js/' + n + '.js'));
 
 let namesScript = '';

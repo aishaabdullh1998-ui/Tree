@@ -34,7 +34,7 @@
     </div>
 
     <p class="login-msg" id="login-msg" role="alert" aria-live="polite"></p>
-    <button class="btn btn--primary" id="login-go" type="submit" style="width:100%;justify-content:center">دخول 🌿</button>
+    <button class="btn btn--primary" id="login-go" type="submit" style="width:100%;justify-content:center">دخول</button>
     <p class="login-hint" id="login-hint"></p>
   </form>
 </section>
@@ -44,13 +44,22 @@
   <div class="topbar">
     <h1 id="board-title"><span aria-hidden="true">🌿</span> <span id="board-heading">بستان المجموعات</span></h1>
     <div class="tools">
-      <button class="btn btn--gold btn--sm" id="btn-celebrate" type="button">🏆 إعلان الفائزة</button>
-      <button class="btn btn--sm" id="btn-wheel" type="button">🎡 عجلة الحظ</button>
-      <button class="btn btn--sm" id="btn-groups" type="button">👥 مجموعات سريعة</button>
-      <button class="btn btn--sm" id="btn-history" type="button">📜 السجل</button>
-      <button class="btn btn--sm" id="btn-settings" type="button">⚙️ الإعدادات</button>
-      <button class="btn btn--danger btn--sm" id="btn-reset" type="button">🔄 إعادة المسابقة</button>
-      <button class="btn btn--sm" id="btn-logout" type="button">🚪 خروج</button>
+      <button class="btn btn--primary" id="btn-celebrate" type="button">إعلان الفائزة</button>
+      <button class="btn" id="btn-wheel" type="button">عجلة الحظ</button>
+      <button class="btn" id="btn-groups" type="button">مجموعات سريعة</button>
+      <button class="btn" id="btn-all" type="button">نقطة للجميع</button>
+      <button class="btn btn--ic" id="btn-present" type="button" aria-label="وضع العرض" title="وضع العرض"></button>
+      <div class="menu-wrap">
+        <button class="btn btn--ic" id="btn-more" type="button" aria-label="المزيد" aria-haspopup="true" aria-expanded="false"></button>
+        <div class="menu" id="more-menu" role="menu" hidden>
+          <button id="btn-history" type="button" role="menuitem">السجل والتصدير</button>
+          <button id="btn-backup" type="button" role="menuitem">نسخة احتياطية</button>
+          <button id="btn-settings" type="button" role="menuitem">الإعدادات</button>
+          <hr>
+          <button id="btn-reset" class="danger" type="button" role="menuitem">إعادة المسابقة</button>
+          <button id="btn-logout" type="button" role="menuitem">خروج</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -64,9 +73,13 @@
   <p class="foot-note">اضغطي على الشجرة لإضافة ثمرة · أو استعملي مفاتيح الأرقام من ١ إلى ٦</p>
 </section>
 
+<button class="present-exit" id="present-exit" type="button" hidden>وضع العرض</button>
+<div id="splash" class="splash" aria-hidden="true"></div>
 <div id="modal-root"></div>
 
 <script src="assets/js/theme.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/logo.js"></script>
 <script src="assets/js/trees.js"></script>
 <script src="assets/js/planets.js"></script>
 <script src="assets/js/shelves.js"></script>
