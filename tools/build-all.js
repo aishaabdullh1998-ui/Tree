@@ -1,0 +1,19 @@
+/* يبني صفحة كل ثيم: index.html للبستان و galaxy.html لمجرّة الأرقام */
+const { execFileSync } = require('child_process');
+const path = require('path');
+const root = path.join(__dirname, '..');
+
+const TARGETS = [
+  { theme: 'garden', out: 'index.html'  },
+  { theme: 'galaxy', out: 'galaxy.html' }
+];
+
+TARGETS.forEach(function (t) {
+  execFileSync(process.execPath, [path.join(__dirname, 'build-single.js')], {
+    env: Object.assign({}, process.env, {
+      BUSTAN_THEME: t.theme,
+      BUSTAN_OUT: path.join(root, t.out)
+    }),
+    stdio: 'inherit'
+  });
+});

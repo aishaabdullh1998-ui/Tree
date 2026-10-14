@@ -652,7 +652,7 @@
 
   function defs() { return ''; }
 
-  global.Trees = {
+  var API = {
     LIST: LIST, byId: byId, COLORS: C, VIEWBOX: VIEWBOX,
     treeSvg: treeSvg, standalone: standalone, defs: defs, STAGE_CSS: STAGE_CSS,
     fruitMarkup: fruitMarkup, fruitSize: fruitSize,
@@ -660,4 +660,7 @@
     unitFor: unitFor, countLabel: countLabel, dualOf: dualOf,
     fruitShape: function (id) { return FRUIT[byId[id].shape](); }
   };
+
+  global.ItemSets = global.ItemSets || {};
+  global.ItemSets.trees = API;
 })(window);

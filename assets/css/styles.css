@@ -702,3 +702,49 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 @media (max-width: 380px) {
   .qg-result { grid-template-columns: 1fr; }
 }
+
+/* =========================== ثيم مجرّة الأرقام ========================== */
+:root[data-theme="galaxy"] {
+  --palm:       #23617E;   /* ODYSSEY  */
+  --palm-dp:    #17465C;
+  --palm-lt:    #4D8FA8;
+  --moss:       #94BEBB;   /* LAGOON   */
+  --moss-dp:    #5E8F8C;
+  --butter:     #F4D892;
+  --butter-dp:  #DCBB64;
+  --sangria:    #E36559;
+  --sangria-dp: #C04A3F;
+
+  --cream:      #E9F0F2;
+  --cream-2:    #F9FCFD;
+  --cream-3:    #DCE8EC;
+  --ink:        #1E3A48;
+  --ink-soft:   #6D8795;
+  --line:       #B9CBD3;
+
+  --bark:       var(--line);
+  --bark-dark:  #93AAB5;
+  --gold:       var(--butter);
+  --gold-deep:  #B8912F;
+
+  --shadow-sm:  0 4px 0 rgba(35,97,126,.13);
+  --shadow-md:  0 12px 28px rgba(35,97,126,.20);
+}
+
+:root[data-theme="galaxy"] body {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(148,190,187,.30) 0 26%, transparent 26%),
+    radial-gradient(circle at 88% 72%, rgba(244,216,146,.30) 0 24%, transparent 24%),
+    radial-gradient(circle at 60% 4%, rgba(35,97,126,.10) 0 18%, transparent 18%);
+}
+:root[data-theme="galaxy"] .tree-stage {
+  background: radial-gradient(circle 46% at 50% 50%, rgba(244,216,146,.26), transparent 70%);
+}
+:root[data-theme="galaxy"] .banner {
+  background: linear-gradient(180deg, #FBF0CF, #F4D892);
+  border-color: var(--butter-dp);
+  color: #5A4A16;
+}
+:root[data-theme="galaxy"] .card.leader { background: #FFFDF5; }
+:root[data-theme="galaxy"] .btn--danger { background: #FBE4DC; border-color: #E09A89; color: #8E3528; }
+:root[data-theme="galaxy"] .wheel-svg .seg { stroke: #E9F0F2; }

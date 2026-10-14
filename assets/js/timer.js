@@ -42,7 +42,7 @@
         'stroke-dasharray="' + c.toFixed(2) + '" stroke-dashoffset="0" ' +
         'transform="rotate(-90 ' + mid + ' ' + mid + ')"/>' +
       '<g class="tr-head" transform="translate(' + mid + ',' + (mid - r) + ') scale(' + headScale + ')">' +
-        T.fruitShape('nakhla') + '</g></svg>';
+        T.fruitShape(T.LIST[0].id) + '</g></svg>';
   }
 
   function Timer(opts) {

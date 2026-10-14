@@ -715,6 +715,52 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
   .qg-result { grid-template-columns: 1fr; }
 }
 
+/* =========================== ثيم مجرّة الأرقام ========================== */
+:root[data-theme="galaxy"] {
+  --palm:       #23617E;   /* ODYSSEY  */
+  --palm-dp:    #17465C;
+  --palm-lt:    #4D8FA8;
+  --moss:       #94BEBB;   /* LAGOON   */
+  --moss-dp:    #5E8F8C;
+  --butter:     #F4D892;
+  --butter-dp:  #DCBB64;
+  --sangria:    #E36559;
+  --sangria-dp: #C04A3F;
+
+  --cream:      #E9F0F2;
+  --cream-2:    #F9FCFD;
+  --cream-3:    #DCE8EC;
+  --ink:        #1E3A48;
+  --ink-soft:   #6D8795;
+  --line:       #B9CBD3;
+
+  --bark:       var(--line);
+  --bark-dark:  #93AAB5;
+  --gold:       var(--butter);
+  --gold-deep:  #B8912F;
+
+  --shadow-sm:  0 4px 0 rgba(35,97,126,.13);
+  --shadow-md:  0 12px 28px rgba(35,97,126,.20);
+}
+
+:root[data-theme="galaxy"] body {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(148,190,187,.30) 0 26%, transparent 26%),
+    radial-gradient(circle at 88% 72%, rgba(244,216,146,.30) 0 24%, transparent 24%),
+    radial-gradient(circle at 60% 4%, rgba(35,97,126,.10) 0 18%, transparent 18%);
+}
+:root[data-theme="galaxy"] .tree-stage {
+  background: radial-gradient(circle 46% at 50% 50%, rgba(244,216,146,.26), transparent 70%);
+}
+:root[data-theme="galaxy"] .banner {
+  background: linear-gradient(180deg, #FBF0CF, #F4D892);
+  border-color: var(--butter-dp);
+  color: #5A4A16;
+}
+:root[data-theme="galaxy"] .card.leader { background: #FFFDF5; }
+:root[data-theme="galaxy"] .btn--danger { background: #FBE4DC; border-color: #E09A89; color: #8E3528; }
+:root[data-theme="galaxy"] .wheel-svg .seg { stroke: #E9F0F2; }
+
 </style>
 
 <!-- تعريفات الرسم المشتركة -->
@@ -772,6 +818,63 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 <script>
 document.documentElement.setAttribute('dir', 'rtl');
 document.documentElement.setAttribute('lang', 'ar');
+</script>
+<script>window.BUSTAN_THEME_ID = "garden";</script>
+<script>
+/* ==========================================================================
+   الثيمات - كل ثيم نسخة مستقلّة تمامًا: مفتاح تخزين خاص، عنوان، وبيانات دخول
+   بياناتُ ثيمٍ لا تمسّ بيانات ثيمٍ آخر ولو فُتحا على المتصفّح نفسه.
+   ========================================================================== */
+(function (global) {
+  'use strict';
+
+  var THEMES = {
+    /* ثيم المعلّمة عائشة - بستان الأشجار العمانية المثمرة */
+    garden: {
+      id: 'garden',
+      key: 'bustan.groups.v1',
+      title: 'بستان المجموعات',
+      tagline: 'لوحة تحفيز الطلاب بأشجار عُمان المثمرة',
+      icon: '🌿',
+      favicon: '🌴',
+      footer: 'بستان المجموعات · أشجار عُمان المثمرة',
+      boardHint: 'اضغطي على الشجرة لإضافة ثمرة · أو استعملي مفاتيح الأرقام من ١ إلى ٦',
+      auth: { user: 'aisha', pin: '19961998' },
+      items: 'trees',
+      exportColors: {
+        bg: '#F3E7DA', frame: '#D8C5AE', inner: '#C0B05B',
+        ink: '#35402E', soft: '#7E8A72', gold: '#A2923F',
+        card: '#FCF6EE', cardWin: '#FFFCF4', line: '#DFCDB4'
+      }
+    },
+
+    /* ثيم معلّمة الرياضيات - مجرّة الأرقام */
+    galaxy: {
+      id: 'galaxy',
+      key: 'majarrat.groups.v1',
+      title: 'مجرّة الأرقام',
+      tagline: 'لوحة تحفيز الطلاب بكواكب تجمع نجومها',
+      icon: '🪐',
+      favicon: '🪐',
+      footer: 'مجرّة الأرقام · كواكب المجموعة الشمسية',
+      boardHint: 'اضغطي على الكوكب لإضافة نجمة · أو استعملي مفاتيح الأرقام من ١ إلى ٦',
+      auth: { user: 'Nama', pin: '94443673' },
+      items: 'planets',
+      exportColors: {
+        bg: '#E9F0F2', frame: '#B9CBD3', inner: '#94BEBB',
+        ink: '#1E3A48', soft: '#6D8795', gold: '#B8912F',
+        card: '#F9FCFD', cardWin: '#FFFDF5', line: '#CFE0E5'
+      }
+    }
+  };
+
+  var want = global.BUSTAN_THEME_ID;
+  var id = (want && THEMES[want]) ? want : 'garden';
+
+  global.Theme = THEMES[id];
+  global.Theme.registry = THEMES;
+})(window);
+
 </script>
 <script>
 /* ==========================================================================
@@ -1428,7 +1531,7 @@ document.documentElement.setAttribute('lang', 'ar');
 
   function defs() { return ''; }
 
-  global.Trees = {
+  var API = {
     LIST: LIST, byId: byId, COLORS: C, VIEWBOX: VIEWBOX,
     treeSvg: treeSvg, standalone: standalone, defs: defs, STAGE_CSS: STAGE_CSS,
     fruitMarkup: fruitMarkup, fruitSize: fruitSize,
@@ -1436,6 +1539,19 @@ document.documentElement.setAttribute('lang', 'ar');
     unitFor: unitFor, countLabel: countLabel, dualOf: dualOf,
     fruitShape: function (id) { return FRUIT[byId[id].shape](); }
   };
+
+  global.ItemSets = global.ItemSets || {};
+  global.ItemSets.trees = API;
+})(window);
+
+</script>
+<script>
+/* يختار محرّك الرسم حسب الثيم: أشجار البستان أو كواكب المجرّة */
+(function (global) {
+  'use strict';
+  var sets = global.ItemSets || {};
+  var want = (global.Theme && global.Theme.items) || 'trees';
+  global.Trees = sets[want] || sets.trees || sets.planets;
 })(window);
 
 </script>
@@ -1550,10 +1666,11 @@ document.documentElement.setAttribute('lang', 'ar');
 /* تخزين البيانات محليًا في المتصفح - تبقى محفوظة بعد إغلاق الصفحة */
 (function (global) {
   'use strict';
-  var KEY = 'bustan.groups.v1';
+  var T = global.Theme || {};
+  var KEY = T.key || 'bustan.groups.v1';
   /* يُرفع هذا الرقم عند تغيير الرمز الافتراضي، لتحديث الأجهزة التي تحمل الرمز القديم */
   var DEFAULTS_VERSION = 2;
-  var DEFAULT_PIN = '19961998';
+  var DEFAULT_PIN = (global.Theme && global.Theme.auth && global.Theme.auth.pin) || '19961998';
   var OLD_PINS = ['2030'];
 
   var ORD = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة'];
@@ -1570,8 +1687,11 @@ document.documentElement.setAttribute('lang', 'ar');
     return {
       v: 1,
       defaultsVersion: DEFAULTS_VERSION,
-      title: 'بستان المجموعات',
-      auth: { user: 'aisha', pin: DEFAULT_PIN },
+      title: T.title || 'بستان المجموعات',
+      auth: {
+        user: (T.auth && T.auth.user) || 'aisha',
+        pin: (T.auth && T.auth.pin) || DEFAULT_PIN
+      },
       loggedIn: false,
       sound: true,
       texture: true,
@@ -1820,27 +1940,32 @@ document.documentElement.setAttribute('lang', 'ar');
       var ctx = cv.getContext('2d');
       ctx.direction = 'rtl';
       ctx.textAlign = 'center';
+      var K = (window.Theme && window.Theme.exportColors) || {
+        bg: '#F3E7DA', frame: '#D8C5AE', inner: '#C0B05B',
+        ink: '#35402E', soft: '#7E8A72', gold: '#A2923F',
+        card: '#FCF6EE', cardWin: '#FFFCF4', line: '#DFCDB4'
+      };
 
       /* الخلفية */
-      ctx.fillStyle = '#F3E7DA'; ctx.fillRect(0, 0, W, H);
-      ctx.strokeStyle = '#D8C5AE'; ctx.lineWidth = 8;
+      ctx.fillStyle = K.bg; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = K.frame; ctx.lineWidth = 8;
       roundRect(ctx, 22, 22, W - 44, H - 44, 40); ctx.stroke();
-      ctx.strokeStyle = '#C0B05B'; ctx.lineWidth = 3;
+      ctx.strokeStyle = K.inner; ctx.lineWidth = 3;
       roundRect(ctx, 40, 40, W - 80, H - 80, 28); ctx.stroke();
 
       /* العنوان */
       var fam = '"Baloo Bhaijaan 2","Tajawal","Noto Kufi Arabic",sans-serif';
-      ctx.fillStyle = '#35402E';
+      ctx.fillStyle = K.ink;
       ctx.font = '800 54px ' + fam;
-      ctx.fillText(record.title || 'بستان المجموعات', W / 2, 128);
-      ctx.fillStyle = '#7E8A72';
+      ctx.fillText(record.title || (window.Theme && window.Theme.title) || 'بستان المجموعات', W / 2, 128);
+      ctx.fillStyle = K.soft;
       ctx.font = '700 26px ' + fam;
       ctx.fillText(arabicDate(record.date), W / 2, 172);
 
       /* الفائزة */
       if (top > 0) {
         var winners = sorted.filter(function (r) { return r.count === top; });
-        ctx.fillStyle = '#A2923F';
+        ctx.fillStyle = K.gold;
         ctx.font = '800 32px ' + fam;
         var label = winners.length > 1
           ? 'تعادل في الصدارة: ' + winners.map(function (w) { return w.name; }).join(' و ')
@@ -1853,29 +1978,34 @@ document.documentElement.setAttribute('lang', 'ar');
         var c = cols - 1 - (i % cols), rw = Math.floor(i / cols);
         var x = pad + c * cellW, y = 250 + rw * cellH;
         var isWin = r.count === top && top > 0;
-        ctx.fillStyle = isWin ? '#FFFCF4' : '#FCF6EE';
-        ctx.strokeStyle = isWin ? '#C0B05B' : '#DFCDB4';
+        ctx.fillStyle = isWin ? K.cardWin : K.card;
+        ctx.strokeStyle = isWin ? K.inner : K.line;
         ctx.lineWidth = isWin ? 6 : 3;
         roundRect(ctx, x + 12, y + 8, cellW - 24, cellH - 26, 30);
         ctx.fill(); ctx.stroke();
 
-        if (imgs[i]) ctx.drawImage(imgs[i], x + cellW / 2 - 110, y + 24, 220, 250);
+        if (imgs[i]) {
+          var im = imgs[i], bw = 220, bh = 250;
+          var k = Math.min(bw / (im.width || bw), bh / (im.height || bh));
+          var dw = (im.width || bw) * k, dh = (im.height || bh) * k;
+          ctx.drawImage(im, x + cellW / 2 - dw / 2, y + 24 + (bh - dh) / 2, dw, dh);
+        }
 
-        ctx.fillStyle = '#35402E';
+        ctx.fillStyle = K.ink;
         ctx.font = '800 30px ' + fam;
         ctx.fillText(r.name, x + cellW / 2, y + 312);
 
         var t = T.byId[r.treeId];
-        ctx.fillStyle = isWin ? '#A2923F' : '#7E8A72';
+        ctx.fillStyle = isWin ? K.gold : K.soft;
         ctx.font = '800 34px ' + fam;
         ctx.fillText(r.count + ' ' + (t ? T.unitFor(r.treeId, r.count) : ''), x + cellW / 2, y + 356);
 
         if (isWin) { ctx.font = '40px ' + fam; ctx.fillText('👑', x + cellW / 2, y + 14); }
       });
 
-      ctx.fillStyle = '#A6AE97';
+      ctx.fillStyle = K.soft;
       ctx.font = '600 22px ' + fam;
-      ctx.fillText('بستان المجموعات · أشجار عُمان المثمرة', W / 2, H - 56);
+      ctx.fillText((window.Theme && window.Theme.footer) || 'بستان المجموعات', W / 2, H - 56);
 
       return new Promise(function (resolve) {
         cv.toBlob(function (b) {
@@ -1935,7 +2065,7 @@ document.documentElement.setAttribute('lang', 'ar');
         'stroke-dasharray="' + c.toFixed(2) + '" stroke-dashoffset="0" ' +
         'transform="rotate(-90 ' + mid + ' ' + mid + ')"/>' +
       '<g class="tr-head" transform="translate(' + mid + ',' + (mid - r) + ') scale(' + headScale + ')">' +
-        T.fruitShape('nakhla') + '</g></svg>';
+        T.fruitShape(T.LIST[0].id) + '</g></svg>';
   }
 
   function Timer(opts) {
@@ -2791,6 +2921,7 @@ document.documentElement.setAttribute('lang', 'ar');
 
   var T = window.Trees, Sound = window.Sound, Store = window.Store, Exporter = window.Exporter;
   var timer = null, wheel = null, groups = null;
+  var TH = window.Theme || {};
   var SVGNS = 'http://www.w3.org/2000/svg';
   var state = Store.load();
 
@@ -2823,7 +2954,7 @@ document.documentElement.setAttribute('lang', 'ar');
   /* ============================ شاشة الدخول ============================== */
   function initLogin() {
     var mark = $('#login-mark');
-    mark.innerHTML = T.standalone('nakhla', 6);
+    mark.innerHTML = T.standalone(T.LIST[0].id, 6);
 
     $('#login-hint').textContent = 'تُحفظ بيانات المسابقة في هذا الجهاز ولا تُرسل إلى أي مكان.';
 
@@ -3357,7 +3488,25 @@ document.documentElement.setAttribute('lang', 'ar');
   }
 
   /* ================================= الإقلاع ============================== */
+  function applyTheme() {
+    var r = document.documentElement;
+    r.setAttribute('data-theme', TH.id || 'garden');
+    if (TH.title) {
+      var lt = $('#login-title'); if (lt) lt.textContent = TH.title;
+    }
+    if (TH.tagline) {
+      var sub = $('.login-card .sub'); if (sub) sub.textContent = TH.tagline;
+    }
+    if (TH.icon) {
+      var ic = $('#board-title span[aria-hidden]'); if (ic) ic.textContent = TH.icon;
+    }
+    if (TH.boardHint) {
+      var fn = $('.foot-note'); if (fn) fn.textContent = TH.boardHint;
+    }
+  }
+
   function init() {
+    applyTheme();
     /* يثبّت أي ترقية جرت أثناء التحميل، مثل تغيير الرمز الافتراضي */
     persist();
     Sound.setEnabled(state.sound);

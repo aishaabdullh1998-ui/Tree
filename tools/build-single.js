@@ -6,11 +6,21 @@ const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 
 const html = read('dev.html');
 const css = read('assets/css/styles.css');
-const scripts = ['trees', 'sound', 'store', 'exporter', 'timer', 'wheel', 'groups', 'app']
-  .map(n => read('assets/js/' + n + '.js'));
-
 /* نسخة خاصة بأسماء مُحمّلة مسبقًا: BUSTAN_NAMES_FILE=<ملف JSON فيه مصفوفة أسماء>.
    الملف يبقى خارج المستودع، فلا تُنشر الأسماء مع الكود. */
+/* اختيار الثيم: BUSTAN_THEME=<id>. كل ثيم يحمل مفتاح تخزين خاصًّا به. */
+const themeId = process.env.BUSTAN_THEME || 'garden';
+const themeSrc = read('assets/js/theme.js');
+const block = new RegExp("\\b" + themeId + ":\\s*\\{[\\s\\S]*?\\n    \\}").exec(themeSrc);
+if (!block) throw new Error('unknown theme: ' + themeId);
+const pageTitle = /title:\s*'([^']+)'/.exec(block[0])[1];
+const engine = /items:\s*'planets'/.test(block[0]) ? 'planets' : 'trees';
+const themeScript = '<script>window.BUSTAN_THEME_ID = ' + JSON.stringify(themeId) + ';</script>\n';
+console.log('theme:', themeId, '-', pageTitle, '| engine:', engine);
+
+const scripts = ['theme', engine, 'items', 'sound', 'store', 'exporter', 'timer', 'wheel', 'groups', 'app']
+  .map(n => read('assets/js/' + n + '.js'));
+
 let namesScript = '';
 const namesFile = process.env.BUSTAN_NAMES_FILE;
 if (namesFile) {
@@ -30,7 +40,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@50
 
 const out = `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>بستان المجموعات</title>
+<title>${pageTitle}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="${FONTS}">
@@ -49,7 +59,7 @@ ${body}
 document.documentElement.setAttribute('dir', 'rtl');
 document.documentElement.setAttribute('lang', 'ar');
 </script>
-${namesScript}${scripts.map(s => '<script>\n' + s + '\n</script>').join('\n')}
+${themeScript}${namesScript}${scripts.map(s => '<script>\n' + s + '\n</script>').join('\n')}
 `;
 
 /* المخرَج الافتراضي هو صفحة الموقع نفسها؛ BUSTAN_OUT يوجّهه إلى مكان آخر */

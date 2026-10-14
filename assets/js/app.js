@@ -6,6 +6,7 @@
 
   var T = window.Trees, Sound = window.Sound, Store = window.Store, Exporter = window.Exporter;
   var timer = null, wheel = null, groups = null;
+  var TH = window.Theme || {};
   var SVGNS = 'http://www.w3.org/2000/svg';
   var state = Store.load();
 
@@ -38,7 +39,7 @@
   /* ============================ شاشة الدخول ============================== */
   function initLogin() {
     var mark = $('#login-mark');
-    mark.innerHTML = T.standalone('nakhla', 6);
+    mark.innerHTML = T.standalone(T.LIST[0].id, 6);
 
     $('#login-hint').textContent = 'تُحفظ بيانات المسابقة في هذا الجهاز ولا تُرسل إلى أي مكان.';
 
@@ -572,7 +573,25 @@
   }
 
   /* ================================= الإقلاع ============================== */
+  function applyTheme() {
+    var r = document.documentElement;
+    r.setAttribute('data-theme', TH.id || 'garden');
+    if (TH.title) {
+      var lt = $('#login-title'); if (lt) lt.textContent = TH.title;
+    }
+    if (TH.tagline) {
+      var sub = $('.login-card .sub'); if (sub) sub.textContent = TH.tagline;
+    }
+    if (TH.icon) {
+      var ic = $('#board-title span[aria-hidden]'); if (ic) ic.textContent = TH.icon;
+    }
+    if (TH.boardHint) {
+      var fn = $('.foot-note'); if (fn) fn.textContent = TH.boardHint;
+    }
+  }
+
   function init() {
+    applyTheme();
     /* يثبّت أي ترقية جرت أثناء التحميل، مثل تغيير الرمز الافتراضي */
     persist();
     Sound.setEnabled(state.sound);

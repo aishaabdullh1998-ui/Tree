@@ -1,10 +1,11 @@
 /* تخزين البيانات محليًا في المتصفح - تبقى محفوظة بعد إغلاق الصفحة */
 (function (global) {
   'use strict';
-  var KEY = 'bustan.groups.v1';
+  var T = global.Theme || {};
+  var KEY = T.key || 'bustan.groups.v1';
   /* يُرفع هذا الرقم عند تغيير الرمز الافتراضي، لتحديث الأجهزة التي تحمل الرمز القديم */
   var DEFAULTS_VERSION = 2;
-  var DEFAULT_PIN = '19961998';
+  var DEFAULT_PIN = (global.Theme && global.Theme.auth && global.Theme.auth.pin) || '19961998';
   var OLD_PINS = ['2030'];
 
   var ORD = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة'];
@@ -21,8 +22,11 @@
     return {
       v: 1,
       defaultsVersion: DEFAULTS_VERSION,
-      title: 'بستان المجموعات',
-      auth: { user: 'aisha', pin: DEFAULT_PIN },
+      title: T.title || 'بستان المجموعات',
+      auth: {
+        user: (T.auth && T.auth.user) || 'aisha',
+        pin: (T.auth && T.auth.pin) || DEFAULT_PIN
+      },
       loggedIn: false,
       sound: true,
       texture: true,
