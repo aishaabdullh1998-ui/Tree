@@ -1523,8 +1523,8 @@ document.documentElement.setAttribute('lang', "ar");
         '</g>';
     });
     return '<path class="jar" d="M126 60 C120 102 124 124 140 124 H162 C178 124 182 102 176 60 Z" ' +
-        'fill="rgba(255,255,255,.66)" stroke="#BFD3DC" stroke-width="3"/>' +
-      '<path class="jar" d="M136 62 q0 -12 3 -16 h24 q3 4 3 16" fill="rgba(255,255,255,.66)" stroke="#BFD3DC" stroke-width="2.6"/>' +
+        'fill="rgba(206,230,240,.55)" stroke="#9DBDCB" stroke-width="3.6"/>' +
+      '<path class="jar" d="M136 62 q0 -12 3 -16 h24 q3 4 3 16" fill="rgba(206,230,240,.55)" stroke="#9DBDCB" stroke-width="3"/>' +
       '<rect class="lid" x="133" y="40" width="36" height="11" rx="4.5" fill="#2E7596" stroke="#FFF8EC" stroke-width="2.2"/>' +
       '<rect class="lid" x="144" y="43.6" width="14" height="4" rx="2" fill="#1A4A61"/>' +
       '<g class="drop"><ellipse cx="151" cy="26" rx="9" ry="8.4" fill="#C9A227"/>' +
@@ -1626,6 +1626,8 @@ document.documentElement.setAttribute('lang', "ar");
   /* opts: word (الكلمة)، tag (العنوان الصغير)، height
      العلامة مرسومة في مربّع صغير، فتُكبَّر داخل التركيبة الكاملة وتُقصّ وحدها */
   var MARK_BOX = '98 28 124 112';
+  /* الحصّالة أضيق من بقيّة العلامات، فلها إطارها */
+  var MARK_BOXES = { voyage: '114 12 74 126' };
 
   function svg(opts) {
     opts = opts || {};
@@ -1638,7 +1640,7 @@ document.documentElement.setAttribute('lang', "ar");
     var box, body;
 
     if (!showWord) {
-      box = MARK_BOX;
+      box = MARK_BOXES[k] || MARK_BOX;
       body = mark;
     } else {
       box = '0 0 320 ' + (showTag ? 292 : 250);
