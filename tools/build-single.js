@@ -38,7 +38,7 @@ const authUser = process.env.BUSTAN_USER || (/user:\s*'([^']*)'/.exec(block[0]) 
 const authPin = process.env.BUSTAN_PIN || (/pin:\s*'([^']*)'/.exec(block[0]) || [, '1111'])[1];
 /* نسخة مربوطة بحساب: تغيير الرمز هنا يفكّ ارتباطها بالحساب، فنقولها صراحة */
 const linked = !!process.env.BUSTAN_SYNC_FILE;
-const authBlock = [
+const authBlock = linked ? '' : [
   '<!-- ====================================================================',
   '     بيانات الدخول لهذه النسخة',
   linked
@@ -52,6 +52,7 @@ const authBlock = [
   '</script>',
   ''
 ].join('\n');
+if (linked) console.log('auth: من الحساب على السيرفر، لا من الملف');
 console.log('theme:', themeId, '-', pageTitle, '| engine:', engine, '| lang:', lang, dir);
 
 /* ربط النسخة بحساب على السيرفر: BUSTAN_SYNC_FILE=<ملف JSON فيه {url, key}>.

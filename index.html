@@ -1421,6 +1421,18 @@ document.documentElement.setAttribute('lang', "ar");
 
     /* المزامنة مع الحساب */
     'محفوظ في حسابك': 'Saved to your account',
+    'جارٍ التحقّق…': 'Checking…',
+    'اكتبي اسم المستخدم ورمز الدخول': 'Enter your username and passcode',
+    'أُقفل الحساب بعد محاولات كثيرة. انتظري ربع ساعة ثم جرّبي مرّة أخرى.':
+      'Too many attempts — this account is locked for 15 minutes. Please try again later.',
+    'تعذّر الاتصال، ولم يسبق الدخول بهذا الحساب على هذا الجهاز.':
+      'No connection, and this account has not signed in on this device before.',
+    'بلا إنترنت — فُتحت آخر نسخة محفوظة على هذا الجهاز.':
+      'Offline — opened the last copy saved on this device.',
+    'حسابك': 'Your account',
+    'أنتِ داخلة باسم': 'Signed in as',
+    'نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير الرمز راسلي من باعتك اللوحة.':
+      'Your points live in this account and open on any device. To change your passcode, contact whoever sold you the board.',
     'نقاطك محفوظة في حسابك على أي جهاز، وأسماء الطالبات في هذا الجهاز وحده.':
       'Your points are saved to your account on any device; student names stay on this device only.',
     'جارٍ الحفظ في حسابك…': 'Saving to your account…',
@@ -2634,7 +2646,14 @@ document.documentElement.setAttribute('lang', "ar");
 (function (global) {
   'use strict';
   var T = global.Theme || {};
-  var KEY = T.key || 'bustan.groups.v1';
+  /* مفتاح اللوحة أساسٌ، ويتفرّع منه مفتاح لكل حساب:
+     الرابط واحد يفتحه الجميع، فلا يصحّ أن تختلط لوحة معلّمة بأخرى
+     لو دخلتا من المتصفّح نفسه. */
+  var BASE = T.key || 'bustan.groups.v1';
+  var KEY = BASE;
+  var WHO = BASE + '::who';
+  /* نسخة مربوطة بحساب: لا رمز افتراضي البتّة، التحقّق من السيرفر وحده */
+  var LINKED = !!global.BUSTAN_SYNC;
   /* يُرفع هذا الرقم عند تغيير الرمز الافتراضي، لتحديث الأجهزة التي تحمل الرمز القديم */
   var DEFAULTS_VERSION = 2;
   var DEFAULT_PIN = (global.Theme && global.Theme.auth && global.Theme.auth.pin) || '19961998';
@@ -2655,10 +2674,10 @@ document.documentElement.setAttribute('lang', "ar");
       v: 1,
       defaultsVersion: DEFAULTS_VERSION,
       title: T.title || L('بستان المجموعات'),
-      auth: {
-        user: (T.auth && T.auth.user) || 'aisha',
-        pin: (T.auth && T.auth.pin) || DEFAULT_PIN
-      },
+      auth: LINKED
+        ? { user: '', pin: '' }
+        : { user: (T.auth && T.auth.user) || 'aisha',
+            pin: (T.auth && T.auth.pin) || DEFAULT_PIN },
       loggedIn: false,
       sound: true,
       texture: true,
@@ -2756,7 +2775,18 @@ document.documentElement.setAttribute('lang', "ar");
 
   function wipe() { try { global.localStorage.removeItem(KEY); } catch (e) {} }
 
-  global.Store = { load: load, save: save, wipe: wipe, defaults: defaults, ORD: ORD, KEY: KEY, STUDENTS: STUDENTS };
+  /* ------------------- الحساب الذي تعمل عليه اللوحة الآن ------------------ */
+  function use(user) {
+    KEY = user ? BASE + '::' + String(user).trim().toLowerCase() : BASE;
+  }
+  function key() { return KEY; }
+  function remember(user) { try { global.localStorage.setItem(WHO, String(user)); } catch (e) {} }
+  function forget() { try { global.localStorage.removeItem(WHO); } catch (e) {} }
+  function who() { try { return global.localStorage.getItem(WHO) || ''; } catch (e) { return ''; } }
+
+  global.Store = { load: load, save: save, wipe: wipe, defaults: defaults, ORD: ORD,
+                   key: key, use: use, remember: remember, forget: forget, who: who,
+                   linked: LINKED, STUDENTS: STUDENTS };
 })(window);
 
 </script>
@@ -3936,7 +3966,12 @@ document.documentElement.setAttribute('lang', "ar");
     empty: L('البستان في انتظار أول ثمرة — اضغطي على أي شجرة!'),
     notStarted: L('أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.') };
   var SVGNS = 'http://www.w3.org/2000/svg';
-  var state = Store.load();
+  /* لو سبق دخولٌ على هذا الجهاز، نفتح مخزن ذلك الحساب لا المخزن العام */
+  var state = (function () {
+    var who = Store.who && Store.who();
+    if (who && Store.use) Store.use(who);
+    return Store.load();
+  })();
 
   /* ------------------------------- أدوات عامة ---------------------------- */
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -4065,30 +4100,99 @@ document.documentElement.setAttribute('lang', "ar");
     /* الدخول يعمل بالضغط وبمفتاح Enter معًا، حتى داخل الصفحات المضمّنة
        التي يُمنع فيها إرسال النماذج */
     var busy = false;
+
+    function refuse(msg) {
+      var card = $('.login-card');
+      $('#login-msg').textContent = msg;
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+      Sound.error();
+      $('#in-pin').value = '';
+      $('#in-pin').focus();
+    }
+
+    function waiting(on) {
+      var go = $('#login-go');
+      go.disabled = on;
+      go.textContent = on ? L('جارٍ التحقّق…') : L('دخول');
+      if (on) $('#login-msg').textContent = '';
+    }
+
+    /* دخول ناجح: ننقل اللوحة إلى مخزن هذا الحساب وحده */
+    function enter(u, p, pulled) {
+      Store.use(u);
+      state = Store.load();
+      if (pulled && window.Sync && window.Sync.applyData) {
+        window.Sync.applyData(state, pulled.data);
+        state.sync = { rev: pulled.rev, at: pulled.updated_at, dirty: false };
+      }
+      state.auth = { user: u, pin: p };
+      state.loggedIn = true;
+      Store.save(state);
+      Store.remember(u);
+      Sound.setEnabled(state.sound);
+      document.body.classList.toggle('no-texture', !state.texture);
+      Sound.open();
+      showBoard();
+      startSync(u, p);
+    }
+
+    /* بلا إنترنت: تُفتح آخر نسخة محفوظة لهذا الحساب على هذا الجهاز وحده */
+    function enterOffline(u, p) {
+      Store.use(u);
+      var s = Store.load();
+      if (s.auth && s.auth.user && s.auth.pin &&
+          String(s.auth.user).toLowerCase() === u && String(s.auth.pin) === p) {
+        state = s;
+        state.loggedIn = true;
+        Store.save(state);
+        Store.remember(u);
+        Sound.setEnabled(state.sound);
+        document.body.classList.toggle('no-texture', !state.texture);
+        Sound.open();
+        showBoard();
+        startSync(u, p);
+        toast(L('بلا إنترنت — فُتحت آخر نسخة محفوظة على هذا الجهاز.'));
+      } else {
+        Store.use(null);
+        refuse(L('تعذّر الاتصال، ولم يسبق الدخول بهذا الحساب على هذا الجهاز.'));
+      }
+    }
+
     function attempt(e) {
       if (e) e.preventDefault();
       if (busy) return;
-      busy = true;
-      setTimeout(function () { busy = false; }, 150);
-
       Sound.unlock();
       var u = $('#in-user').value.trim().toLowerCase();
       var p = $('#in-pin').value.trim();
-      if (u === String(state.auth.user).toLowerCase() && p === String(state.auth.pin)) {
-        state.loggedIn = true; persist();
-        startSync(u, p);
-        Sound.open();
-        showBoard();
-      } else {
-        var card = $('.login-card');
-        $('#login-msg').textContent = L('اسم المستخدم أو رمز الدخول غير صحيح');
-        card.classList.remove('shake');
-        void card.offsetWidth;
-        card.classList.add('shake');
-        Sound.error();
-        $('#in-pin').value = '';
-        $('#in-pin').focus();
+
+      /* نسخة غير مربوطة بحساب: التحقّق محلّي كما كان */
+      if (!(window.Sync && window.Sync.on)) {
+        busy = true;
+        setTimeout(function () { busy = false; }, 150);
+        if (u === String(state.auth.user).toLowerCase() && p === String(state.auth.pin)) {
+          state.loggedIn = true; persist();
+          Sound.open();
+          showBoard();
+        } else {
+          refuse(L('اسم المستخدم أو رمز الدخول غير صحيح'));
+        }
+        return;
       }
+
+      if (!u || !p) { refuse(L('اكتبي اسم المستخدم ورمز الدخول')); return; }
+      busy = true;
+      waiting(true);
+      window.Sync.auth(u, p, function (err, res) {
+        busy = false;
+        waiting(false);
+        if (!err) { enter(u, p, res); return; }
+        if (err === 'offline') { enterOffline(u, p); return; }
+        refuse(err === 'locked'
+          ? L('أُقفل الحساب بعد محاولات كثيرة. انتظري ربع ساعة ثم جرّبي مرّة أخرى.')
+          : L('اسم المستخدم أو رمز الدخول غير صحيح'));
+      });
     }
 
     $('#login-form').addEventListener('submit', attempt);
@@ -4406,7 +4510,7 @@ document.documentElement.setAttribute('lang', "ar");
       data.loggedIn = true;
       /* المستعاد يصير هو الأحدث، فيُرفع للحساب بعد إعادة التحميل */
       data.sync = { rev: (state.sync && state.sync.rev) || 0, at: null, dirty: true };
-      try { localStorage.setItem(Store.KEY, JSON.stringify(data)); } catch (e) {}
+      try { localStorage.setItem(Store.key(), JSON.stringify(data)); } catch (e) {}
       location.reload();
     };
   }
@@ -4587,10 +4691,17 @@ document.documentElement.setAttribute('lang', "ar");
         '<label class="switch"><input type="checkbox" id="set-sound"' + (state.sound ? ' checked' : '') + '> ' + L('الأصوات اللطيفة') + '</label>' +
         '<label class="switch"><input type="checkbox" id="set-texture"' + (state.texture ? ' checked' : '') + '> ' + L('ملمس الورق الخفيف في الخلفية') + '</label>' +
       '</fieldset>' +
-      '<fieldset class="block"><legend>' + L('بيانات الدخول') + '</legend>' +
-        '<div class="row"><label for="set-user">' + L('اسم المستخدم') + '</label><input type="text" id="set-user" value="' + esc(state.auth.user) + '" spellcheck="false"></div>' +
-        '<div class="row"><label for="set-pin">' + L('رمز الدخول') + '</label><input type="text" id="set-pin" value="' + esc(state.auth.pin) + '" spellcheck="false"></div>' +
-      '</fieldset>' +
+      /* في النسخة المربوطة بحساب، الاسم والرمز في الحساب لا في الجهاز،
+         فلا نعرض خانتين يظنّ المستخدم أنهما تغيّرانه. */
+      (Store.linked
+        ? '<fieldset class="block"><legend>' + L('حسابك') + '</legend>' +
+            '<p class="note">' + L('أنتِ داخلة باسم') + ' <b>' + esc(state.auth.user) + '</b>. ' +
+            L('نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير الرمز راسلي من باعتك اللوحة.') +
+            '</p></fieldset>'
+        : '<fieldset class="block"><legend>' + L('بيانات الدخول') + '</legend>' +
+            '<div class="row"><label for="set-user">' + L('اسم المستخدم') + '</label><input type="text" id="set-user" value="' + esc(state.auth.user) + '" spellcheck="false"></div>' +
+            '<div class="row"><label for="set-pin">' + L('رمز الدخول') + '</label><input type="text" id="set-pin" value="' + esc(state.auth.pin) + '" spellcheck="false"></div>' +
+          '</fieldset>') +
       '<div class="sheet-actions">' +
         '<button class="btn" data-close type="button">' + L('إلغاء') + '</button>' +
         '<button class="btn btn--primary" id="set-save" type="button">' + L('حفظ التغييرات') + '</button>' +
@@ -4631,10 +4742,12 @@ document.documentElement.setAttribute('lang', "ar");
           if (changed && state.wheel.quick) state.wheel.quick.last = null;
           state.sound = $('#set-sound', ov).checked;
           state.texture = $('#set-texture', ov).checked;
-          var u = $('#set-user', ov).value.trim();
-          var pin = $('#set-pin', ov).value.trim();
-          if (u) state.auth.user = u;
-          if (pin) state.auth.pin = pin;
+          if (!Store.linked) {
+            var u = $('#set-user', ov).value.trim();
+            var pin = $('#set-pin', ov).value.trim();
+            if (u) state.auth.user = u;
+            if (pin) state.auth.pin = pin;
+          }
           Sound.setEnabled(state.sound);
           document.body.classList.toggle('no-texture', !state.texture);
           persist();
@@ -4693,7 +4806,15 @@ document.documentElement.setAttribute('lang', "ar");
     on('#btn-logout', function () {
       if (window.Sync && window.Sync.on) { window.Sync.flush(); window.Sync.stop(); }
       paintSync('off');
-      state.loggedIn = false; Store.save(state); showLogin();
+      state.loggedIn = false;
+      Store.save(state);
+      if (Store.linked) {
+        /* الرابط واحد يفتحه الجميع: بعد الخروج لا يبقى أثر حساب */
+        Store.forget();
+        Store.use(null);
+        state = Store.load();
+      }
+      showLogin();
     });
     $('#present-exit').addEventListener('click', function () { setPresent(false); });
 
@@ -4814,7 +4935,7 @@ document.documentElement.setAttribute('lang', "ar");
     document.body.classList.toggle('no-texture', !state.texture);
     initLogin();
     bindBoard();
-    if (state.loggedIn) {
+    if (state.loggedIn && state.auth && state.auth.user) {
       showBoard();
       startSync(state.auth.user, state.auth.pin);
     } else showLogin();

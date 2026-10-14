@@ -12,7 +12,12 @@
     empty: L('البستان في انتظار أول ثمرة — اضغطي على أي شجرة!'),
     notStarted: L('أضيفي ثمرة واحدة على الأقل لإحدى المجموعات ثم أعلني الفائزة.') };
   var SVGNS = 'http://www.w3.org/2000/svg';
-  var state = Store.load();
+  /* لو سبق دخولٌ على هذا الجهاز، نفتح مخزن ذلك الحساب لا المخزن العام */
+  var state = (function () {
+    var who = Store.who && Store.who();
+    if (who && Store.use) Store.use(who);
+    return Store.load();
+  })();
 
   /* ------------------------------- أدوات عامة ---------------------------- */
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -141,30 +146,99 @@
     /* الدخول يعمل بالضغط وبمفتاح Enter معًا، حتى داخل الصفحات المضمّنة
        التي يُمنع فيها إرسال النماذج */
     var busy = false;
+
+    function refuse(msg) {
+      var card = $('.login-card');
+      $('#login-msg').textContent = msg;
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+      Sound.error();
+      $('#in-pin').value = '';
+      $('#in-pin').focus();
+    }
+
+    function waiting(on) {
+      var go = $('#login-go');
+      go.disabled = on;
+      go.textContent = on ? L('جارٍ التحقّق…') : L('دخول');
+      if (on) $('#login-msg').textContent = '';
+    }
+
+    /* دخول ناجح: ننقل اللوحة إلى مخزن هذا الحساب وحده */
+    function enter(u, p, pulled) {
+      Store.use(u);
+      state = Store.load();
+      if (pulled && window.Sync && window.Sync.applyData) {
+        window.Sync.applyData(state, pulled.data);
+        state.sync = { rev: pulled.rev, at: pulled.updated_at, dirty: false };
+      }
+      state.auth = { user: u, pin: p };
+      state.loggedIn = true;
+      Store.save(state);
+      Store.remember(u);
+      Sound.setEnabled(state.sound);
+      document.body.classList.toggle('no-texture', !state.texture);
+      Sound.open();
+      showBoard();
+      startSync(u, p);
+    }
+
+    /* بلا إنترنت: تُفتح آخر نسخة محفوظة لهذا الحساب على هذا الجهاز وحده */
+    function enterOffline(u, p) {
+      Store.use(u);
+      var s = Store.load();
+      if (s.auth && s.auth.user && s.auth.pin &&
+          String(s.auth.user).toLowerCase() === u && String(s.auth.pin) === p) {
+        state = s;
+        state.loggedIn = true;
+        Store.save(state);
+        Store.remember(u);
+        Sound.setEnabled(state.sound);
+        document.body.classList.toggle('no-texture', !state.texture);
+        Sound.open();
+        showBoard();
+        startSync(u, p);
+        toast(L('بلا إنترنت — فُتحت آخر نسخة محفوظة على هذا الجهاز.'));
+      } else {
+        Store.use(null);
+        refuse(L('تعذّر الاتصال، ولم يسبق الدخول بهذا الحساب على هذا الجهاز.'));
+      }
+    }
+
     function attempt(e) {
       if (e) e.preventDefault();
       if (busy) return;
-      busy = true;
-      setTimeout(function () { busy = false; }, 150);
-
       Sound.unlock();
       var u = $('#in-user').value.trim().toLowerCase();
       var p = $('#in-pin').value.trim();
-      if (u === String(state.auth.user).toLowerCase() && p === String(state.auth.pin)) {
-        state.loggedIn = true; persist();
-        startSync(u, p);
-        Sound.open();
-        showBoard();
-      } else {
-        var card = $('.login-card');
-        $('#login-msg').textContent = L('اسم المستخدم أو رمز الدخول غير صحيح');
-        card.classList.remove('shake');
-        void card.offsetWidth;
-        card.classList.add('shake');
-        Sound.error();
-        $('#in-pin').value = '';
-        $('#in-pin').focus();
+
+      /* نسخة غير مربوطة بحساب: التحقّق محلّي كما كان */
+      if (!(window.Sync && window.Sync.on)) {
+        busy = true;
+        setTimeout(function () { busy = false; }, 150);
+        if (u === String(state.auth.user).toLowerCase() && p === String(state.auth.pin)) {
+          state.loggedIn = true; persist();
+          Sound.open();
+          showBoard();
+        } else {
+          refuse(L('اسم المستخدم أو رمز الدخول غير صحيح'));
+        }
+        return;
       }
+
+      if (!u || !p) { refuse(L('اكتبي اسم المستخدم ورمز الدخول')); return; }
+      busy = true;
+      waiting(true);
+      window.Sync.auth(u, p, function (err, res) {
+        busy = false;
+        waiting(false);
+        if (!err) { enter(u, p, res); return; }
+        if (err === 'offline') { enterOffline(u, p); return; }
+        refuse(err === 'locked'
+          ? L('أُقفل الحساب بعد محاولات كثيرة. انتظري ربع ساعة ثم جرّبي مرّة أخرى.')
+          : L('اسم المستخدم أو رمز الدخول غير صحيح'));
+      });
     }
 
     $('#login-form').addEventListener('submit', attempt);
@@ -482,7 +556,7 @@
       data.loggedIn = true;
       /* المستعاد يصير هو الأحدث، فيُرفع للحساب بعد إعادة التحميل */
       data.sync = { rev: (state.sync && state.sync.rev) || 0, at: null, dirty: true };
-      try { localStorage.setItem(Store.KEY, JSON.stringify(data)); } catch (e) {}
+      try { localStorage.setItem(Store.key(), JSON.stringify(data)); } catch (e) {}
       location.reload();
     };
   }
@@ -663,10 +737,17 @@
         '<label class="switch"><input type="checkbox" id="set-sound"' + (state.sound ? ' checked' : '') + '> ' + L('الأصوات اللطيفة') + '</label>' +
         '<label class="switch"><input type="checkbox" id="set-texture"' + (state.texture ? ' checked' : '') + '> ' + L('ملمس الورق الخفيف في الخلفية') + '</label>' +
       '</fieldset>' +
-      '<fieldset class="block"><legend>' + L('بيانات الدخول') + '</legend>' +
-        '<div class="row"><label for="set-user">' + L('اسم المستخدم') + '</label><input type="text" id="set-user" value="' + esc(state.auth.user) + '" spellcheck="false"></div>' +
-        '<div class="row"><label for="set-pin">' + L('رمز الدخول') + '</label><input type="text" id="set-pin" value="' + esc(state.auth.pin) + '" spellcheck="false"></div>' +
-      '</fieldset>' +
+      /* في النسخة المربوطة بحساب، الاسم والرمز في الحساب لا في الجهاز،
+         فلا نعرض خانتين يظنّ المستخدم أنهما تغيّرانه. */
+      (Store.linked
+        ? '<fieldset class="block"><legend>' + L('حسابك') + '</legend>' +
+            '<p class="note">' + L('أنتِ داخلة باسم') + ' <b>' + esc(state.auth.user) + '</b>. ' +
+            L('نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير الرمز راسلي من باعتك اللوحة.') +
+            '</p></fieldset>'
+        : '<fieldset class="block"><legend>' + L('بيانات الدخول') + '</legend>' +
+            '<div class="row"><label for="set-user">' + L('اسم المستخدم') + '</label><input type="text" id="set-user" value="' + esc(state.auth.user) + '" spellcheck="false"></div>' +
+            '<div class="row"><label for="set-pin">' + L('رمز الدخول') + '</label><input type="text" id="set-pin" value="' + esc(state.auth.pin) + '" spellcheck="false"></div>' +
+          '</fieldset>') +
       '<div class="sheet-actions">' +
         '<button class="btn" data-close type="button">' + L('إلغاء') + '</button>' +
         '<button class="btn btn--primary" id="set-save" type="button">' + L('حفظ التغييرات') + '</button>' +
@@ -707,10 +788,12 @@
           if (changed && state.wheel.quick) state.wheel.quick.last = null;
           state.sound = $('#set-sound', ov).checked;
           state.texture = $('#set-texture', ov).checked;
-          var u = $('#set-user', ov).value.trim();
-          var pin = $('#set-pin', ov).value.trim();
-          if (u) state.auth.user = u;
-          if (pin) state.auth.pin = pin;
+          if (!Store.linked) {
+            var u = $('#set-user', ov).value.trim();
+            var pin = $('#set-pin', ov).value.trim();
+            if (u) state.auth.user = u;
+            if (pin) state.auth.pin = pin;
+          }
           Sound.setEnabled(state.sound);
           document.body.classList.toggle('no-texture', !state.texture);
           persist();
@@ -769,7 +852,15 @@
     on('#btn-logout', function () {
       if (window.Sync && window.Sync.on) { window.Sync.flush(); window.Sync.stop(); }
       paintSync('off');
-      state.loggedIn = false; Store.save(state); showLogin();
+      state.loggedIn = false;
+      Store.save(state);
+      if (Store.linked) {
+        /* الرابط واحد يفتحه الجميع: بعد الخروج لا يبقى أثر حساب */
+        Store.forget();
+        Store.use(null);
+        state = Store.load();
+      }
+      showLogin();
     });
     $('#present-exit').addEventListener('click', function () { setPresent(false); });
 
@@ -890,7 +981,7 @@
     document.body.classList.toggle('no-texture', !state.texture);
     initLogin();
     bindBoard();
-    if (state.loggedIn) {
+    if (state.loggedIn && state.auth && state.auth.user) {
       showBoard();
       startSync(state.auth.user, state.auth.pin);
     } else showLogin();

@@ -266,8 +266,22 @@
   }
   bindExit();
 
+  /* تحقّق من الحساب قبل الدخول: السيرفر هو من يقرّر، لا رمزٌ في الملف.
+     يُرجع خطأ 'offline' إن تعذّر الاتصال، فتُجرّب اللوحة آخر نسخة محلّية. */
+  function authenticate(user, pin, cb) {
+    call('board_pull', { p_board: BOARD, p_user: String(user), p_pin: String(pin) },
+      function (err, j) {
+        if (err) { cb('offline'); return; }
+        if (!j || j.ok !== true) { cb((j && j.err) || 'auth'); return; }
+        cb(null, j);
+      });
+  }
+
   global.Sync = {
     on: true,
+    board: BOARD,
+    auth: authenticate,
+    applyData: apply,
     start: start,
     stop: stop,
     pull: pull,

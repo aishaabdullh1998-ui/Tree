@@ -2,7 +2,14 @@
 (function (global) {
   'use strict';
   var T = global.Theme || {};
-  var KEY = T.key || 'bustan.groups.v1';
+  /* مفتاح اللوحة أساسٌ، ويتفرّع منه مفتاح لكل حساب:
+     الرابط واحد يفتحه الجميع، فلا يصحّ أن تختلط لوحة معلّمة بأخرى
+     لو دخلتا من المتصفّح نفسه. */
+  var BASE = T.key || 'bustan.groups.v1';
+  var KEY = BASE;
+  var WHO = BASE + '::who';
+  /* نسخة مربوطة بحساب: لا رمز افتراضي البتّة، التحقّق من السيرفر وحده */
+  var LINKED = !!global.BUSTAN_SYNC;
   /* يُرفع هذا الرقم عند تغيير الرمز الافتراضي، لتحديث الأجهزة التي تحمل الرمز القديم */
   var DEFAULTS_VERSION = 2;
   var DEFAULT_PIN = (global.Theme && global.Theme.auth && global.Theme.auth.pin) || '19961998';
@@ -23,10 +30,10 @@
       v: 1,
       defaultsVersion: DEFAULTS_VERSION,
       title: T.title || L('بستان المجموعات'),
-      auth: {
-        user: (T.auth && T.auth.user) || 'aisha',
-        pin: (T.auth && T.auth.pin) || DEFAULT_PIN
-      },
+      auth: LINKED
+        ? { user: '', pin: '' }
+        : { user: (T.auth && T.auth.user) || 'aisha',
+            pin: (T.auth && T.auth.pin) || DEFAULT_PIN },
       loggedIn: false,
       sound: true,
       texture: true,
@@ -124,5 +131,16 @@
 
   function wipe() { try { global.localStorage.removeItem(KEY); } catch (e) {} }
 
-  global.Store = { load: load, save: save, wipe: wipe, defaults: defaults, ORD: ORD, KEY: KEY, STUDENTS: STUDENTS };
+  /* ------------------- الحساب الذي تعمل عليه اللوحة الآن ------------------ */
+  function use(user) {
+    KEY = user ? BASE + '::' + String(user).trim().toLowerCase() : BASE;
+  }
+  function key() { return KEY; }
+  function remember(user) { try { global.localStorage.setItem(WHO, String(user)); } catch (e) {} }
+  function forget() { try { global.localStorage.removeItem(WHO); } catch (e) {} }
+  function who() { try { return global.localStorage.getItem(WHO) || ''; } catch (e) { return ''; } }
+
+  global.Store = { load: load, save: save, wipe: wipe, defaults: defaults, ORD: ORD,
+                   key: key, use: use, remember: remember, forget: forget, who: who,
+                   linked: LINKED, STUDENTS: STUDENTS };
 })(window);

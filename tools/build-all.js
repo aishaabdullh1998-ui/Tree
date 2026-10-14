@@ -1,6 +1,8 @@
-/* يبني صفحات الموقع العامّة: صفحة لكل ثيم.
-   هذه الصفحات تُرفع إلى المستودع العام، فنقطع عنها قسرًا كل ما هو خاص:
-   لا أسماء طالبات، ولا عنوان خادم، ولا مفتاح حساب — مهما كانت البيئة. */
+/* يبني صفحات الموقع: صفحة لكل ثيم، ورابطها واحد يفتحه كل المشتريات.
+   التحقّق من الحساب على السيرفر، فلا أسماء دخول مخبوءة في الملف، ولا
+   أسماء طالبات — مهما كانت البيئة.
+   ربط الحساب يأتي من BUSTAN_SYNC_FILE، ويُمرَّر من بيئة البناء وحدها
+   (سرٌّ في GitHub Actions)، فلا يدخل المستودع. */
 const { execFileSync } = require('child_process');
 const path = require('path');
 const root = path.join(__dirname, '..');
@@ -19,7 +21,6 @@ TARGETS.forEach(function (t) {
       BUSTAN_THEME: t.theme,
       BUSTAN_OUT: path.join(root, t.out),
       BUSTAN_NAMES_FILE: '',
-      BUSTAN_SYNC_FILE: '',
       BUSTAN_USER: '',
       BUSTAN_PIN: ''
     }),

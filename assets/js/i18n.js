@@ -129,6 +129,18 @@
 
     /* المزامنة مع الحساب */
     'محفوظ في حسابك': 'Saved to your account',
+    'جارٍ التحقّق…': 'Checking…',
+    'اكتبي اسم المستخدم ورمز الدخول': 'Enter your username and passcode',
+    'أُقفل الحساب بعد محاولات كثيرة. انتظري ربع ساعة ثم جرّبي مرّة أخرى.':
+      'Too many attempts — this account is locked for 15 minutes. Please try again later.',
+    'تعذّر الاتصال، ولم يسبق الدخول بهذا الحساب على هذا الجهاز.':
+      'No connection, and this account has not signed in on this device before.',
+    'بلا إنترنت — فُتحت آخر نسخة محفوظة على هذا الجهاز.':
+      'Offline — opened the last copy saved on this device.',
+    'حسابك': 'Your account',
+    'أنتِ داخلة باسم': 'Signed in as',
+    'نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير الرمز راسلي من باعتك اللوحة.':
+      'Your points live in this account and open on any device. To change your passcode, contact whoever sold you the board.',
     'نقاطك محفوظة في حسابك على أي جهاز، وأسماء الطالبات في هذا الجهاز وحده.':
       'Your points are saved to your account on any device; student names stay on this device only.',
     'جارٍ الحفظ في حسابك…': 'Saving to your account…',

@@ -1,0 +1,70 @@
+# ينشر اللوحات على GitHub Pages بعد حقن ربط الحساب من سرٍّ في المستودع.
+#
+# إعداد لمرّة واحدة:
+#   1) Settings ← Secrets and variables ← Actions ← New repository secret
+#      الاسم: BUSTAN_SYNC
+#      القيمة: {"url":"https://xxxx.supabase.co","key":"eyJ..."}
+#   2) Settings ← Pages ← Source: GitHub Actions
+#
+# السرّ لا يظهر في المستودع ولا في سجلّ التشغيل. ويصل إلى الصفحة المنشورة
+# وحدها، وهذا لا مفرّ منه: المتصفّح يحتاجه ليكلّم السيرفر. وهو بلا قيمة
+# وحده — لا يُخرج بيانات أي لوحة إلا باسم مستخدم ورمز صحيحين.
+name: نشر اللوحات
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: بناء اللوحات مع ربط الحساب
+        env:
+          BUSTAN_SYNC: ${{ secrets.BUSTAN_SYNC }}
+        run: |
+          if [ -z "$BUSTAN_SYNC" ]; then
+            echo "لا سرّ BUSTAN_SYNC: ستُبنى اللوحات بلا مزامنة." >&2
+            node tools/build-all.js
+          else
+            umask 077
+            printf '%s' "$BUSTAN_SYNC" > "$RUNNER_TEMP/sync.json"
+            BUSTAN_SYNC_FILE="$RUNNER_TEMP/sync.json" node tools/build-all.js
+            rm -f "$RUNNER_TEMP/sync.json"
+          fi
+
+      - name: جمع ما يُنشر
+        run: |
+          mkdir -p _site
+          cp index.html galaxy.html shelves.html voyage.html coinjar.html _site/
+          touch _site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
