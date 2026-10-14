@@ -8,7 +8,7 @@
 
   var seq = 0;
 
-  var WORD = { garden: 'بُستان', galaxy: 'مجرّة', shelves: 'مكتبة', voyage: 'Voyage' };
+  var WORD = { garden: 'بُستان', galaxy: 'مجرّة', shelves: 'مكتبة', voyage: 'Coin Jar' };
 
   var SKIN = {
     garden:  { ink: '#35402E', soft: '#7E8A72', line: '#C0B05B', bg: '#F3E7DA' },
@@ -82,6 +82,28 @@
     return out;
   }
 
+  /* حصّالة شفافة تسقط فيها قطعة نقود */
+  function markJar() {
+    var coins = '';
+    [[150, 118, 0], [166, 116, -14], [136, 115, 12], [158, 110, 8], [143, 108, -8]].forEach(function (c, i) {
+      coins += '<g class="jc jc' + i + '" transform="translate(' + c[0] + ',' + c[1] + ') rotate(' + c[2] + ')">' +
+        '<ellipse cx="0" cy="0" rx="9" ry="8.4" fill="#A9B3BA"/>' +
+        '<ellipse cx="0" cy="-0.7" rx="8" ry="7.4" fill="#D2D9DE"/>' +
+        '<ellipse cx="0" cy="-0.7" rx="5" ry="4.6" fill="none" stroke="#8C98A1" stroke-width="1"/>' +
+        '</g>';
+    });
+    return '<path class="jar" d="M126 60 C120 102 124 124 140 124 H162 C178 124 182 102 176 60 Z" ' +
+        'fill="rgba(255,255,255,.66)" stroke="#BFD3DC" stroke-width="3"/>' +
+      '<path class="jar" d="M136 62 q0 -12 3 -16 h24 q3 4 3 16" fill="rgba(255,255,255,.66)" stroke="#BFD3DC" stroke-width="2.6"/>' +
+      '<rect class="lid" x="133" y="40" width="36" height="11" rx="4.5" fill="#2E7596" stroke="#FFF8EC" stroke-width="2.2"/>' +
+      '<rect class="lid" x="144" y="43.6" width="14" height="4" rx="2" fill="#1A4A61"/>' +
+      '<g class="drop"><ellipse cx="151" cy="26" rx="9" ry="8.4" fill="#C9A227"/>' +
+        '<ellipse cx="151" cy="25.3" rx="8" ry="7.4" fill="#EBCE78"/>' +
+        '<ellipse cx="151" cy="25.3" rx="5" ry="4.6" fill="none" stroke="#A8841A" stroke-width="1"/></g>' +
+      coins +
+      '<path class="shine" d="M133 70 q-3 30 1 46" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" opacity=".8"/>';
+  }
+
   /* سفينة تُبحر على موجة نحو جزيرة عليها علم */
   function markVoyage() {
     return '<g class="isle">' +
@@ -100,7 +122,7 @@
         'stroke="#7FB0C6" stroke-width="3.4" stroke-linecap="round"/>';
   }
 
-  var MARKS = { garden: markGarden, galaxy: markGalaxy, shelves: markShelves, voyage: markVoyage };
+  var MARKS = { garden: markGarden, galaxy: markGalaxy, shelves: markShelves, voyage: markJar };
 
   /* ------------------------------ التنسيقات ------------------------------- */
   function css(id, k) {
@@ -143,17 +165,18 @@
           'to{opacity:1;transform:none}}';
     } else if (k === 'voyage') {
       base +=
-        '#' + id + ' .wave{stroke-dasharray:132;stroke-dashoffset:132;' +
-          'animation:' + id + '-draw .9s ease .1s both}' +
-        '#' + id + ' .boat{animation:' + id + '-sail 1s cubic-bezier(.22,1,.3,1) .25s both,' +
-          id + '-bob 3.2s ease-in-out 1.3s infinite}' +
-        '#' + id + ' .sail1{transform-origin:3px -6px;animation:' + id + '-pop .55s cubic-bezier(.3,1.5,.5,1) .7s both}' +
-        '#' + id + ' .sail2{transform-origin:-3px -6px;animation:' + id + '-pop .55s cubic-bezier(.3,1.5,.5,1) .82s both}' +
-        '#' + id + ' .isle{opacity:0;animation:' + id + '-fadeup .6s ease .5s both}' +
-        '@keyframes ' + id + '-draw{to{stroke-dashoffset:0}}' +
-        '@keyframes ' + id + '-sail{from{transform:translate(104px,104px)}to{transform:translate(150px,104px)}}' +
-        '@keyframes ' + id + '-bob{50%{transform:translate(150px,100px) rotate(-3deg)}}' +
-        '@keyframes ' + id + '-fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}';
+        '#' + id + ' .jar{opacity:0;animation:' + id + '-fadeup .6s cubic-bezier(.22,1,.3,1) .15s both}' +
+        '#' + id + ' .lid{opacity:0;animation:' + id + '-fadeup .5s cubic-bezier(.3,1.4,.5,1) .4s both}' +
+        '#' + id + ' .shine{opacity:0;animation:' + id + '-fade .5s ease .9s both}' +
+        '#' + id + ' .jc{opacity:0;animation:' + id + '-pop .45s cubic-bezier(.3,1.5,.5,1) both}' +
+        '#' + id + ' .jc0{animation-delay:.55s}#' + id + ' .jc1{animation-delay:.63s}' +
+        '#' + id + ' .jc2{animation-delay:.71s}#' + id + ' .jc3{animation-delay:.79s}' +
+        '#' + id + ' .jc4{animation-delay:.87s}' +
+        '#' + id + ' .drop{animation:' + id + '-drop 1.1s cubic-bezier(.4,0,.6,1) 1s both}' +
+        '@keyframes ' + id + '-fade{to{opacity:1}}' +
+        '@keyframes ' + id + '-fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}' +
+        '@keyframes ' + id + '-drop{0%{opacity:0;transform:translateY(-22px)}' +
+          '30%{opacity:1}70%{opacity:1;transform:translateY(16px)}100%{opacity:0;transform:translateY(30px)}}';
     } else {
       base +=
         '#' + id + ' .trunk{fill:none;stroke:#9C7B4C;stroke-width:9;stroke-linecap:round;' +

@@ -33,6 +33,19 @@ const engine = (/items:\s*'([a-z]+)'/.exec(block[0]) || [, 'trees'])[1];
 const lang = (/lang:\s*'([a-z]+)'/.exec(block[0]) || [, 'ar'])[1];
 const dir = (/dir:\s*'([a-z]+)'/.exec(block[0]) || [, 'rtl'])[1];
 const themeScript = '<script>window.BUSTAN_THEME_ID = ' + JSON.stringify(themeId) + ';</script>\n';
+/* بيانات الدخول في أعلى الملف، في سطر واضح تُغيّره صاحبة النسخة بنفسها */
+const authUser = (/user:\s*'([^']*)'/.exec(block[0]) || [, 'aisha'])[1];
+const authPin = (/pin:\s*'([^']*)'/.exec(block[0]) || [, '1111'])[1];
+const authBlock = [
+  '<!-- ====================================================================',
+  '     بيانات الدخول لهذه النسخة',
+  '     غيّري الاسم والرمز بين علامتي التنصيص، ثم احفظي الملف.',
+  '     ==================================================================== -->',
+  '<script>',
+  'window.BUSTAN_AUTH = { user: "' + authUser + '", pin: "' + authPin + '" };',
+  '</script>',
+  ''
+].join('\n');
 console.log('theme:', themeId, '-', pageTitle, '| engine:', engine, '| lang:', lang, dir);
 
 const scripts = ['theme', 'i18n', 'icons', 'logo', engine, 'items', 'sound', 'store', 'exporter', 'timer', 'wheel', 'groups', 'app']
@@ -56,6 +69,7 @@ const body = html
 const out = `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${pageTitle}</title>
+${authBlock}
 <style>
 ${fontCss}
 

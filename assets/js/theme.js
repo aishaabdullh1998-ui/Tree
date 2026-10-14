@@ -80,28 +80,28 @@
       }
     },
 
-    /* ثيم معلّمات اللغة الإنجليزية - واجهة إنجليزية من اليسار إلى اليمين */
+    /* ثيم معلّمات اللغة الإنجليزية - حصّالة شفافة تمتلئ نقودًا */
     voyage: {
       id: 'voyage',
       lang: 'en', dir: 'ltr',
       key: 'voyage.groups.v1',
-      title: 'Treasure Voyage',
-      tagline: 'A class board where every answer sails your team closer to treasure',
-      icon: '🧭',
-      favicon: '⚓',
-      footer: 'Treasure Voyage · every answer is one step closer',
-      boardHint: 'Tap a ship to add a coin · or press number keys 1 to 6',
+      title: 'Coin Jar',
+      tagline: 'A class board where every correct answer drops a coin in the jar',
+      icon: '🪙',
+      favicon: '🫙',
+      footer: 'Coin Jar · the team that saves the most, wins',
+      boardHint: 'Tap a jar to drop a coin · or press number keys 1 to 6',
       auth: { user: 'voyage', pin: '1111' },
-      items: 'voyage',
+      items: 'jars',
       words: {
-        item: 'coin', itemAl: 'Coin', holder: 'ship', holderAl: 'Ships', icon: '⛵',
-        empty: 'The sea is calm — tap any ship to set sail!',
+        item: 'coin', itemAl: 'Coin', holder: 'jar', holderAl: 'Jars', icon: '🫙',
+        empty: 'The jars are empty — tap any jar to drop the first coin!',
         notStarted: 'Give at least one coin to a team, then announce the winner.'
       },
       exportColors: {
-        bg: '#EFE3C8', frame: '#D9C49A', inner: '#9CC6D8',
-        ink: '#2A3F4D', soft: '#7A8B96', gold: '#C9954E',
-        card: '#FBF6EA', cardWin: '#FFFDF3', line: '#DFCDAE'
+        bg: '#EAF0F3', frame: '#C4D4DC', inner: '#9CC6D8',
+        ink: '#2A3F4D', soft: '#7A8B96', gold: '#C9A227',
+        card: '#FBFDFE', cardWin: '#FFFCF0', line: '#D5E1E7'
       }
     }
   };
@@ -111,4 +111,11 @@
 
   global.Theme = THEMES[id];
   global.Theme.registry = THEMES;
+
+  /* نسخة المشترية: سطر واحد في أعلى الملف يحمل اسمها ورمزها، فيُغيَّر
+     بمحرّر نصوص بلا دخول إلى الشيفرة */
+  var a = global.BUSTAN_AUTH;
+  if (a && a.user && a.pin) {
+    global.Theme.auth = { user: String(a.user), pin: String(a.pin) };
+  }
 })(window);
