@@ -40,7 +40,8 @@
   --r-lg: 30px;
   --r-md: 20px;
   --r-sm: 14px;
-  --font: 'Baloo Bhaijaan 2', 'Tajawal', 'Noto Kufi Arabic', 'Segoe UI', system-ui, sans-serif;
+  --font:      'Vazirmatn', 'Noto Kufi Arabic', 'Segoe UI', system-ui, sans-serif;
+  --font-head: 'Readex Pro', 'Vazirmatn', 'Noto Kufi Arabic', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -987,3 +988,14 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 :root[data-theme="voyage"] .card.leader { background: #FFFCF0; }
 :root[data-theme="voyage"] .btn--danger { background: transparent; border-color: #E3A99B; color: #A8422F; }
 :root[data-theme="voyage"] .wheel-svg .seg { stroke: #EFE3C8; }
+
+/* ===================== العناوين والأرقام بخطّ Readex Pro ================== */
+h1, h2, h3,
+.topbar h1, .login-card h1, .banner, .btn, .tbtn,
+.card-head .gname, .tree-tag, .score .num, .score .unit,
+.win-name, .win-count, .timer-time, .seg button, .menu button,
+.hub-text, .qg-label, .price .num {
+  font-family: var(--font-head);
+}
+.btn { letter-spacing: -.1px; }
+.banner { letter-spacing: -.2px; }

@@ -170,7 +170,7 @@
       roundRect(ctx, 40, 40, W - 80, H - 80, 28); ctx.stroke();
 
       /* العنوان */
-      var fam = '"Baloo Bhaijaan 2","Tajawal","Noto Kufi Arabic",sans-serif';
+      var fam = '"Readex Pro","Vazirmatn","Noto Kufi Arabic",sans-serif';
       ctx.fillStyle = K.ink;
       ctx.font = '800 54px ' + fam;
       ctx.fillText(record.title || (window.Theme && window.Theme.title) || L('بستان المجموعات'), W / 2, 128);

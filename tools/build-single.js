@@ -6,6 +6,21 @@ const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 
 const html = read('dev.html');
 const css = read('assets/css/styles.css');
+
+/* الخطوط تُضمَّن داخل الصفحة نفسها، فتعمل بلا إنترنت كما تعمل اللوحة */
+const FONT_FILES = [
+  ['Readex Pro', 'readex-ar', '300 700'], ['Readex Pro', 'readex-la', '300 700'],
+  ['Vazirmatn',  'vazir-ar',  '100 900'], ['Vazirmatn',  'vazir-la',  '100 900']
+];
+const faceCss = read('assets/css/fonts.css');
+const fontCss = FONT_FILES.map(function (f) {
+  const name = f[1];
+  const b64 = fs.readFileSync(path.join(root, 'assets/fonts/' + name + '.woff2')).toString('base64');
+  const range = new RegExp("url\\('\\.\\./fonts/" + name + "\\.woff2'\\) format\\('woff2'\\);\\s*unicode-range:\\s*([^;]+);")
+    .exec(faceCss)[1];
+  return "@font-face{font-family:'" + f[0] + "';font-style:normal;font-weight:" + f[2] +
+    ";font-display:swap;src:url(data:font/woff2;base64," + b64 + ") format('woff2');unicode-range:" + range + "}";
+}).join('\n');
 /* نسخة خاصة بأسماء مُحمّلة مسبقًا: BUSTAN_NAMES_FILE=<ملف JSON فيه مصفوفة أسماء>.
    الملف يبقى خارج المستودع، فلا تُنشر الأسماء مع الكود. */
 /* اختيار الثيم: BUSTAN_THEME=<id>. كل ثيم يحمل مفتاح تخزين خاصًّا به. */
@@ -38,15 +53,12 @@ const body = html
   .replace(/<script src="assets\/js\/[^"]+"><\/script>\s*/g, '')
   .trim();
 
-const FONTS = 'https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=Tajawal:wght@500;700;800&display=swap';
-
 const out = `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${pageTitle}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="${FONTS}">
 <style>
+${fontCss}
+
 /* اتجاه الصفحة حتى بلا وسم html */
 :root { direction: ${dir}; }
 html, body { height: 100%; }

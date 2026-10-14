@@ -107,12 +107,12 @@
     var s = SKIN[k] || SKIN.garden;
     var base =
       '#' + id + '{direction:rtl;overflow:visible}' +
-      '#' + id + ' .word{font-family:"Baloo Bhaijaan 2","Tajawal","Noto Kufi Arabic",system-ui,sans-serif;' +
+      '#' + id + ' .word{font-family:"Readex Pro","Vazirmatn","Noto Kufi Arabic",system-ui,sans-serif;' +
         'font-weight:800;font-size:52px;fill:' + s.ink + ';letter-spacing:1px;' +
         'opacity:0;animation:' + id + '-up .7s cubic-bezier(.22,1,.3,1) 1s both}' +
       '#' + id + ' .rule{stroke:' + s.line + ';stroke-width:2.6;stroke-linecap:round;' +
         'transform-origin:160px 250px;transform:scaleX(0);animation:' + id + '-rule .6s cubic-bezier(.22,1,.3,1) 1.25s both}' +
-      '#' + id + ' .tag{font-family:"Tajawal",system-ui,sans-serif;font-weight:700;font-size:16px;' +
+      '#' + id + ' .tag{font-family:"Vazirmatn",system-ui,sans-serif;font-weight:500;font-size:16px;' +
         'fill:' + s.soft + ';opacity:0;animation:' + id + '-up .6s ease 1.45s both}' +
       '@keyframes ' + id + '-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}' +
       '@keyframes ' + id + '-rule{to{transform:scaleX(1)}}' +
