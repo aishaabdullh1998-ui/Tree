@@ -27,9 +27,12 @@ jobs:
           fi
           URL=$(printf '%s' "$BUSTAN_SYNC" | python3 -c 'import json,sys; print(json.load(sys.stdin)["url"].rstrip("/"))')
           KEY=$(printf '%s' "$BUSTAN_SYNC" | python3 -c 'import json,sys; print(json.load(sys.stdin)["key"])')
+          # المفتاح الجديد (sb_...) ليس JWT، فلا يُرسل في Authorization
+          AUTH=()
+          case "$KEY" in eyJ*) AUTH=(-H "Authorization: Bearer $KEY") ;; esac
           code=$(curl -sS -o /tmp/out.json -w '%{http_code}' \
             -X POST "$URL/rest/v1/rpc/board_pull" \
-            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" \
+            -H "apikey: $KEY" "${AUTH[@]}" \
             -H 'Content-Type: application/json' \
             --data '{"p_board":"garden","p_user":"__keepalive__","p_pin":"0"}')
           echo "الحالة: $code"

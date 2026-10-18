@@ -13,6 +13,17 @@
   if (!CFG || !CFG.url || !CFG.key) { global.Sync = { on: false }; return; }
 
   var URL_BASE = String(CFG.url).replace(/\/+$/, '') + '/rest/v1/rpc/';
+
+  /* Supabase يسلّم نوعين من المفاتيح:
+       - القديم (anon) رمزُ JWT يبدأ بـ eyJ، ويُرسل في الترويستين.
+       - الجديد (publishable) نصٌّ قصير يبدأ بـ sb_، وليس JWT. فإن أُرسل
+         في Authorization حاول الخادم قراءته رمزًا موقَّعًا ففشل وردّ ٤٠١.
+     فنرسل apikey دائمًا، و Authorization لمن يصلح له وحده. */
+  function headers() {
+    var h = { 'apikey': CFG.key, 'Content-Type': 'application/json' };
+    if (/^eyJ/.test(String(CFG.key))) h.Authorization = 'Bearer ' + CFG.key;
+    return h;
+  }
   var BOARD = (global.Theme && global.Theme.id) || 'garden';
   var PUSH_DELAY = 2500;      /* هدوء بعد آخر ضغطة قبل الرفع */
   var RETRY = [4000, 10000, 30000, 60000];
@@ -33,11 +44,7 @@
     var kill = ctl && global.setTimeout(function () { ctl.abort(); }, 12000);
     global.fetch(URL_BASE + fn, {
       method: 'POST',
-      headers: {
-        'apikey': CFG.key,
-        'Authorization': 'Bearer ' + CFG.key,
-        'Content-Type': 'application/json'
-      },
+      headers: headers(),
       body: JSON.stringify(body),
       signal: ctl ? ctl.signal : undefined
     }).then(function (r) {
@@ -252,8 +259,7 @@
       try {
         global.fetch(URL_BASE + 'board_push', {
           method: 'POST', keepalive: true,
-          headers: { 'apikey': CFG.key, 'Authorization': 'Bearer ' + CFG.key,
-                     'Content-Type': 'application/json' },
+          headers: headers(),
           body: body
         });
       } catch (e) {}
