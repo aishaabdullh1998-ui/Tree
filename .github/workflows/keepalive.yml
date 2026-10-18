@@ -26,10 +26,7 @@ jobs:
             exit 0
           fi
           # نقبل العنوان بأي شكل نُسخ به، كما يقبله الكود في المتصفّح
-          URL=$(printf '%s' "$BUSTAN_SYNC" | python3 -c '
-import json, re, sys
-u = json.load(sys.stdin)["url"].rstrip("/")
-print(re.sub(r"/rest/v1(/rpc)?$", "", u, flags=re.I).rstrip("/"))')
+          URL=$(printf '%s' "$BUSTAN_SYNC" | python3 -c 'import json,re,sys; u=json.load(sys.stdin)["url"].rstrip("/"); print(re.sub(r"/rest/v1(/rpc)?$","",u,flags=re.I).rstrip("/"))')
           KEY=$(printf '%s' "$BUSTAN_SYNC" | python3 -c 'import json,sys; print(json.load(sys.stdin)["key"])')
           # المفتاح الجديد (sb_...) ليس JWT، فلا يُرسل في Authorization
           AUTH=()
