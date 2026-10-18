@@ -942,6 +942,16 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 .tree-body[data-stage="2"] .shelf-view { transform: translateY(-20px); }
 .tree-body[data-stage="3"] .shelf-view { transform: scale(.97); }
 
+/* شارة «نسخة تجريبية»: تظهر حين لا تكون الصفحة مربوطة بحساب،
+   فتعرف المعلّمة فورًا لماذا لا يفتح رمزها الصحيح */
+.login-demo {
+  margin: 0 0 10px; text-align: center;
+  font-size: .74rem; font-weight: 600; letter-spacing: .2px;
+  color: #9A7B3C; background: #FFF6E0;
+  border: 1.5px solid #E7D29A; border-radius: 999px;
+  padding: .38em .9em; align-self: center;
+}
+
 /* ============================= اللوجو والافتتاح ========================== */
 .logo-svg { display: block; width: 100%; height: auto; overflow: visible; }
 #login-mark { width: calc(min(260px, 72%) * var(--mark-k, 1)); height: auto; margin: 0 auto 6px; display: block; }

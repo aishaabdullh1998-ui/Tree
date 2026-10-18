@@ -138,10 +138,26 @@
       ? window.BustanLogo.svg({ word: false, tag: false })
       : T.standalone(T.LIST[0].id, 6);
 
-    /* لا نقول لها «لا تُرسل إلى أي مكان» وهي نسخة تحفظ نقاطها في حسابها */
-    $('#login-hint').textContent = (window.Sync && window.Sync.on)
+    /* لا نقول لها «لا تُرسل إلى أي مكان» وهي نسخة تحفظ نقاطها في حسابها.
+       والنسخة غير المربوطة تقولها صراحةً: بيانات الدخول المباعة لا تفتحها،
+       فلا تقف المعلّمة أمام «رمز غير صحيح» وهي تكتب رمزًا صحيحًا. */
+    var linked = !!(window.Sync && window.Sync.on);
+    $('#login-hint').textContent = linked
       ? L('نقاطك محفوظة في حسابك على أي جهاز، وأسماء الطالبات في هذا الجهاز وحده.')
       : L('تُحفظ بيانات المسابقة في هذا الجهاز ولا تُرسل إلى أي مكان.');
+    var card = $('.login-card');
+    var tagEl = $('#login-demo');
+    if (!linked) {
+      if (!tagEl) {
+        tagEl = document.createElement('p');
+        tagEl.id = 'login-demo';
+        tagEl.className = 'login-demo';
+        card.insertBefore(tagEl, $('#login-hint'));
+      }
+      tagEl.textContent = L('نسخة تجريبية · غير مربوطة بحساب');
+    } else if (tagEl) {
+      tagEl.remove();
+    }
 
     /* الدخول يعمل بالضغط وبمفتاح Enter معًا، حتى داخل الصفحات المضمّنة
        التي يُمنع فيها إرسال النماذج */
