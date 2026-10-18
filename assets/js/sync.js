@@ -12,7 +12,12 @@
   var CFG = global.BUSTAN_SYNC;
   if (!CFG || !CFG.url || !CFG.key) { global.Sync = { on: false }; return; }
 
-  var URL_BASE = String(CFG.url).replace(/\/+$/, '') + '/rest/v1/rpc/';
+  /* عنوان المشروع قد يُنسخ بأشكال: العنوان وحده، أو ومعه /rest/v1،
+     أو ومعه /rest/v1/rpc. نقبلها كلّها ونردّها إلى الأصل. */
+  var URL_BASE = String(CFG.url)
+    .replace(/\/+$/, '')
+    .replace(/\/rest\/v1(\/rpc)?$/i, '')
+    .replace(/\/+$/, '') + '/rest/v1/rpc/';
 
   /* Supabase يسلّم نوعين من المفاتيح:
        - القديم (anon) رمزُ JWT يبدأ بـ eyJ، ويُرسل في الترويستين.
