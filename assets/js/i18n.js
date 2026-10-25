@@ -131,6 +131,22 @@
 
     /* المزامنة مع الحساب */
     'محفوظ في حسابك': 'Saved to your account',
+
+    /* التعزيز الفردي */
+    'تعزيز فردي': 'Individual points',
+    'اضغطي على اسم الطالبة لتضيفي لها': 'Tap a student to give them a',
+    'هذه النقاط في هذا الجهاز مع الأسماء، ولا تُرفع إلى أي مكان.':
+      'These points stay on this device with the names — they are never uploaded.',
+    'لا أسماء بعد. اكتبي أسماء طالباتك مرّة واحدة، فتخدمك هنا وفي عجلة الحظ والمجموعات السريعة.':
+      'No names yet. Add your students once and they serve here, in the wheel and in quick groups.',
+    'أضيفي الأسماء': 'Add names',
+    'بالاسم': 'By name',
+    'بالنقاط': 'By points',
+    'تصفير الكل': 'Reset all',
+    'صُفّرت النقاط الفردية.': 'Individual points cleared.',
+    'أضيفي': 'Give a',
+    'إلى': 'to',
+    'اضغطي': 'Tap',
     'نسخة تجريبية · غير مربوطة بحساب': 'Demo copy · not linked to an account',
     'جارٍ التحقّق…': 'Checking…',
     'اكتبي اسم المستخدم ورمز الدخول': 'Enter your username and passcode',
@@ -142,8 +158,8 @@
       'Offline — opened the last copy saved on this device.',
     'حسابك': 'Your account',
     'أنتِ داخلة باسم': 'Signed in as',
-    'نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير الرمز راسلي من باعتك اللوحة.':
-      'Your points live in this account and open on any device. To change your passcode, contact whoever sold you the board.',
+    'نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير رمز الدخول تواصلي مع المسؤول.':
+      'Your points live in this account and open on any device. To change your passcode, contact the administrator.',
     'نقاطك محفوظة في حسابك على أي جهاز، وأسماء الطالبات في هذا الجهاز وحده.':
       'Your points are saved to your account on any device; student names stay on this device only.',
     'جارٍ الحفظ في حسابك…': 'Saving to your account…',

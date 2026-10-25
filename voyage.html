@@ -964,6 +964,59 @@ fieldset.block legend { font-size: .86rem; font-weight: 800; color: var(--ink-so
 .tree-body[data-stage="2"] .shelf-view { transform: translateY(-20px); }
 .tree-body[data-stage="3"] .shelf-view { transform: scale(.97); }
 
+/* ============================ التعزيز الفردي ============================ */
+.solo-seg { margin: 10px 0 12px; width: max-content; }
+.solo-none { margin: 6px 0 2px; }
+
+.solo-grid {
+  display: grid; gap: 9px;
+  grid-template-columns: repeat(auto-fill, minmax(146px, 1fr));
+  max-height: 52vh; overflow: auto; padding: 2px;
+}
+
+.solo-card {
+  background: var(--cream); border: 1.5px solid var(--line);
+  border-radius: 16px; overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: border-color .15s ease, transform .12s ease;
+}
+.solo-card.has { border-color: var(--gold); background: var(--cream-2); }
+
+.solo-add {
+  all: unset; box-sizing: border-box; cursor: pointer;
+  display: flex; flex-direction: column; gap: 7px;
+  padding: 11px 11px 8px; min-height: 76px;
+}
+.solo-add:focus-visible { outline: 2.5px solid var(--gold); outline-offset: -3px; }
+.solo-card:active { transform: scale(.975); }
+
+.solo-name {
+  font-family: var(--font-head), system-ui, sans-serif;
+  font-weight: 600; font-size: .92rem; color: var(--ink);
+  line-height: 1.25; overflow-wrap: anywhere;
+}
+.solo-icons { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; min-height: 21px; }
+.solo-ic { flex: none; display: block; }
+.solo-more { font-size: .76rem; font-weight: 700; color: var(--gold-ink, var(--soft)); margin-inline-start: 2px; }
+.solo-empty { font-size: .74rem; color: var(--soft); }
+
+.solo-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 6px; padding: 5px 9px 7px; border-top: 1.5px dashed var(--line);
+}
+.solo-num { font-weight: 800; font-size: 1.02rem; color: var(--ink); min-width: 1.4em; }
+.solo-undo {
+  all: unset; cursor: pointer; font-size: .82rem; color: var(--soft);
+  border: 1.5px solid var(--line); border-radius: 10px; padding: .12em .5em;
+}
+.solo-undo[disabled] { opacity: .35; cursor: default; }
+.solo-undo:not([disabled]):hover { color: var(--ink); border-color: var(--soft); }
+
+@media (max-width: 520px) {
+  .solo-grid { grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); max-height: 56vh; }
+}
+@media (prefers-reduced-motion: reduce) { .solo-card:active { transform: none; } }
+
 /* شارة «نسخة تجريبية»: تظهر حين لا تكون الصفحة مربوطة بحساب،
    فتعرف المعلّمة فورًا لماذا لا يفتح رمزها الصحيح */
 .login-demo {
@@ -1115,6 +1168,7 @@ h1, h2, h3,
       <button class="btn btn--primary" id="btn-celebrate" type="button">إعلان الفائزة</button>
       <button class="btn" id="btn-wheel" type="button">عجلة الحظ</button>
       <button class="btn" id="btn-groups" type="button">مجموعات سريعة</button>
+      <button class="btn" id="btn-solo" type="button">تعزيز فردي</button>
       <button class="btn" id="btn-all" type="button">نقطة للجميع</button>
       <button class="btn btn--ic" id="btn-present" type="button" aria-label="وضع العرض" title="وضع العرض"></button>
       <div class="menu-wrap">
@@ -1437,6 +1491,22 @@ document.documentElement.setAttribute('lang', "en");
 
     /* المزامنة مع الحساب */
     'محفوظ في حسابك': 'Saved to your account',
+
+    /* التعزيز الفردي */
+    'تعزيز فردي': 'Individual points',
+    'اضغطي على اسم الطالبة لتضيفي لها': 'Tap a student to give them a',
+    'هذه النقاط في هذا الجهاز مع الأسماء، ولا تُرفع إلى أي مكان.':
+      'These points stay on this device with the names — they are never uploaded.',
+    'لا أسماء بعد. اكتبي أسماء طالباتك مرّة واحدة، فتخدمك هنا وفي عجلة الحظ والمجموعات السريعة.':
+      'No names yet. Add your students once and they serve here, in the wheel and in quick groups.',
+    'أضيفي الأسماء': 'Add names',
+    'بالاسم': 'By name',
+    'بالنقاط': 'By points',
+    'تصفير الكل': 'Reset all',
+    'صُفّرت النقاط الفردية.': 'Individual points cleared.',
+    'أضيفي': 'Give a',
+    'إلى': 'to',
+    'اضغطي': 'Tap',
     'نسخة تجريبية · غير مربوطة بحساب': 'Demo copy · not linked to an account',
     'جارٍ التحقّق…': 'Checking…',
     'اكتبي اسم المستخدم ورمز الدخول': 'Enter your username and passcode',
@@ -1448,8 +1518,8 @@ document.documentElement.setAttribute('lang', "en");
       'Offline — opened the last copy saved on this device.',
     'حسابك': 'Your account',
     'أنتِ داخلة باسم': 'Signed in as',
-    'نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير الرمز راسلي من باعتك اللوحة.':
-      'Your points live in this account and open on any device. To change your passcode, contact whoever sold you the board.',
+    'نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير رمز الدخول تواصلي مع المسؤول.':
+      'Your points live in this account and open on any device. To change your passcode, contact the administrator.',
     'نقاطك محفوظة في حسابك على أي جهاز، وأسماء الطالبات في هذا الجهاز وحده.':
       'Your points are saved to your account on any device; student names stay on this device only.',
     'جارٍ الحفظ في حسابك…': 'Saving to your account…',
@@ -1514,6 +1584,7 @@ document.documentElement.setAttribute('lang', "en");
     cup:    '<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4.5A2.5 2.5 0 0 0 7 10.5M17 6h2.5A2.5 2.5 0 0 1 17 10.5"/><path d="M12 14v4M8.5 20h7"/>',
     wheel:  '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/>',
     users:  '<circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.6A4.6 4.6 0 0 1 21 19"/>',
+    solo:   '<circle cx="12" cy="8" r="3.4"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M19 3.2l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2L16 5.4l2-.3z"/>',
     time:   '<circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 1.6M9.5 3h5"/>',
     list:   '<path d="M5 5h14M5 10h14M5 15h9M5 20h9"/>',
     gear:   '<circle cx="12" cy="12" r="3.4"/><path d="M19.4 14a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1v.3a2 2 0 1 1-4 0v-.2a1.6 1.6 0 0 0-2.8-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.5 14H3a2 2 0 1 1 0-4h.2A1.6 1.6 0 0 0 4.3 7.2l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.2a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1h.3a2 2 0 1 1 0 4h-.2a1.6 1.6 0 0 0-1.4 1z"/>',
@@ -2280,6 +2351,8 @@ document.documentElement.setAttribute('lang', "en");
       texture: true,
       visible: 6,
       timer: { duration: 120, remaining: 120 },
+      /* التعزيز الفردي: نقاط كل طالبة. يبقى في الجهاز مع الأسماء */
+      solo: {},
       /* حالة المزامنة مع الحساب (في النسخ المربوطة بحساب فقط) */
       sync: { rev: 0, at: null, dirty: false },
       wheel: { list: STUDENTS.slice(), picked: [], skipPicked: true,
@@ -2352,6 +2425,13 @@ document.documentElement.setAttribute('lang', "en");
           };
         }
         d.wheel = { list: list, picked: picked, skipPicked: s.wheel.skipPicked !== false, quick: q };
+      }
+      if (s.solo && typeof s.solo === 'object' && !Array.isArray(s.solo)) {
+        d.solo = {};
+        Object.keys(s.solo).slice(0, 200).forEach(function (k) {
+          var v = Math.max(0, parseInt(s.solo[k], 10) || 0);
+          if (v) d.solo[String(k)] = v;
+        });
       }
       if (s.sync && typeof s.sync === 'object') {
         d.sync = {
@@ -4162,6 +4242,119 @@ document.documentElement.setAttribute('lang', "en");
     );
   }
 
+  /* ---------------------------- التعزيز الفردي ---------------------------- */
+  /* لوحة لكل طالبة على حدة، بوحدة الثيم نفسها: ثمرة أو نجمة أو كتاب أو
+     قطعة نقود. الأسماء هي أسماء العجلة نفسها، فلا تُكتب مرّتين.
+     النقاط الفردية تبقى في الجهاز مع الأسماء، ولا تُرفع. */
+  var SOLO_MAX_ICONS = 8;       /* بعدها نكتفي بالعدد */
+
+  function soloCounts() {
+    if (!state.solo || typeof state.solo !== 'object') state.solo = {};
+    return state.solo;
+  }
+
+  function soloUnit(size) {
+    return '<svg class="solo-ic" width="' + size + '" height="' + size + '" viewBox="' +
+      (T.CHIP_VIEWBOX || '-10 -11 20 22') + '" aria-hidden="true">' +
+      T.fruitShape(visibleGroups()[0].treeId) + '</svg>';
+  }
+
+  function soloCardMarkup(name, n) {
+    var icons = '';
+    var shown = Math.min(n, SOLO_MAX_ICONS);
+    for (var i = 0; i < shown; i++) icons += soloUnit(19);
+    var more = n > SOLO_MAX_ICONS ? '<span class="solo-more">+' + (n - SOLO_MAX_ICONS) + '</span>' : '';
+    return '<div class="solo-card' + (n ? ' has' : '') + '" data-name="' + esc(name) + '">' +
+      '<button class="solo-add" type="button" aria-label="' + L('أضيفي') + ' ' + esc(W.item) + ' ' + L('إلى') + ' ' + esc(name) + '">' +
+        '<span class="solo-name">' + esc(name) + '</span>' +
+        '<span class="solo-icons">' + (icons || '<span class="solo-empty">' + L('اضغطي') + '</span>') + more + '</span>' +
+      '</button>' +
+      '<div class="solo-foot">' +
+        '<span class="solo-num">' + n + '</span>' +
+        '<button class="solo-undo" type="button" ' + (n ? '' : 'disabled ') +
+          'aria-label="' + L('تراجع') + ' ' + esc(name) + '">↩︎</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function soloSheet() {
+    var names = (state.wheel && state.wheel.list) || [];
+    var sortBy = 'name';
+
+    function body() {
+      if (!names.length) {
+        return '<p class="note solo-none">' +
+          L('لا أسماء بعد. اكتبي أسماء طالباتك مرّة واحدة، فتخدمك هنا وفي عجلة الحظ والمجموعات السريعة.') +
+          '</p><div class="sheet-actions" style="justify-content:flex-start">' +
+          '<button class="btn btn--primary" id="solo-names" type="button">' + Icon('users', 17) + ' ' +
+          L('أضيفي الأسماء') + '</button></div>';
+      }
+      var c = soloCounts();
+      var list = names.slice();
+      if (sortBy === 'count') {
+        list.sort(function (a, b) { return (c[b] || 0) - (c[a] || 0); });
+      }
+      return '<div class="solo-grid">' +
+        list.map(function (n) { return soloCardMarkup(n, c[n] || 0); }).join('') +
+        '</div>';
+    }
+
+    openSheet(
+      '<h2>' + Icon('users', 22) + ' ' + L('تعزيز فردي') + '</h2>' +
+      '<p class="note">' + L('اضغطي على اسم الطالبة لتضيفي لها') + ' ' + esc(W.item) + '. ' +
+        L('هذه النقاط في هذا الجهاز مع الأسماء، ولا تُرفع إلى أي مكان.') + '</p>' +
+      '<div class="seg solo-seg" id="solo-sort">' +
+        '<button type="button" data-s="name" aria-pressed="true">' + L('بالاسم') + '</button>' +
+        '<button type="button" data-s="count" aria-pressed="false">' + L('بالنقاط') + '</button>' +
+      '</div>' +
+      '<div id="solo-body">' + body() + '</div>' +
+      '<div class="sheet-actions">' +
+        '<button class="btn" data-close type="button">' + L('إغلاق') + '</button>' +
+        '<button class="btn btn--danger" id="solo-reset" type="button">' + L('تصفير الكل') + '</button>' +
+      '</div>',
+      function (ov) {
+        function repaint() { $('#solo-body', ov).innerHTML = body(); }
+
+        $('#solo-body', ov).addEventListener('click', function (e) {
+          var card = e.target.closest('.solo-card');
+          if (!card) return;
+          var name = card.getAttribute('data-name');
+          var c = soloCounts();
+          if (e.target.closest('.solo-undo')) {
+            if (!c[name]) return;
+            c[name] = Math.max(0, c[name] - 1);
+            Sound.undo && Sound.undo();
+          } else if (e.target.closest('.solo-add')) {
+            c[name] = (c[name] || 0) + 1;
+            Sound.pop();
+          } else return;
+          persist();
+          repaint();
+        });
+
+        $$('#solo-sort button', ov).forEach(function (b) {
+          b.addEventListener('click', function () {
+            sortBy = b.getAttribute('data-s');
+            $$('#solo-sort button', ov).forEach(function (x) {
+              x.setAttribute('aria-pressed', x === b ? 'true' : 'false');
+            });
+            repaint();
+          });
+        });
+
+        var add = $('#solo-names', ov);
+        if (add) add.addEventListener('click', function () { closeSheet(); settingsSheet(); });
+
+        $('#solo-reset', ov).addEventListener('click', function () {
+          state.solo = {};
+          persist();
+          repaint();
+          toast(L('صُفّرت النقاط الفردية.'));
+        });
+      }
+    );
+  }
+
   /* ------------------------------ إعادة المسابقة -------------------------- */
   function snapshot() {
     return {
@@ -4311,7 +4504,7 @@ document.documentElement.setAttribute('lang', "en");
       (Store.linked
         ? '<fieldset class="block"><legend>' + L('حسابك') + '</legend>' +
             '<p class="note">' + L('أنتِ داخلة باسم') + ' <b>' + esc(state.auth.user) + '</b>. ' +
-            L('نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير الرمز راسلي من باعتك اللوحة.') +
+            L('نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير رمز الدخول تواصلي مع المسؤول.') +
             '</p></fieldset>'
         : '<fieldset class="block"><legend>' + L('بيانات الدخول') + '</legend>' +
             '<div class="row"><label for="set-user">' + L('اسم المستخدم') + '</label><input type="text" id="set-user" value="' + esc(state.auth.user) + '" spellcheck="false"></div>' +
@@ -4412,6 +4605,7 @@ document.documentElement.setAttribute('lang', "en");
     on('#btn-celebrate', celebrate);
     on('#btn-wheel', function () { if (wheel) wheel.open(); });
     on('#btn-groups', function () { if (groups) groups.open(); });
+    on('#btn-solo', soloSheet);
     on('#btn-all', addAll);
     on('#btn-present', function () { setPresent(!presentOn()); });
     on('#btn-history', historySheet);
@@ -4504,7 +4698,8 @@ document.documentElement.setAttribute('lang', "en");
   /* أيقونات الشريط والقائمة */
   function paintIcons() {
     var I = window.Icon || function () { return ''; };
-    [['#btn-celebrate', 'cup'], ['#btn-wheel', 'wheel'], ['#btn-groups', 'users'], ['#btn-all', 'plus'],
+    [['#btn-celebrate', 'cup'], ['#btn-wheel', 'wheel'], ['#btn-groups', 'users'],
+     ['#btn-solo', 'solo'], ['#btn-all', 'plus'],
      ['#btn-present', 'full'], ['#btn-more', 'more'], ['#btn-history', 'list'], ['#btn-backup', 'save'],
      ['#btn-settings', 'gear'], ['#btn-reset', 'reset'], ['#btn-logout', 'exit']
     ].forEach(function (m) {

@@ -39,6 +39,8 @@
       texture: true,
       visible: 6,
       timer: { duration: 120, remaining: 120 },
+      /* التعزيز الفردي: نقاط كل طالبة. يبقى في الجهاز مع الأسماء */
+      solo: {},
       /* حالة المزامنة مع الحساب (في النسخ المربوطة بحساب فقط) */
       sync: { rev: 0, at: null, dirty: false },
       wheel: { list: STUDENTS.slice(), picked: [], skipPicked: true,
@@ -111,6 +113,13 @@
           };
         }
         d.wheel = { list: list, picked: picked, skipPicked: s.wheel.skipPicked !== false, quick: q };
+      }
+      if (s.solo && typeof s.solo === 'object' && !Array.isArray(s.solo)) {
+        d.solo = {};
+        Object.keys(s.solo).slice(0, 200).forEach(function (k) {
+          var v = Math.max(0, parseInt(s.solo[k], 10) || 0);
+          if (v) d.solo[String(k)] = v;
+        });
       }
       if (s.sync && typeof s.sync === 'object') {
         d.sync = {

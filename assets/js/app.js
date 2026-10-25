@@ -611,6 +611,119 @@
     );
   }
 
+  /* ---------------------------- التعزيز الفردي ---------------------------- */
+  /* لوحة لكل طالبة على حدة، بوحدة الثيم نفسها: ثمرة أو نجمة أو كتاب أو
+     قطعة نقود. الأسماء هي أسماء العجلة نفسها، فلا تُكتب مرّتين.
+     النقاط الفردية تبقى في الجهاز مع الأسماء، ولا تُرفع. */
+  var SOLO_MAX_ICONS = 8;       /* بعدها نكتفي بالعدد */
+
+  function soloCounts() {
+    if (!state.solo || typeof state.solo !== 'object') state.solo = {};
+    return state.solo;
+  }
+
+  function soloUnit(size) {
+    return '<svg class="solo-ic" width="' + size + '" height="' + size + '" viewBox="' +
+      (T.CHIP_VIEWBOX || '-10 -11 20 22') + '" aria-hidden="true">' +
+      T.fruitShape(visibleGroups()[0].treeId) + '</svg>';
+  }
+
+  function soloCardMarkup(name, n) {
+    var icons = '';
+    var shown = Math.min(n, SOLO_MAX_ICONS);
+    for (var i = 0; i < shown; i++) icons += soloUnit(19);
+    var more = n > SOLO_MAX_ICONS ? '<span class="solo-more">+' + (n - SOLO_MAX_ICONS) + '</span>' : '';
+    return '<div class="solo-card' + (n ? ' has' : '') + '" data-name="' + esc(name) + '">' +
+      '<button class="solo-add" type="button" aria-label="' + L('أضيفي') + ' ' + esc(W.item) + ' ' + L('إلى') + ' ' + esc(name) + '">' +
+        '<span class="solo-name">' + esc(name) + '</span>' +
+        '<span class="solo-icons">' + (icons || '<span class="solo-empty">' + L('اضغطي') + '</span>') + more + '</span>' +
+      '</button>' +
+      '<div class="solo-foot">' +
+        '<span class="solo-num">' + n + '</span>' +
+        '<button class="solo-undo" type="button" ' + (n ? '' : 'disabled ') +
+          'aria-label="' + L('تراجع') + ' ' + esc(name) + '">↩︎</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function soloSheet() {
+    var names = (state.wheel && state.wheel.list) || [];
+    var sortBy = 'name';
+
+    function body() {
+      if (!names.length) {
+        return '<p class="note solo-none">' +
+          L('لا أسماء بعد. اكتبي أسماء طالباتك مرّة واحدة، فتخدمك هنا وفي عجلة الحظ والمجموعات السريعة.') +
+          '</p><div class="sheet-actions" style="justify-content:flex-start">' +
+          '<button class="btn btn--primary" id="solo-names" type="button">' + Icon('users', 17) + ' ' +
+          L('أضيفي الأسماء') + '</button></div>';
+      }
+      var c = soloCounts();
+      var list = names.slice();
+      if (sortBy === 'count') {
+        list.sort(function (a, b) { return (c[b] || 0) - (c[a] || 0); });
+      }
+      return '<div class="solo-grid">' +
+        list.map(function (n) { return soloCardMarkup(n, c[n] || 0); }).join('') +
+        '</div>';
+    }
+
+    openSheet(
+      '<h2>' + Icon('users', 22) + ' ' + L('تعزيز فردي') + '</h2>' +
+      '<p class="note">' + L('اضغطي على اسم الطالبة لتضيفي لها') + ' ' + esc(W.item) + '. ' +
+        L('هذه النقاط في هذا الجهاز مع الأسماء، ولا تُرفع إلى أي مكان.') + '</p>' +
+      '<div class="seg solo-seg" id="solo-sort">' +
+        '<button type="button" data-s="name" aria-pressed="true">' + L('بالاسم') + '</button>' +
+        '<button type="button" data-s="count" aria-pressed="false">' + L('بالنقاط') + '</button>' +
+      '</div>' +
+      '<div id="solo-body">' + body() + '</div>' +
+      '<div class="sheet-actions">' +
+        '<button class="btn" data-close type="button">' + L('إغلاق') + '</button>' +
+        '<button class="btn btn--danger" id="solo-reset" type="button">' + L('تصفير الكل') + '</button>' +
+      '</div>',
+      function (ov) {
+        function repaint() { $('#solo-body', ov).innerHTML = body(); }
+
+        $('#solo-body', ov).addEventListener('click', function (e) {
+          var card = e.target.closest('.solo-card');
+          if (!card) return;
+          var name = card.getAttribute('data-name');
+          var c = soloCounts();
+          if (e.target.closest('.solo-undo')) {
+            if (!c[name]) return;
+            c[name] = Math.max(0, c[name] - 1);
+            Sound.undo && Sound.undo();
+          } else if (e.target.closest('.solo-add')) {
+            c[name] = (c[name] || 0) + 1;
+            Sound.pop();
+          } else return;
+          persist();
+          repaint();
+        });
+
+        $$('#solo-sort button', ov).forEach(function (b) {
+          b.addEventListener('click', function () {
+            sortBy = b.getAttribute('data-s');
+            $$('#solo-sort button', ov).forEach(function (x) {
+              x.setAttribute('aria-pressed', x === b ? 'true' : 'false');
+            });
+            repaint();
+          });
+        });
+
+        var add = $('#solo-names', ov);
+        if (add) add.addEventListener('click', function () { closeSheet(); settingsSheet(); });
+
+        $('#solo-reset', ov).addEventListener('click', function () {
+          state.solo = {};
+          persist();
+          repaint();
+          toast(L('صُفّرت النقاط الفردية.'));
+        });
+      }
+    );
+  }
+
   /* ------------------------------ إعادة المسابقة -------------------------- */
   function snapshot() {
     return {
@@ -760,7 +873,7 @@
       (Store.linked
         ? '<fieldset class="block"><legend>' + L('حسابك') + '</legend>' +
             '<p class="note">' + L('أنتِ داخلة باسم') + ' <b>' + esc(state.auth.user) + '</b>. ' +
-            L('نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير الرمز راسلي من باعتك اللوحة.') +
+            L('نقاطك محفوظة في هذا الحساب وتفتح على أي جهاز. ولتغيير رمز الدخول تواصلي مع المسؤول.') +
             '</p></fieldset>'
         : '<fieldset class="block"><legend>' + L('بيانات الدخول') + '</legend>' +
             '<div class="row"><label for="set-user">' + L('اسم المستخدم') + '</label><input type="text" id="set-user" value="' + esc(state.auth.user) + '" spellcheck="false"></div>' +
@@ -861,6 +974,7 @@
     on('#btn-celebrate', celebrate);
     on('#btn-wheel', function () { if (wheel) wheel.open(); });
     on('#btn-groups', function () { if (groups) groups.open(); });
+    on('#btn-solo', soloSheet);
     on('#btn-all', addAll);
     on('#btn-present', function () { setPresent(!presentOn()); });
     on('#btn-history', historySheet);
@@ -953,7 +1067,8 @@
   /* أيقونات الشريط والقائمة */
   function paintIcons() {
     var I = window.Icon || function () { return ''; };
-    [['#btn-celebrate', 'cup'], ['#btn-wheel', 'wheel'], ['#btn-groups', 'users'], ['#btn-all', 'plus'],
+    [['#btn-celebrate', 'cup'], ['#btn-wheel', 'wheel'], ['#btn-groups', 'users'],
+     ['#btn-solo', 'solo'], ['#btn-all', 'plus'],
      ['#btn-present', 'full'], ['#btn-more', 'more'], ['#btn-history', 'list'], ['#btn-backup', 'save'],
      ['#btn-settings', 'gear'], ['#btn-reset', 'reset'], ['#btn-logout', 'exit']
     ].forEach(function (m) {
