@@ -87,10 +87,10 @@
       title: s.title,
       sound: s.sound !== false,
       texture: s.texture !== false,
-      visible: s.visible,
+      visible: (s.groups || []).filter(function (g) { return !g.hidden; }).length,
       duration: (s.timer && s.timer.duration) || 120,
       groups: (s.groups || []).map(function (g) {
-        return { id: g.id, name: g.name, treeId: g.treeId, count: g.count };
+        return { id: g.id, name: g.name, treeId: g.treeId, count: g.count, hidden: !!g.hidden };
       }),
       history: (s.history || []).slice(0, 60)
     };
@@ -102,8 +102,6 @@
     if (typeof d.title === 'string' && d.title) s.title = d.title;
     if (typeof d.sound === 'boolean') s.sound = d.sound;
     if (typeof d.texture === 'boolean') s.texture = d.texture;
-    var v = parseInt(d.visible, 10);
-    if (v >= 2 && v <= 6) s.visible = v;
     var dur = parseInt(d.duration, 10);
     if (dur >= 5 && dur <= 3600) {
       s.timer = s.timer || {};
@@ -117,9 +115,16 @@
           id: g.id || cur.id || ('g' + (i + 1)),
           name: typeof g.name === 'string' && g.name.trim() ? g.name : cur.name,
           treeId: (global.Trees.byId[g.treeId] ? g.treeId : cur.treeId) || global.Trees.LIST[i % 6].id,
-          count: Math.max(0, parseInt(g.count, 10) || 0)
+          count: Math.max(0, parseInt(g.count, 10) || 0),
+          hidden: !!g.hidden
         };
       });
+      /* حساب حُفظ قبل هذا التغيير: عدد فقط، بلا علامة على أي مجموعة */
+      var flagged = d.groups.some(function (g) { return g && 'hidden' in g; });
+      if (global.Store && global.Store.fixShown) {
+        global.Store.fixShown(s.groups, flagged ? null : d.visible);
+      }
+      s.visible = s.groups.filter(function (g) { return !g.hidden; }).length;
     }
     if (Array.isArray(d.history)) s.history = d.history.slice(0, 60);
     return s;

@@ -46,10 +46,25 @@
       wheel: { list: STUDENTS.slice(), picked: [], skipPicked: true,
                quick: { mode: 'size', size: 5, count: 4, last: null } },
       groups: global.Trees.LIST.map(function (t, i) {
-        return { id: 'g' + (i + 1), name: L('المجموعة') + ' ' + (ORD[i] || (i + 1)), treeId: t.id, count: 0 };
+        return { id: 'g' + (i + 1), name: L('المجموعة') + ' ' + (ORD[i] || (i + 1)), treeId: t.id, count: 0, hidden: false };
       }),
       history: []
     };
+  }
+
+  /* المجموعات الظاهرة تختارها المعلّمة بعينها، ولا تقلّ عن مجموعتين.
+     والبيانات القديمة كانت تحفظ عددًا فقط (تظهر الأولى فالأولى)، فتُحوَّل. */
+  var MIN_SHOWN = 2;
+  function fixShown(groups, legacyCount) {
+    var n = parseInt(legacyCount, 10);
+    if (n >= MIN_SHOWN && n < groups.length) {
+      groups.forEach(function (g, i) { g.hidden = i >= n; });
+    }
+    var shown = groups.filter(function (g) { return !g.hidden; }).length;
+    for (var i = 0; i < groups.length && shown < MIN_SHOWN; i++) {
+      if (groups[i].hidden) { groups[i].hidden = false; shown++; }
+    }
+    return groups;
   }
 
   function load() {
@@ -71,17 +86,21 @@
       d.loggedIn = !!s.loggedIn;
       d.sound = s.sound !== false;
       d.texture = s.texture !== false;
-      d.visible = Math.max(2, Math.min(6, parseInt(s.visible, 10) || 6));
       if (Array.isArray(s.groups) && s.groups.length) {
         d.groups = s.groups.map(function (g, i) {
           return {
             id: g.id || 'g' + (i + 1),
             name: typeof g.name === 'string' && g.name.trim() ? g.name : L('المجموعة') + ' ' + (ORD[i] || (i + 1)),
             treeId: global.Trees.byId[g.treeId] ? g.treeId : global.Trees.LIST[i % 6].id,
-            count: Math.max(0, parseInt(g.count, 10) || 0)
+            count: Math.max(0, parseInt(g.count, 10) || 0),
+            hidden: !!g.hidden
           };
         });
+        /* حفظٌ قديم: لا علامة «مخفية» على أي مجموعة، والعدد وحده هو المحفوظ */
+        var hasFlag = s.groups.some(function (g) { return g && 'hidden' in g; });
+        fixShown(d.groups, hasFlag ? null : s.visible);
       }
+      d.visible = d.groups.filter(function (g) { return !g.hidden; }).length;
       if (s.timer && typeof s.timer === 'object') {
         var dur = Math.max(5, Math.min(3600, parseInt(s.timer.duration, 10) || 120));
         var rem = parseFloat(s.timer.remaining);
@@ -151,5 +170,5 @@
 
   global.Store = { load: load, save: save, wipe: wipe, defaults: defaults, ORD: ORD,
                    key: key, use: use, remember: remember, forget: forget, who: who,
-                   linked: LINKED, STUDENTS: STUDENTS };
+                   linked: LINKED, STUDENTS: STUDENTS, fixShown: fixShown, MIN_SHOWN: MIN_SHOWN };
 })(window);
