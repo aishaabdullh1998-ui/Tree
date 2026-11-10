@@ -154,6 +154,8 @@
       'Too many attempts — this account is locked for 15 minutes. Please try again later.',
     'تعذّر الاتصال، ولم يسبق الدخول بهذا الحساب على هذا الجهاز.':
       'No connection, and this account has not signed in on this device before.',
+    'تعذّر فتح اللوحة على هذا الجهاز.':
+      'The board could not be opened on this device.',
     'بلا إنترنت — فُتحت آخر نسخة محفوظة على هذا الجهاز.':
       'Offline — opened the last copy saved on this device.',
     'حسابك': 'Your account',

@@ -218,7 +218,9 @@
         toast(L('بلا إنترنت — فُتحت آخر نسخة محفوظة على هذا الجهاز.'));
       } else {
         Store.use(null);
-        refuse(L('تعذّر الاتصال، ولم يسبق الدخول بهذا الحساب على هذا الجهاز.'));
+        var why = window.Sync && window.Sync.lastError && window.Sync.lastError();
+        refuse(L('تعذّر الاتصال، ولم يسبق الدخول بهذا الحساب على هذا الجهاز.') +
+          (why ? ' [' + why + ']' : ''));
       }
     }
 
@@ -249,7 +251,16 @@
       window.Sync.auth(u, p, function (err, res) {
         busy = false;
         waiting(false);
-        if (!err) { enter(u, p, res); return; }
+        if (!err) {
+          /* لو فشل فتح اللوحة نفسها فهذا ليس انقطاعًا: نقول السبب كما هو */
+          try { enter(u, p, res); }
+          catch (ex) {
+            Store.use(null);
+            refuse(L('تعذّر فتح اللوحة على هذا الجهاز.') + ' [' +
+              ((ex && (ex.name || ex.message)) ? (ex.name || '') + (ex.message ? ': ' + ex.message : '') : '?') + ']');
+          }
+          return;
+        }
         if (err === 'offline') { enterOffline(u, p); return; }
         refuse(err === 'locked'
           ? L('أُقفل الحساب بعد محاولات كثيرة. انتظري ربع ساعة ثم جرّبي مرّة أخرى.')

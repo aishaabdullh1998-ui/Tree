@@ -44,9 +44,21 @@
     if (listener) { try { listener(s); } catch (e) {} }
   }
 
+  /* آخر سبب تقني لفشل الاتصال، يُعرض تحت رسالة الدخول ليُعرف الداء من النظرة الأولى */
+  var lastError = '';
+  function why(e) {
+    var n = e && (e.name || '');
+    var m = e && (e.message || '');
+    return (n && m && n !== 'Error') ? n + ': ' + m : (m || n || '?');
+  }
+
+  /* done يُستدعى خارج سلسلة الوعد: لو رمى خطأً (في عرض اللوحة مثلًا) لا يُحسب
+     انقطاعَ اتصال. كان الخطأ يقع في catch فيُبلَّغ done به مرّة ثانية على أنه
+     «offline»، فيظنّ المستعمل أن الشبكة سقطت وهي سليمة. */
   function call(fn, body, done) {
     var ctl = global.AbortController ? new global.AbortController() : null;
     var kill = ctl && global.setTimeout(function () { ctl.abort(); }, 12000);
+    var out;
     global.fetch(URL_BASE + fn, {
       method: 'POST',
       headers: headers(),
@@ -54,11 +66,17 @@
       signal: ctl ? ctl.signal : undefined
     }).then(function (r) {
       if (kill) global.clearTimeout(kill);
-      return r.json().then(function (j) { done(null, j, r.status); },
-                           function () { done(new Error('bad json')); });
-    }).catch(function (e) {
+      return r.json().then(function (j) { return { j: j, s: r.status }; },
+                           function () { return { bad: 'HTTP ' + r.status + ' بلا JSON' }; });
+    }).then(function (x) {
+      out = x;
+    }, function (e) {
       if (kill) global.clearTimeout(kill);
-      done(e);
+      out = { err: e };
+    }).then(function () {
+      if (out.err) { lastError = why(out.err); done(out.err); }
+      else if (out.bad) { lastError = out.bad; done(new Error(out.bad)); }
+      else { lastError = ''; done(null, out.j, out.s); }
     });
   }
 
@@ -298,6 +316,7 @@
     pull: pull,
     touch: function () { mark(); schedule(); },
     flush: function () { if (timer) { global.clearTimeout(timer); timer = null; } flush(); },
-    status: function () { return status; }
+    status: function () { return status; },
+    lastError: function () { return lastError; }
   };
 })(window);
