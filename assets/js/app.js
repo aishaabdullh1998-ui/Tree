@@ -97,9 +97,13 @@
   }
 
 
-  /* عدد المجموعات الذي اختارته المعلّمة: البقيّة تبقى محفوظة ولا تُعرض */
-  function visibleCount() { return Math.max(2, Math.min(6, parseInt(state.visible, 10) || 6)); }
-  function visibleGroups() { return state.groups.slice(0, visibleCount()); }
+  /* المجموعات التي اختارت المعلّمة إبقاءها (مجموعتان على الأقل): البقيّة
+     تبقى محفوظة بنقاطها ولا تُعرض */
+  function visibleGroups() {
+    var gs = state.groups.filter(function (g) { return !g.hidden; });
+    return gs.length >= 2 ? gs : state.groups.slice(0, 2);
+  }
+  function visibleCount() { return visibleGroups().length; }
 
   function leaders() {
     var gs = visibleGroups(), top = 0, i;
@@ -846,14 +850,15 @@
       '<fieldset class="block"><legend>' + L('المسابقة') + '</legend>' +
         '<div class="row"><label for="set-title">' + L('عنوان اللوحة') + '</label><input type="text" id="set-title" maxlength="40" value="' + esc(state.title) + '"></div>' +
       '</fieldset>' +
-      '<fieldset class="block"><legend>' + L('عدد المجموعات') + '</legend>' +
-        '<p class="note" style="margin:0 0 8px">' + L('تبقى بيانات المجموعات المخفيّة محفوظة، وتعود متى زدتِ العدد.') + '</p>' +
-        '<div class="seg" id="set-count">' +
-          [4, 5, 6].map(function (n) {
-            return '<button type="button" data-n="' + n + '" aria-pressed="' +
-              (visibleCount() === n ? 'true' : 'false') + '">' + n + '</button>';
+      '<fieldset class="block"><legend>' + L('المجموعات الظاهرة') + '</legend>' +
+        '<p class="note" style="margin:0 0 8px">' + L('اختاري المجموعات التي تريدين إبقاءها على الشاشة، ولا تقلّ عن مجموعتين. تبقى نقاط المخفيّة محفوظة، وتعود متى أظهرتِها.') + '</p>' +
+        '<div class="pick-groups" id="set-shown">' +
+          state.groups.map(function (g, i) {
+            return '<button type="button" data-i="' + i + '" aria-pressed="' +
+              (g.hidden ? 'false' : 'true') + '">' + esc(g.name) + '</button>';
           }).join('') +
         '</div>' +
+        '<p class="note" id="set-shown-msg" role="status" style="margin:8px 0 0;min-height:1.4em;color:var(--berry,#B5483C)"></p>' +
       '</fieldset>' +
       '<fieldset class="block"><legend>' + L('المجموعات و') + esc(W.holderAl) + '</legend>' + groupsHtml + '</fieldset>' +
       '<fieldset class="block"><legend>' + L('أسماء عجلة الحظ') + '</legend>' +
@@ -884,13 +889,18 @@
         '<button class="btn btn--primary" id="set-save" type="button">' + L('حفظ التغييرات') + '</button>' +
       '</div>',
       function (ov) {
-        var pickCount = visibleCount();
-        $$('#set-count button', ov).forEach(function (b) {
+        var shown = state.groups.map(function (g) { return !g.hidden; });
+        $$('#set-shown button', ov).forEach(function (b) {
           b.addEventListener('click', function () {
-            pickCount = +b.getAttribute('data-n');
-            $$('#set-count button', ov).forEach(function (x) {
-              x.setAttribute('aria-pressed', +x.getAttribute('data-n') === pickCount ? 'true' : 'false');
-            });
+            var i = +b.getAttribute('data-i');
+            var msg = $('#set-shown-msg', ov);
+            if (shown[i] && shown.filter(Boolean).length <= 2) {
+              msg.textContent = L('لا تقلّ المجموعات الظاهرة عن مجموعتين.');
+              return;
+            }
+            shown[i] = !shown[i];
+            msg.textContent = '';
+            b.setAttribute('aria-pressed', shown[i] ? 'true' : 'false');
           });
         });
         var restore = $('#set-names-restore', ov);
@@ -900,7 +910,8 @@
         $('#set-save', ov).addEventListener('click', function () {
           var title = $('#set-title', ov).value.trim();
           if (title) state.title = title;
-          state.visible = pickCount;
+          state.groups.forEach(function (g, i) { g.hidden = !shown[i]; });
+          state.visible = shown.filter(Boolean).length;
           $$('[data-gname]', ov).forEach(function (inp) {
             var i = +inp.getAttribute('data-gname');
             var v = inp.value.trim();
@@ -1025,10 +1036,12 @@
       var map = { '1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5,
                   '١': 0, '٢': 1, '٣': 2, '٤': 3, '٥': 4, '٦': 5 };
       if (e.key === 'Escape' && presentOn()) { e.preventDefault(); setPresent(false); return; }
-      if (map[e.key] != null && map[e.key] < visibleCount() && state.groups[map[e.key]]) {
+      /* الرقم هو ترتيب البطاقة على الشاشة، لا موضع المجموعة بين الست */
+      var shown = visibleGroups();
+      if (map[e.key] != null && shown[map[e.key]]) {
         e.preventDefault();
         Sound.unlock();
-        addFruit(state.groups[map[e.key]].id);
+        addFruit(shown[map[e.key]].id);
       }
     });
   }

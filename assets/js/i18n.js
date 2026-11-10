@@ -154,6 +154,10 @@
       'Too many attempts — this account is locked for 15 minutes. Please try again later.',
     'تعذّر الاتصال، ولم يسبق الدخول بهذا الحساب على هذا الجهاز.':
       'No connection, and this account has not signed in on this device before.',
+    'المجموعات الظاهرة': 'Teams shown',
+    'اختاري المجموعات التي تريدين إبقاءها على الشاشة، ولا تقلّ عن مجموعتين. تبقى نقاط المخفيّة محفوظة، وتعود متى أظهرتِها.':
+      'Choose the teams to keep on screen (at least two). Hidden teams keep their points and come back when you show them again.',
+    'لا تقلّ المجموعات الظاهرة عن مجموعتين.': 'At least two teams must stay on screen.',
     'بلا إنترنت — فُتحت آخر نسخة محفوظة على هذا الجهاز.':
       'Offline — opened the last copy saved on this device.',
     'حسابك': 'Your account',
